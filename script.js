@@ -1,36 +1,3 @@
-/**
- * js/script.js
- * Arquivo completo - versão consolidada e compatível.
- *
- * Recursos incluídos:
- * - Inicialização Firebase compatível (firebase-app-compat, auth-compat, firestore-compat)
- * - Login Google (popup com fallback para redirect)
- * - UI de autenticação: mostra NOME do usuário com foto; ao clicar abre dropdown POSICIONADO ABAIXO
- *     - opções: "Trocar login" (signOut + abrir login) e "Sair" (signOut)
- *     - não exibe notificação global ao clicar "Sair" ou ao visitar sem login
- * - Migrador de onclick -> data-service para abrir WhatsApp (preserva serviços existentes)
- * - Mobile menu, smooth scroll, header effect, card observer, lazy images, back-to-top
- * - Reviews:
- *     - seleção 1..10 (acessível)
- *     - envio de review (Firestore quando disponível e com permissão; fallback localStorage)
- *     - leitura: tenta get() e onSnapshot do Firestore; em permission-denied não exibe notificações globais,
- *       mostra texto discreto dentro da área de reviews. Também utiliza fallback localStorage.
- *     - paginação cliente (REVIEWS_PAGE_SIZE) + área rolável para evitar crescimento da página
- * - Prevenção clique duplo em botões importantes
- * - Várias proteções para evitar ReferenceError se alguma função/elemento não existir
- *
- * Instruções:
- * - Confirme que index.html inclui os SDKs compat do Firebase ANTES deste script:
- *     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
- *     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
- *     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
- * - Faça backup do script atual antes de substituir.
- * - Após colar, recarregue a página e teste login, abrir menu do usuário, enviar review, paginação.
- */
-
-/* ===========================
-   CONFIGURAÇÃO
-   =========================== */
 const firebaseConfig = {
     apiKey: "AIzaSyDALe6eKby-7JaCBvej9iqr95Y97s6oHWg",
     authDomain: "flutter-ai-playground-7971c.firebaseapp.com",
