@@ -1,26 +1,3 @@
-/**
- * js/script.js
- * Serviços de TI - Pablo Tasuyuki
- *
- * Arquivo completo e final com:
- * - Inicialização Firebase (modo compat) com seu firebaseConfig
- * - Google Sign-In (popup com fallback para redirect) e tratamento de redirect result
- * - Firestore reviews (envio, leitura em realtime com onSnapshot) com tratamento de permissões
- * - UI: login/logout, render de estrelas 1-10, envio de review
- * - Mobile menu, smooth scroll, lazy load imagens, animações de cards, botão voltar ao topo
- * - Migração de onclicks para data-service (WhatsApp), prevenção de clique duplo, notificações
- *
- * IMPORTANTE:
- * - Garanta que index.html inclua os SDKs compat ANTES deste script:
- *   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
- *   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
- *   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
- *   <script src="script.js"></script>
- */
-
-/* ===========================
-   FIREBASE CONFIG (colado)
-   =========================== */
 const firebaseConfig = {
     apiKey: "AIzaSyDALe6eKby-7JaCBvej9iqr95Y97s6oHWg",
     authDomain: "flutter-ai-playground-7971c.firebaseapp.com",
@@ -111,181 +88,137 @@ window.mostrarNotificacao = mostrarNotificacao;
 })();
 
 /* ===========================
-   MOBILE MENU
+   UI: User menu helper (show name + dropdown)
    =========================== */
-function initMobileMenu() {
-    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-    if (!mobileMenuBtn || !mobileMenu) return;
-    mobileMenuBtn.addEventListener('click', () => {
-        mobileMenu.classList.toggle('hidden');
-        mobileMenu.classList.toggle('mobile-menu-enter');
-        const icon = mobileMenuBtn.querySelector('i');
-        if (icon) {
-            if (mobileMenu.classList.contains('hidden')) { icon.classList.remove('fa-times'); icon.classList.add('fa-bars'); }
-            else { icon.classList.remove('fa-bars'); icon.classList.add('fa-times'); }
-        }
-    });
-    mobileMenu.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-            mobileMenu.classList.add('hidden');
-            const icon = mobileMenuBtn.querySelector('i');
-            if (icon) { icon.classList.remove('fa-times'); icon.classList.add('fa-bars'); }
-        });
-    });
-}
-
-/* ===========================
-   SMOOTH SCROLL
-   =========================== */
-function initSmoothScroll() {
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            const href = this.getAttribute('href');
-            if (!href || href === '#') return;
-            const target = document.querySelector(href);
-            if (!target) return;
-            e.preventDefault();
-            const headerOffset = 80;
-            const elementPosition = target.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-            window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-        });
-    });
-}
-
-/* ===========================
-   WHATSAPP: solicitar serviço
-   =========================== */
-function abrirWhatsAppMensagem(serviceName) {
-    const mensagem = `Olá! Tenho interesse no serviço: ${serviceName}`;
-    const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodeURIComponent(mensagem)}`;
-    window.open(url, '_blank');
-}
-
-function solicitarServicoHandler(ev) {
-    const el = ev.currentTarget || ev.target.closest('button, a');
-    const serviceName = el && (el.dataset.service || el.getAttribute('data-service'));
-    if (!serviceName) return;
-    const originalHTML = el.innerHTML;
-    el.innerHTML = '<i class="fas fa-check"></i> Abrindo WhatsApp...';
-    el.classList.add('success');
-    abrirWhatsAppMensagem(serviceName);
-    setTimeout(() => { try { el.innerHTML = originalHTML; el.classList.remove('success'); } catch(e){} }, 2000);
-}
-
-function migrateSolicitarServicoHandlers() {
-    const elements = Array.from(document.querySelectorAll('button, a'));
-    elements.forEach(el => {
-        if (el.dataset.service) {
-            if (!el._solicitarServicoAttached) { el.addEventListener('click', solicitarServicoHandler); el._solicitarServicoAttached = true; }
-            return;
-        }
-        const onclick = el.getAttribute('onclick') || '';
-        const match = onclick.match(/solicitarServico\s*\(\s*['"`]([\s\S]*?)['"`]\s*\)/);
-        if (match && match[1]) {
-            el.dataset.service = match[1];
-            el.removeAttribute('onclick');
-            if (!el._solicitarServicoAttached) { el.addEventListener('click', solicitarServicoHandler); el._solicitarServicoAttached = true; }
-        }
-    });
-}
-
-/* ===========================
-   HEADER EFFECT
-   =========================== */
-function initHeaderEffect() {
-    const header = document.querySelector('header');
-    if (!header) return;
-    window.addEventListener('scroll', () => {
-        if (window.pageYOffset > 10) header.classList.add('shadow-2xl');
-        else header.classList.remove('shadow-2xl');
-    });
-}
-
-/* ===========================
-   CARD OBSERVER
-   =========================== */
-function initCardObserver() {
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('in-view');
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-    document.querySelectorAll('.service-card').forEach(card => observer.observe(card));
-}
-
-/* ===========================
-   LAZY IMAGES
-   =========================== */
-function initLazyImages() {
-    if (!('IntersectionObserver' in window)) return;
-    const imgObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                if (img.dataset.src) img.src = img.dataset.src;
-                img.classList.add('loaded');
-                imgObserver.unobserve(img);
-            }
-        });
-    }, { rootMargin: '200px 0px' });
-    document.querySelectorAll('img[data-src]').forEach(img => imgObserver.observe(img));
-}
-
-/* ===========================
-   BACK TO TOP
-   =========================== */
-function criarBotaoVoltarTopo() {
-    if (document.getElementById('back-to-top')) return;
-    const botao = document.createElement('button');
-    botao.id = 'back-to-top';
-    botao.className = 'fixed bottom-24 right-6 w-12 h-12 bg-slate-700 hover:bg-slate-600 text-white rounded-full shadow-lg hover:scale-110 transition-all duration-300 opacity-0 pointer-events-none z-40';
-    botao.innerHTML = '<i class="fas fa-arrow-up"></i>';
-    botao.setAttribute('aria-label', 'Voltar ao topo');
-    botao.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-    document.body.appendChild(botao);
-    window.addEventListener('scroll', () => {
-        if (window.pageYOffset > 300) { botao.style.opacity = '1'; botao.style.pointerEvents = 'auto'; }
-        else { botao.style.opacity = '0'; botao.style.pointerEvents = 'none'; }
-    });
-}
-
-/* ===========================
-   BUSCA
-   =========================== */
-function criarBarraBusca() {
-    const hero = document.querySelector('section.pt-32') || document.querySelector('section');
-    if (!hero) return;
-    const container = document.createElement('div');
-    container.className = 'container mx-auto mt-8 max-w-2xl';
-    container.innerHTML = `
-        <div class="relative">
-            <input id="busca-servicos" type="text" placeholder="Buscar serviços..." class="w-full px-6 py-4 bg-slate-900/50 backdrop-blur-sm border border-slate-700 rounded-xl text-white placeholder-slate-400 focus:outline-none"/>
-            <i class="fas fa-search absolute right-6 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+function createUserMenuMarkup(user) {
+    const display = (user.displayName || user.email || 'Usuário');
+    // truncate long names for button
+    const short = display.length > 18 ? display.slice(0, 15) + '...' : display;
+    return `
+      <div class="relative inline-block" id="user-menu-wrap">
+        <button id="user-menu-btn" aria-haspopup="true" aria-expanded="false" class="bg-slate-800 text-white px-3 py-1 rounded-lg flex items-center gap-2">
+          <img src="${user.photoURL || ''}" alt="" class="w-7 h-7 rounded-full object-cover" />
+          <span id="user-menu-label" class="truncate">${short}</span>
+          <i class="fas fa-chevron-down text-sm"></i>
+        </button>
+        <div id="user-menu-dropdown" class="hidden absolute right-0 mt-2 w-44 bg-slate-900 rounded-md shadow-lg z-50 ring-1 ring-white/5">
+          <button id="user-switch-btn" class="block w-full text-left px-4 py-2 hover:bg-slate-700">Trocar login</button>
+          <button id="user-logout-btn" class="block w-full text-left px-4 py-2 hover:bg-slate-700">Sair</button>
         </div>
+      </div>
     `;
-    hero.appendChild(container);
-    const input = document.getElementById('busca-servicos');
-    if (!input) return;
-    input.addEventListener('input', (e) => {
-        const termo = e.target.value.trim().toLowerCase();
-        const cards = document.querySelectorAll('.service-card');
-        let count = 0;
-        cards.forEach(card => {
-            const titulo = card.querySelector('h3') ? card.querySelector('h3').textContent.toLowerCase() : '';
-            const desc = card.querySelector('p') ? card.querySelector('p').textContent.toLowerCase() : '';
-            if (!termo || titulo.includes(termo) || desc.includes(termo)) { card.style.display = ''; count++; } else { card.style.display = 'none'; }
+}
+
+function attachUserMenuHandlers() {
+    const wrap = document.getElementById('user-menu-wrap');
+    if (!wrap) return;
+    const btn = document.getElementById('user-menu-btn');
+    const dropdown = document.getElementById('user-menu-dropdown');
+    const logoutBtn = document.getElementById('user-logout-btn');
+    const switchBtn = document.getElementById('user-switch-btn');
+
+    function closeMenu() {
+        if (!dropdown) return;
+        dropdown.classList.add('hidden');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+    }
+    function openMenu() {
+        if (!dropdown) return;
+        dropdown.classList.remove('hidden');
+        if (btn) btn.setAttribute('aria-expanded', 'true');
+    }
+
+    if (btn) {
+        btn.addEventListener('click', (ev) => {
+            ev.stopPropagation();
+            if (!dropdown) return;
+            dropdown.classList.toggle('hidden');
+            const expanded = btn.getAttribute('aria-expanded') === 'true';
+            btn.setAttribute('aria-expanded', (!expanded).toString());
         });
-        if (termo && count === 0) mostrarNotificacao('Nenhum serviço encontrado', 'info');
+    }
+
+    // logout
+    if (logoutBtn) logoutBtn.addEventListener('click', () => {
+        if (firebaseAuth) firebaseAuth.signOut().then(() => {
+            mostrarNotificacao('Você saiu', 'info');
+        }).catch(err => {
+            console.error('Erro ao sair:', err);
+            mostrarNotificacao('Erro ao sair (veja console)', 'error');
+        });
+    });
+    // switch login (sign out then open sign-in)
+    if (switchBtn) switchBtn.addEventListener('click', () => {
+        if (firebaseAuth) {
+            firebaseAuth.signOut().then(() => {
+                // small delay to ensure UI updated
+                setTimeout(() => startGoogleSignIn(), 300);
+            }).catch(err => {
+                console.error('Erro ao trocar login:', err);
+                startGoogleSignIn();
+            });
+        } else {
+            startGoogleSignIn();
+        }
+    });
+
+    // close on outside click
+    document.addEventListener('click', (e) => {
+        if (!wrap.contains(e.target)) closeMenu();
+    });
+
+    // close on Esc
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeMenu();
     });
 }
 
 /* ===========================
-   LOGIN / AUTH UI
+   Update Auth UI (shows user name button with menu instead of plain "Sair")
+   =========================== */
+function updateAuthUI(user) {
+    const authArea = document.getElementById('auth-area');
+    const loginBtnMobile = document.getElementById('login-btn-mobile');
+    const loginAction = document.getElementById('login-action');
+    const userNameEl = document.getElementById('user-name');
+
+    if (user) {
+        currentUser = user;
+        if (authArea) {
+            authArea.innerHTML = createUserMenuMarkup(user);
+            attachUserMenuHandlers();
+        }
+        if (loginBtnMobile) loginBtnMobile.style.display = 'none';
+        if (loginAction) loginAction.innerHTML = `<div class="inline-block" id="auth-action-mobile">${createUserMenuMarkup(user)}</div>`;
+        // attach handlers for mobile auth action area (if present)
+        const mobileWrap = document.getElementById('auth-action-mobile');
+        if (mobileWrap) attachUserMenuHandlers();
+        if (userNameEl) userNameEl.textContent = user.displayName || user.email || 'Usuário';
+    } else {
+        currentUser = null;
+        if (authArea) {
+            authArea.innerHTML = `
+                <button id="login-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-lg flex items-center space-x-2">
+                    <i class="fab fa-google"></i><span>Login</span>
+                </button>
+            `;
+            const lbtn = document.getElementById('login-btn');
+            if (lbtn) lbtn.addEventListener('click', startGoogleSignIn);
+        }
+        if (loginBtnMobile) {
+            loginBtnMobile.style.display = 'inline-flex';
+            loginBtnMobile.addEventListener('click', startGoogleSignIn);
+        }
+        if (loginAction) loginAction.innerHTML = `<button id="login-action-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-lg">Entrar com Google</button>`;
+        if (document.getElementById('login-action-btn')) {
+            document.getElementById('login-action-btn').addEventListener('click', startGoogleSignIn);
+        }
+        if (userNameEl) userNameEl.textContent = 'Você não está conectado';
+    }
+}
+
+/* ===========================
+   Login with Google (popup + fallback redirect)
    =========================== */
 function setLoginButtonLoading(loading = true) {
     const btn = document.querySelector('#auth-area button, #login-btn, #login-btn-mobile, #login-action-btn');
@@ -335,56 +268,45 @@ function startGoogleSignIn() {
       .finally(() => setLoginButtonLoading(false));
 }
 
-function updateAuthUI(user) {
-    const authArea = document.getElementById('auth-area');
-    const loginBtnMobile = document.getElementById('login-btn-mobile');
-    const loginAction = document.getElementById('login-action');
-    const userNameEl = document.getElementById('user-name');
-
-    if (user) {
-        currentUser = user;
-        if (authArea) {
-            authArea.innerHTML = `
-                <img src="${user.photoURL || ''}" alt="${user.displayName || ''}" class="w-9 h-9 rounded-full border border-slate-700 shadow-sm" title="${user.displayName || 'Usuário'}" />
-                <button id="logout-btn" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded-lg">Sair</button>
-            `;
-            const outBtn = document.getElementById('logout-btn');
-            if (outBtn) outBtn.addEventListener('click', () => firebaseAuth.signOut());
+/* ===========================
+   Solicitar serviço -> WhatsApp (migração de onclicks)
+   =========================== */
+function abrirWhatsAppMensagem(serviceName) {
+    const mensagem = `Olá! Tenho interesse no serviço: ${serviceName}`;
+    const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodeURIComponent(mensagem)}`;
+    window.open(url, '_blank');
+}
+function solicitarServicoHandler(ev) {
+    const el = ev.currentTarget || ev.target.closest('button, a');
+    const serviceName = el && (el.dataset.service || el.getAttribute('data-service'));
+    if (!serviceName) return;
+    const originalHTML = el.innerHTML;
+    el.innerHTML = '<i class="fas fa-check"></i> Abrindo WhatsApp...';
+    el.classList.add('success');
+    abrirWhatsAppMensagem(serviceName);
+    setTimeout(() => { try { el.innerHTML = originalHTML; el.classList.remove('success'); } catch(e){} }, 2000);
+}
+function migrateSolicitarServicoHandlers() {
+    const elements = Array.from(document.querySelectorAll('button, a'));
+    elements.forEach(el => {
+        if (el.dataset.service) {
+            if (!el._solicitarServicoAttached) { el.addEventListener('click', solicitarServicoHandler); el._solicitarServicoAttached = true; }
+            return;
         }
-        if (loginBtnMobile) loginBtnMobile.style.display = 'none';
-        if (loginAction) loginAction.innerHTML = `<button id="logout-action" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded-lg">Sair</button>`;
-        if (document.getElementById('logout-action')) {
-            document.getElementById('logout-action').addEventListener('click', () => firebaseAuth.signOut());
+        const onclick = el.getAttribute('onclick') || '';
+        const match = onclick.match(/solicitarServico\s*\(\s*['"`]([\s\S]*?)['"`]\s*\)/);
+        if (match && match[1]) {
+            el.dataset.service = match[1];
+            el.removeAttribute('onclick');
+            if (!el._solicitarServicoAttached) { el.addEventListener('click', solicitarServicoHandler); el._solicitarServicoAttached = true; }
         }
-        if (userNameEl) userNameEl.textContent = user.displayName || user.email || 'Usuário';
-    } else {
-        currentUser = null;
-        if (authArea) {
-            authArea.innerHTML = `
-                <button id="login-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-lg flex items-center space-x-2">
-                    <i class="fab fa-google"></i><span>Login</span>
-                </button>
-            `;
-            const lbtn = document.getElementById('login-btn');
-            if (lbtn) lbtn.addEventListener('click', startGoogleSignIn);
-        }
-        if (loginBtnMobile) {
-            loginBtnMobile.style.display = 'inline-flex';
-            loginBtnMobile.addEventListener('click', startGoogleSignIn);
-        }
-        if (loginAction) loginAction.innerHTML = `<button id="login-action-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-lg">Entrar com Google</button>`;
-        if (document.getElementById('login-action-btn')) {
-            document.getElementById('login-action-btn').addEventListener('click', startGoogleSignIn);
-        }
-        if (userNameEl) userNameEl.textContent = 'Você não está conectado';
-    }
+    });
 }
 
 /* ===========================
-   REVIEWS: UI e Firestore
+   Reviews: render + submit + listen (with scrollable container)
    =========================== */
 let selectedRating = 10;
-
 function renderStarsNumeric(container, selected = 10) {
     if (!container) return;
     container.innerHTML = '';
@@ -435,10 +357,23 @@ async function submitReview() {
     } catch (err) {
         console.error('Erro ao enviar avaliação:', err);
         if (err && err.code === 'permission-denied') {
-            mostrarNotificacao('Permissão negada ao gravar. Verifique as regras do Firestore.', 'error');
+            // não mostrar notificação intrusiva; exibe mensagem discreta dentro da área de reviews
+            const reviewsListEl = document.getElementById('reviews-list');
+            if (reviewsListEl) reviewsListEl.innerHTML = '<div class="text-slate-400">Não foi possível salvar avaliação (permissão).</div>';
         } else {
             mostrarNotificacao('Erro ao enviar avaliação (veja console).', 'error');
         }
+    }
+}
+
+function makeReviewsScrollable(reviewsListEl) {
+    if (!reviewsListEl) return;
+    // apenas aplica se ainda não aplicado
+    if (!reviewsListEl.dataset.scrollable) {
+        reviewsListEl.style.maxHeight = '360px';
+        reviewsListEl.style.overflowY = 'auto';
+        reviewsListEl.style.paddingRight = '8px';
+        reviewsListEl.dataset.scrollable = '1';
     }
 }
 
@@ -449,6 +384,9 @@ function listenReviews() {
         if (reviewsListEl) reviewsListEl.innerHTML = '<div class="text-red-400">Firestore não configurado.</div>';
         return;
     }
+
+    makeReviewsScrollable(reviewsListEl);
+
     try {
         firebaseDB.collection('reviews').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
             const docs = [];
@@ -466,7 +404,7 @@ function listenReviews() {
             docs.forEach(d => {
                 const when = d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().toLocaleString() : '';
                 const item = document.createElement('div');
-                item.className = 'bg-slate-900/50 p-4 rounded-lg border border-slate-700/40';
+                item.className = 'bg-slate-900/50 p-4 rounded-lg border border-slate-700/40 mb-3';
                 item.innerHTML = `
                     <div class="flex items-start gap-3">
                         <img src="${d.photoURL || 'https://www.gravatar.com/avatar/?d=mp'}" alt="${d.name || 'Usuário'}" class="w-12 h-12 rounded-full object-cover" />
@@ -486,18 +424,29 @@ function listenReviews() {
             });
         }, err => {
             console.error('Erro ao ler reviews (onSnapshot):', err);
-            if (reviewsListEl) reviewsListEl.innerHTML = '<div class="text-red-400">Erro ao carregar avaliações.</div>';
+            if (!reviewsListEl) return;
+            // Se o erro for permission-denied e usuário NÃO autenticado, não mostrar notificação intrusiva.
             if (err && err.code === 'permission-denied') {
-                mostrarNotificacao('Permissão negada ao ler avaliações. Ajuste as regras do Firestore.', 'error');
+                const isLogged = !!(firebaseAuth && firebaseAuth.currentUser);
+                if (isLogged) {
+                    // usuário autenticado, mostrar mensagem discreta na área
+                    reviewsListEl.innerHTML = '<div class="text-slate-400">Sem permissão para ver avaliações.</div>';
+                } else {
+                    // usuário não autenticado: incentive login ou mostre placeholder (não notificar)
+                    reviewsListEl.innerHTML = '<div class="text-slate-400">Faça login para ver avaliações.</div>';
+                }
+                return;
             }
+            reviewsListEl.innerHTML = '<div class="text-red-400">Erro ao carregar avaliações.</div>';
         });
     } catch (e) {
         console.error('listenReviews exception:', e);
+        if (reviewsListEl) reviewsListEl.innerHTML = '<div class="text-red-400">Erro ao carregar avaliações.</div>';
     }
 }
 
 /* ===========================
-   Prevenção clique duplo
+   Pequenas utilidades e inicialização
    =========================== */
 let clickPrevenido = false;
 document.addEventListener('click', (e) => {
@@ -514,6 +463,7 @@ document.addEventListener('click', (e) => {
    Inicialização ao carregar DOM
    =========================== */
 document.addEventListener('DOMContentLoaded', () => {
+    // componentes UI
     initMobileMenu();
     initSmoothScroll();
     migrateSolicitarServicoHandlers();
@@ -531,7 +481,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitBtn = document.getElementById('submit-review');
     if (submitBtn) submitBtn.addEventListener('click', submitReview);
 
-    // conecta login buttons (fallbacks)
+    // conecta login buttons
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) loginBtn.addEventListener('click', startGoogleSignIn);
     const loginBtnMobile = document.getElementById('login-btn-mobile');
@@ -542,7 +492,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // start listening reviews (realtime)
     listenReviews();
 
-    console.log('[script] inicialização completa');
+    console.log('[script] inicialização completa (com user-menu e reviews scroll)');
 });
 
 /* ===========================
