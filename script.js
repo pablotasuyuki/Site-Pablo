@@ -71,7 +71,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 // FUNÇÃO PARA SOLICITAR SERVIÇOS
 // ========================================
 function solicitarServico(nomeServico) {
-    const telefone = '5551995625408';
+    const telefone = '5551997395967';
     const mensagem = `Olá! Tenho interesse no serviço: ${nomeServico}`;
     const url = `https://api.whatsapp.com/send?phone=${telefone}&text=${encodeURIComponent(mensagem)}`;
     
