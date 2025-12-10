@@ -1,16 +1,29 @@
 /**
- * js/script.js (corrigido)
- * - Corrige user menu (nome do usuário -> dropdown Trocar login / Sair)
- * - Remove IDs duplicados, usa classes e data-menu-id para múltiplas instâncias
- * - Garante todas as funções definidas antes do DOMContentLoaded
- * - Mantém Firebase (compat) + Google Sign-In + Firestore reviews
- * - Render de reviews em container rolável
+ * js/script.js
+ * Corrigido: dropdown position, restauração da seleção 1-10, fallback para armazenamento em JSON (localStorage)
  *
- * IMPORTANTE: inclua os SDKs compat do Firebase ANTES deste arquivo no index.html.
+ * Comportamento:
+ * - Tenta usar Firestore (se configurado e com permissões). Se falhar (ausente/permission-denied),
+ *   faz fallback para um "reviews JSON" salvo no localStorage (key = 'local_reviews').
+ * - Submit: tenta gravar no Firestore; se der erro por permissão ou ausência, grava no localStorage.
+ * - Renderiza reviews a partir do Firestore (quando disponível) ou do localStorage.
+ * - User menu: botão com nome do usuário; dropdown posicionado corretamente (wrap com position:relative).
+ * - Rating 1..10 restaurado e visível.
+ *
+ * IMPORTANT:
+ * - Certifique-se de incluir os SDKs compat do Firebase ANTES deste arquivo se quiser usar Firestore.
+ *   Exemplo (no fim do body, antes de <script src="script.js">):
+ *     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+ *     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+ *     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+ *
+ * - Esta versão NÃO tenta escrever um arquivo .json no servidor (não é possível a partir de um site estático
+ *   sem backend). Se quiser persistir num arquivo JSON no servidor, consulte as instruções no final (usar
+ *   função serverless ou Firebase).
  */
 
 /* ===========================
-   FIREBASE CONFIG
+   FIREBASE CONFIG (seu app)
    =========================== */
 const firebaseConfig = {
   apiKey: "AIzaSyDALe6eKby-7JaCBvej9iqr95Y97s6oHWg",
@@ -31,7 +44,7 @@ let firebaseDB = null;
 let currentUser = null;
 
 /* ===========================
-   NOTIFICAÇÕES SIMPLES
+   UTIL: notificações simples
    =========================== */
 function mostrarNotificacao(mensagem, tipo = 'info') {
   const el = document.createElement('div');
@@ -46,12 +59,12 @@ function mostrarNotificacao(mensagem, tipo = 'info') {
 window.mostrarNotificacao = mostrarNotificacao;
 
 /* ===========================
-   INICIALIZAÇÃO FIREBASE (compat)
+   Inicializa Firebase (modo compat), se disponível
    =========================== */
 (function initFirebase() {
   try {
     if (typeof firebase === 'undefined') {
-      console.warn('[Firebase] SDK compat não detectado. Inclua os scripts antes do script.js');
+      console.warn('[Firebase] SDK compat não detectado — Firestore/desync fallback irá usar localStorage.');
       return;
     }
     if (!firebase.apps || !firebase.apps.length) firebase.initializeApp(firebaseConfig);
@@ -64,23 +77,301 @@ window.mostrarNotificacao = mostrarNotificacao;
       console.log('[auth] onAuthStateChanged uid=', user ? user.uid : null);
     });
 
-    // tratar redirect result
+    // tratar redirect result (caso fallback redirect usado)
     firebaseAuth.getRedirectResult().then(result => {
       if (result && result.user) {
         console.log('[auth] logged via redirect', result.user.uid);
+        mostrarNotificacao('Autenticado via redirect', 'success');
       }
     }).catch(err => {
       if (err) console.warn('[auth] getRedirectResult:', err);
     });
 
     console.log('[Firebase] inicializado (compat)');
-  } catch (e) {
-    console.error('[Firebase] erro init', e);
+  } catch (err) {
+    console.error('[Firebase] erro init', err);
+    firebaseDB = null;
+    firebaseAuth = null;
   }
 })();
 
 /* ===========================
-   MOBILE MENU (existia antes)
+   HELPERS: local JSON (localStorage) fallback
+   key: 'local_reviews' stores an array of review objects
+   =========================== */
+function loadLocalReviews() {
+  try {
+    const raw = localStorage.getItem('local_reviews');
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    if (!Array.isArray(arr)) return [];
+    return arr;
+  } catch (e) {
+    console.error('loadLocalReviews parse error', e);
+    return [];
+  }
+}
+function saveLocalReviews(arr) {
+  try {
+    localStorage.setItem('local_reviews', JSON.stringify(arr || []));
+  } catch (e) {
+    console.error('saveLocalReviews error', e);
+  }
+}
+function appendLocalReview(review) {
+  const arr = loadLocalReviews();
+  arr.unshift(review); // newest first
+  saveLocalReviews(arr);
+}
+
+/* ===========================
+   RENDER HELPERS (reused for Firestore or local)
+   =========================== */
+function renderReviewsArray(reviews) {
+  const reviewsListEl = document.getElementById('reviews-list');
+  const averageRatingEl = document.getElementById('average-rating');
+  if (!reviewsListEl) return;
+  // ensure scrollable
+  if (!reviewsListEl.dataset.scrollable) {
+    reviewsListEl.style.maxHeight = '360px';
+    reviewsListEl.style.overflowY = 'auto';
+    reviewsListEl.style.paddingRight = '8px';
+    reviewsListEl.dataset.scrollable = '1';
+  }
+
+  if (!Array.isArray(reviews) || !reviews.length) {
+    reviewsListEl.innerHTML = '<div class="text-slate-400">Ainda não há avaliações. Seja o primeiro!</div>';
+    if (averageRatingEl) averageRatingEl.textContent = '--';
+    return;
+  }
+
+  let sum = 0;
+  reviews.forEach(r => sum += (r.rating || 0));
+  if (averageRatingEl) averageRatingEl.textContent = (reviews.length ? (sum / reviews.length).toFixed(1) : '--');
+
+  reviewsListEl.innerHTML = '';
+  reviews.forEach(d => {
+    const when = d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().toLocaleString() : (d.createdAt ? new Date(d.createdAt).toLocaleString() : '');
+    const item = document.createElement('div');
+    item.className = 'bg-slate-900/50 p-4 rounded-lg border border-slate-700/40 mb-3';
+    item.innerHTML = `
+      <div class="flex items-start gap-3">
+        <img src="${d.photoURL || 'https://www.gravatar.com/avatar/?d=mp'}" alt="${d.name || 'Usuário'}" class="w-12 h-12 rounded-full object-cover" />
+        <div class="flex-1">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="font-semibold">${d.name || 'Usuário'}</div>
+              <div class="text-sm text-slate-400">${when}</div>
+            </div>
+            <div class="text-yellow-400 font-bold">${d.rating || 0} / 10</div>
+          </div>
+          <p class="mt-2 text-slate-300">${d.comment || ''}</p>
+        </div>
+      </div>
+    `;
+    reviewsListEl.appendChild(item);
+  });
+}
+
+/* ===========================
+   LISTEN REVIEWS: try Firestore, fallback to localStorage
+   =========================== */
+function listenReviews() {
+  const reviewsListEl = document.getElementById('reviews-list');
+  if (!reviewsListEl) return;
+
+  // If firestore available, try realtime subscription
+  if (firebaseDB) {
+    try {
+      firebaseDB.collection('reviews').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+        const docs = [];
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          docs.push(Object.assign({ id: doc.id }, data));
+        });
+        // render using renderReviewsArray
+        renderReviewsArray(docs);
+      }, err => {
+        console.error('onSnapshot error', err);
+        if (err && err.code === 'permission-denied') {
+          // If user not logged in, show placeholder without loud notifications
+          const isLogged = !!(firebaseAuth && firebaseAuth.currentUser);
+          if (!isLogged) {
+            reviewsListEl.innerHTML = '<div class="text-slate-400">Faça login para ver avaliações.</div>';
+            // also show local reviews fallback
+            const local = loadLocalReviews();
+            if (local && local.length) {
+              renderReviewsArray(local);
+            }
+            return;
+          } else {
+            reviewsListEl.innerHTML = '<div class="text-slate-400">Sem permissão para ver avaliações.</div>';
+            return;
+          }
+        }
+        // other error: fallback to localStorage
+        const local = loadLocalReviews();
+        if (local && local.length) {
+          renderReviewsArray(local);
+        } else {
+          reviewsListEl.innerHTML = '<div class="text-red-400">Erro ao carregar avaliações.</div>';
+        }
+      });
+      return;
+    } catch (e) {
+      console.error('listenReviews exception', e);
+      // fallback to local
+    }
+  }
+
+  // If we reach here, Firestore not available -> render local reviews
+  const local = loadLocalReviews();
+  renderReviewsArray(local);
+}
+
+/* ===========================
+   SUBMIT REVIEW: attempt Firestore then local fallback
+   =========================== */
+let selectedRating = 10;
+function renderStarsNumeric(container, selected = 10) {
+  if (!container) return;
+  container.innerHTML = '';
+  for (let i = 1; i <= 10; i++) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = `px-3 py-1 rounded ${i <= selected ? 'bg-yellow-500 text-slate-900' : 'bg-slate-700 text-slate-300'}`;
+    btn.style.minWidth = '34px';
+    btn.style.marginRight = '6px';
+    btn.title = `${i} de 10`;
+    btn.innerText = i;
+    btn.dataset.value = i;
+    btn.addEventListener('click', () => {
+      selectedRating = i;
+      renderStarsNumeric(container, selectedRating);
+    });
+    container.appendChild(btn);
+  }
+}
+
+async function submitReview() {
+  const reviewTextEl = document.getElementById('review-text');
+  const text = reviewTextEl ? reviewTextEl.value.trim() : '';
+  if (!text) { mostrarNotificacao('Escreva um comentário antes de enviar.', 'info'); return; }
+
+  // build review object (use ISO date for local fallback)
+  const now = new Date();
+  const review = {
+    uid: currentUser ? currentUser.uid : null,
+    name: currentUser ? (currentUser.displayName || currentUser.email) : 'Anônimo',
+    photoURL: currentUser ? (currentUser.photoURL || '') : '',
+    rating: selectedRating,
+    comment: text,
+    createdAt: firebaseDB ? firebase.firestore.FieldValue.serverTimestamp() : now.toISOString()
+  };
+
+  // if firestore exists and user authenticated (or rules allow), try adding to Firestore
+  if (firebaseDB) {
+    try {
+      // require auth for meaningful uid; Firestore rules may reject otherwise
+      await firebaseDB.collection('reviews').add(review);
+      mostrarNotificacao('Avaliação enviada!', 'success');
+      if (reviewTextEl) reviewTextEl.value = '';
+      return;
+    } catch (err) {
+      console.error('Erro ao gravar no Firestore, fallback local', err);
+      // if permission-denied or other, fallback to localStorage
+      if (err && err.code === 'permission-denied') {
+        appendLocalReview(Object.assign({}, review, { createdAt: now.toISOString() }));
+        mostrarNotificacao('Avaliação salva localmente (login necessário para salvar no servidor).', 'warning');
+        if (reviewTextEl) reviewTextEl.value = '';
+        // re-render from local
+        const local = loadLocalReviews();
+        renderReviewsArray(local);
+        return;
+      } else {
+        // other Firestore error -> fallback local as well
+        appendLocalReview(Object.assign({}, review, { createdAt: now.toISOString() }));
+        mostrarNotificacao('Avaliação salva localmente (erro servidor).', 'warning');
+        if (reviewTextEl) reviewTextEl.value = '';
+        const local = loadLocalReviews();
+        renderReviewsArray(local);
+        return;
+      }
+    }
+  }
+
+  // No Firestore -> save local
+  appendLocalReview(Object.assign({}, review, { createdAt: now.toISOString() }));
+  mostrarNotificacao('Avaliação salva localmente.', 'success');
+  if (reviewTextEl) reviewTextEl.value = '';
+  const local = loadLocalReviews();
+  renderReviewsArray(local);
+}
+
+/* ===========================
+   USER MENU: create + attach handlers
+   - ensure wrapper positioned relative (fixes dropdown at corner)
+   =========================== */
+function createUserMenuMarkup(user) {
+  const display = (user.displayName || user.email || 'Usuário');
+  const short = display.length > 18 ? display.slice(0,15) + '...' : display;
+  const markup = document.createElement('div');
+  markup.className = 'user-menu-wrap inline-block';
+  // ensure relative — fixes dropdown absolute position
+  markup.style.position = 'relative';
+  markup.innerHTML = `
+    <button class="user-menu-btn bg-slate-800 text-white px-3 py-1 rounded-lg flex items-center gap-2">
+      <img src="${user.photoURL || ''}" alt="" class="w-7 h-7 rounded-full object-cover" />
+      <span class="user-menu-label truncate">${short}</span>
+      <i class="fas fa-chevron-down text-sm"></i>
+    </button>
+    <div class="user-menu-dropdown hidden absolute right-0 mt-2 w-44 bg-slate-900 rounded-md shadow-lg z-50 ring-1 ring-white/5">
+      <button class="user-switch-btn block w-full text-left px-4 py-2 hover:bg-slate-700">Trocar login</button>
+      <button class="user-logout-btn block w-full text-left px-4 py-2 hover:bg-slate-700">Sair</button>
+    </div>
+  `;
+  return markup;
+}
+
+function attachUserMenuHandlers() {
+  // attach to each .user-menu-wrap element that hasn't been attached yet
+  document.querySelectorAll('.user-menu-wrap').forEach(wrap => {
+    if (wrap._attached) return;
+    // if wrap was created as markup element (DOM node), everything's fine
+    // else if wrap is a container with innerHTML (string), ensure position relative
+    if (!wrap.style.position) wrap.style.position = 'relative';
+    const btn = wrap.querySelector('.user-menu-btn');
+    const dropdown = wrap.querySelector('.user-menu-dropdown');
+    const logoutBtn = wrap.querySelector('.user-logout-btn');
+    const switchBtn = wrap.querySelector('.user-switch-btn');
+
+    if (!btn || !dropdown) { wrap._attached = true; return; }
+
+    btn.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      dropdown.classList.toggle('hidden');
+    });
+
+    if (logoutBtn) logoutBtn.addEventListener('click', () => {
+      if (firebaseAuth) firebaseAuth.signOut().then(() => mostrarNotificacao('Você saiu', 'info')).catch(err => { console.error('Erro logout', err); mostrarNotificacao('Erro ao sair', 'error'); });
+    });
+
+    if (switchBtn) switchBtn.addEventListener('click', () => {
+      if (firebaseAuth) {
+        firebaseAuth.signOut().then(() => { setTimeout(() => startGoogleSignIn(), 200); }).catch(err => { console.error('Erro switch', err); startGoogleSignIn(); });
+      } else startGoogleSignIn();
+    });
+
+    // close on outside click and Esc
+    document.addEventListener('click', (e) => { if (!wrap.contains(e.target)) dropdown.classList.add('hidden'); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') dropdown.classList.add('hidden'); });
+
+    wrap._attached = true;
+  });
+}
+
+/* ===========================
+   OTHER UI / UTILITIES (mobile menu, smooth scroll, etc.)
    =========================== */
 function initMobileMenu() {
   const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -101,9 +392,6 @@ function initMobileMenu() {
   }));
 }
 
-/* ===========================
-   SMOOTH SCROLL
-   =========================== */
 function initSmoothScroll() {
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -120,58 +408,6 @@ function initSmoothScroll() {
   });
 }
 
-/* ===========================
-   MIGRAR onclicks -> data-service (WhatsApp)
-   =========================== */
-function abrirWhatsAppMensagem(serviceName) {
-  const mensagem = `Olá! Tenho interesse no serviço: ${serviceName}`;
-  const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodeURIComponent(mensagem)}`;
-  window.open(url, '_blank');
-}
-
-function solicitarServicoHandler(ev) {
-  const el = ev.currentTarget || ev.target.closest('button, a');
-  const serviceName = el && (el.dataset.service || el.getAttribute('data-service'));
-  if (!serviceName) return;
-  const originalHTML = el.innerHTML;
-  el.innerHTML = '<i class="fas fa-check"></i> Abrindo WhatsApp...';
-  el.classList.add('success');
-  abrirWhatsAppMensagem(serviceName);
-  setTimeout(() => { try { el.innerHTML = originalHTML; el.classList.remove('success'); } catch(e){} }, 2000);
-}
-
-function migrateSolicitarServicoHandlers() {
-  const elements = Array.from(document.querySelectorAll('button, a'));
-  elements.forEach(el => {
-    if (el.dataset.service) {
-      if (!el._svcAttached) { el.addEventListener('click', solicitarServicoHandler); el._svcAttached = true; }
-      return;
-    }
-    const onclick = el.getAttribute('onclick') || '';
-    const match = onclick.match(/solicitarServico\s*\(\s*['"`]([\s\S]*?)['"`]\s*\)/);
-    if (match && match[1]) {
-      el.dataset.service = match[1];
-      el.removeAttribute('onclick');
-      if (!el._svcAttached) { el.addEventListener('click', solicitarServicoHandler); el._svcAttached = true; }
-    }
-  });
-}
-
-/* ===========================
-   HEADER EFFECT
-   =========================== */
-function initHeaderEffect() {
-  const header = document.querySelector('header');
-  if (!header) return;
-  window.addEventListener('scroll', () => {
-    if (window.pageYOffset > 10) header.classList.add('shadow-2xl');
-    else header.classList.remove('shadow-2xl');
-  });
-}
-
-/* ===========================
-   CARDS / LAZY / BOTAO TOPO
-   =========================== */
 function initCardObserver() {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -215,261 +451,7 @@ function criarBotaoVoltarTopo() {
 }
 
 /* ===========================
-   USER MENU (name button + dropdown)
-   - usa classes .user-menu-wrap .user-menu-btn .user-menu-dropdown
-   - suporta múltiplas instâncias (header + área mobile)
-   =========================== */
-function createUserMenuMarkup(user) {
-  const display = (user.displayName || user.email || 'Usuário');
-  const short = display.length > 18 ? display.slice(0,15) + '...' : display;
-  // não usar IDs fixos — use classes e data-menu-id
-  const menuId = 'um-' + Math.random().toString(36).slice(2,8);
-  return `
-    <div class="user-menu-wrap inline-block" data-menu-id="${menuId}">
-      <button class="user-menu-btn bg-slate-800 text-white px-3 py-1 rounded-lg flex items-center gap-2">
-        <img src="${user.photoURL || ''}" alt="" class="w-7 h-7 rounded-full object-cover" />
-        <span class="user-menu-label truncate">${short}</span>
-        <i class="fas fa-chevron-down text-sm"></i>
-      </button>
-      <div class="user-menu-dropdown hidden absolute right-0 mt-2 w-44 bg-slate-900 rounded-md shadow-lg z-50 ring-1 ring-white/5">
-        <button class="user-switch-btn block w-full text-left px-4 py-2 hover:bg-slate-700">Trocar login</button>
-        <button class="user-logout-btn block w-full text-left px-4 py-2 hover:bg-slate-700">Sair</button>
-      </div>
-    </div>
-  `;
-}
-
-function attachUserMenuHandlers() {
-  // anexa handlers para cada .user-menu-wrap
-  document.querySelectorAll('.user-menu-wrap').forEach(wrap => {
-    if (wrap._attached) return;
-    const btn = wrap.querySelector('.user-menu-btn');
-    const dropdown = wrap.querySelector('.user-menu-dropdown');
-    const logoutBtn = wrap.querySelector('.user-logout-btn');
-    const switchBtn = wrap.querySelector('.user-switch-btn');
-
-    if (!btn || !dropdown) { wrap._attached = true; return; }
-    // toggle
-    btn.addEventListener('click', (ev) => {
-      ev.stopPropagation();
-      dropdown.classList.toggle('hidden');
-    });
-    // logout
-    if (logoutBtn) logoutBtn.addEventListener('click', () => {
-      if (firebaseAuth) firebaseAuth.signOut().then(() => { mostrarNotificacao('Você saiu', 'info'); }).catch(err => { console.error('Erro ao sair', err); mostrarNotificacao('Erro ao sair', 'error'); });
-    });
-    // switch login
-    if (switchBtn) switchBtn.addEventListener('click', () => {
-      if (firebaseAuth) {
-        firebaseAuth.signOut().then(() => {
-          setTimeout(() => startGoogleSignIn(), 250);
-        }).catch(err => { console.error('Erro ao trocar login', err); startGoogleSignIn(); });
-      } else startGoogleSignIn();
-    });
-
-    // close on outside click
-    document.addEventListener('click', (e) => {
-      if (!wrap.contains(e.target)) dropdown.classList.add('hidden');
-    });
-    // close on Esc
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') dropdown.classList.add('hidden'); });
-
-    wrap._attached = true;
-  });
-}
-
-/* ===========================
-   AUTH UI (substitui auth-area e login buttons)
-   - usa createUserMenuMarkup + attachUserMenuHandlers
-   =========================== */
-function updateAuthUI(user) {
-  const authArea = document.getElementById('auth-area');
-  const loginBtnMobile = document.getElementById('login-btn-mobile');
-  const loginAction = document.getElementById('login-action');
-  const userNameEl = document.getElementById('user-name');
-
-  if (user) {
-    currentUser = user;
-    if (authArea) {
-      authArea.innerHTML = createUserMenuMarkup(user);
-      attachUserMenuHandlers();
-    }
-    if (loginBtnMobile) loginBtnMobile.style.display = 'none';
-    if (loginAction) {
-      // inserir sem duplicar IDs: cria nova instância
-      const markup = createUserMenuMarkup(user);
-      loginAction.innerHTML = `<div class="inline-block">${markup}</div>`;
-      attachUserMenuHandlers();
-    }
-    if (userNameEl) userNameEl.textContent = user.displayName || user.email || 'Usuário';
-  } else {
-    currentUser = null;
-    if (authArea) {
-      authArea.innerHTML = `<button id="login-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-lg flex items-center space-x-2"><i class="fab fa-google"></i><span>Login</span></button>`;
-      const lbtn = document.getElementById('login-btn');
-      if (lbtn) lbtn.addEventListener('click', startGoogleSignIn);
-    }
-    if (loginBtnMobile) {
-      loginBtnMobile.style.display = 'inline-flex';
-      loginBtnMobile.addEventListener('click', startGoogleSignIn);
-    }
-    if (loginAction) {
-      loginAction.innerHTML = `<button id="login-action-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-lg">Entrar com Google</button>`;
-      const actionBtn = document.getElementById('login-action-btn');
-      if (actionBtn) actionBtn.addEventListener('click', startGoogleSignIn);
-    }
-    if (userNameEl) userNameEl.textContent = 'Você não está conectado';
-  }
-}
-
-/* ===========================
-   LOGIN (popup + redirect fallback)
-   =========================== */
-function setLoginButtonLoading(loading = true) {
-  const btn = document.querySelector('#auth-area button, #login-btn, #login-btn-mobile, #login-action-btn');
-  if (!btn) return;
-  if (loading) { btn.dataset._orig = btn.innerHTML; btn.disabled = true; btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Aguarde...`; }
-  else { btn.disabled = false; if (btn.dataset._orig) btn.innerHTML = btn.dataset._orig; }
-}
-
-function startGoogleSignIn() {
-  if (typeof firebase === 'undefined' || !firebase.auth) { mostrarNotificacao('Firebase SDK não carregado.', 'error'); return; }
-  if (!firebaseAuth) firebaseAuth = firebase.auth();
-  setLoginButtonLoading(true);
-  const provider = new firebase.auth.GoogleAuthProvider();
-  firebaseAuth.signInWithPopup(provider)
-    .then(result => { console.log('[signin] success', result.user && result.user.uid); mostrarNotificacao('Logado com sucesso!', 'success'); })
-    .catch(err => {
-      console.error('[signin] popup erro', err);
-      const fallbackCodes = ['auth/popup-blocked', 'auth/popup-closed-by-user', 'auth/cancelled-popup-request'];
-      if (err && err.code && fallbackCodes.includes(err.code)) {
-        mostrarNotificacao('Popup bloqueado/fechado — redirecionando...', 'warning');
-        firebaseAuth.signInWithRedirect(provider);
-        return;
-      }
-      if (err && err.code === 'auth/unauthorized-domain') {
-        mostrarNotificacao('Domínio não autorizado. Adicione em Auth → Authorized domains.', 'error');
-      } else if (err && err.code === 'auth/operation-not-allowed') {
-        mostrarNotificacao('Provedor Google desabilitado no Firebase. Ative em Auth → Sign-in method.', 'error');
-      } else {
-        mostrarNotificacao('Erro ao entrar com Google (veja console).', 'error');
-      }
-    })
-    .finally(() => setLoginButtonLoading(false));
-}
-
-/* ===========================
-   REVIEWS (render scrollable, submit, listen)
-   =========================== */
-let selectedRating = 10;
-
-function renderStarsNumeric(container, selected = 10) {
-  if (!container) return;
-  container.innerHTML = '';
-  for (let i = 1; i <= 10; i++) {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = `px-3 py-1 rounded ${i <= selected ? 'bg-yellow-500 text-slate-900' : 'bg-slate-700 text-slate-300'}`;
-    btn.style.minWidth = '34px';
-    btn.style.marginRight = '6px';
-    btn.title = `${i} de 10`;
-    btn.innerText = i;
-    btn.dataset.value = i;
-    btn.addEventListener('click', () => { selectedRating = i; renderStarsNumeric(container, selectedRating); });
-    container.appendChild(btn);
-  }
-}
-
-async function submitReview() {
-  if (!firebaseAuth || !firebaseDB) { mostrarNotificacao('Firebase não configurado. Não é possível enviar avaliações.', 'error'); return; }
-  const user = firebaseAuth.currentUser;
-  if (!user) { mostrarNotificacao('Faça login com Google para enviar uma avaliação.', 'warning'); return; }
-  const reviewTextEl = document.getElementById('review-text');
-  const text = reviewTextEl ? reviewTextEl.value.trim() : '';
-  if (!text) { mostrarNotificacao('Escreva um comentário antes de enviar.', 'info'); return; }
-
-  const review = { uid: user.uid, name: user.displayName || user.email, photoURL: user.photoURL || '', rating: selectedRating, comment: text, createdAt: firebase.firestore.FieldValue.serverTimestamp() };
-
-  try {
-    await firebaseDB.collection('reviews').add(review);
-    mostrarNotificacao('Avaliação enviada! Obrigado.', 'success');
-    if (reviewTextEl) reviewTextEl.value = '';
-  } catch (err) {
-    console.error('Erro ao enviar review', err);
-    const reviewsListEl = document.getElementById('reviews-list');
-    if (err && err.code === 'permission-denied') {
-      if (reviewsListEl) reviewsListEl.innerHTML = '<div class="text-slate-400">Não foi possível salvar a avaliação (sem permissão).</div>';
-    } else {
-      mostrarNotificacao('Erro ao enviar avaliação (veja console).', 'error');
-    }
-  }
-}
-
-function makeReviewsScrollable(reviewsListEl) {
-  if (!reviewsListEl) return;
-  if (!reviewsListEl.dataset.scrollable) {
-    reviewsListEl.style.maxHeight = '360px';
-    reviewsListEl.style.overflowY = 'auto';
-    reviewsListEl.style.paddingRight = '8px';
-    reviewsListEl.dataset.scrollable = '1';
-  }
-}
-
-function listenReviews() {
-  const reviewsListEl = document.getElementById('reviews-list');
-  const averageRatingEl = document.getElementById('average-rating');
-  if (!reviewsListEl) return;
-  if (!firebaseDB) { reviewsListEl.innerHTML = '<div class="text-red-400">Firestore não configurado.</div>'; return; }
-
-  makeReviewsScrollable(reviewsListEl);
-
-  try {
-    firebaseDB.collection('reviews').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
-      const docs = []; let sum = 0;
-      snapshot.forEach(doc => { const data = doc.data(); docs.push(Object.assign({ id: doc.id }, data)); sum += (data.rating || 0); });
-      const avg = docs.length ? (sum / docs.length).toFixed(1) : '--';
-      if (averageRatingEl) averageRatingEl.textContent = avg;
-      if (!docs.length) { reviewsListEl.innerHTML = '<div class="text-slate-400">Ainda não há avaliações. Seja o primeiro!</div>'; return; }
-      reviewsListEl.innerHTML = '';
-      docs.forEach(d => {
-        const when = d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().toLocaleString() : '';
-        const item = document.createElement('div');
-        item.className = 'bg-slate-900/50 p-4 rounded-lg border border-slate-700/40 mb-3';
-        item.innerHTML = `
-          <div class="flex items-start gap-3">
-            <img src="${d.photoURL || 'https://www.gravatar.com/avatar/?d=mp'}" alt="${d.name || 'Usuário'}" class="w-12 h-12 rounded-full object-cover" />
-            <div class="flex-1">
-              <div class="flex items-center justify-between">
-                <div>
-                  <div class="font-semibold">${d.name || 'Usuário'}</div>
-                  <div class="text-sm text-slate-400">${when}</div>
-                </div>
-                <div class="text-yellow-400 font-bold">${d.rating || 0} / 10</div>
-              </div>
-              <p class="mt-2 text-slate-300">${d.comment || ''}</p>
-            </div>
-          </div>
-        `;
-        reviewsListEl.appendChild(item);
-      });
-    }, err => {
-      console.error('Erro onSnapshot reviews', err);
-      if (err && err.code === 'permission-denied') {
-        const isLogged = !!(firebaseAuth && firebaseAuth.currentUser);
-        if (isLogged) { reviewsListEl.innerHTML = '<div class="text-slate-400">Sem permissão para ver avaliações.</div>'; }
-        else { reviewsListEl.innerHTML = '<div class="text-slate-400">Faça login para ver avaliações.</div>'; }
-        return;
-      }
-      reviewsListEl.innerHTML = '<div class="text-red-400">Erro ao carregar avaliações.</div>';
-    });
-  } catch (e) {
-    console.error('listenReviews exception', e);
-    reviewsListEl.innerHTML = '<div class="text-red-400">Erro ao carregar avaliações.</div>';
-  }
-}
-
-/* ===========================
-   Prevenção clique duplo
+   CLICK PREVENT DOUBLE
    =========================== */
 let clickPrevenido = false;
 document.addEventListener('click', (e) => {
@@ -484,7 +466,6 @@ document.addEventListener('click', (e) => {
 
 /* ===========================
    INICIALIZAÇÃO (DOMContentLoaded)
-   - executa somente depois de todas as funções serem definidas
    =========================== */
 document.addEventListener('DOMContentLoaded', () => {
   try {
@@ -495,17 +476,14 @@ document.addEventListener('DOMContentLoaded', () => {
     initCardObserver();
     initLazyImages();
     criarBotaoVoltarTopo();
-    criarBarraBusca();
-
-    // rating UI
+    criarBarraBusca && criarBarraBusca(); // if exists in page
+    // rating widget
     const ratingContainer = document.getElementById('rating-stars');
     if (ratingContainer) renderStarsNumeric(ratingContainer, selectedRating);
-
-    // conecta submit review
+    // connect submit
     const submitBtn = document.getElementById('submit-review');
     if (submitBtn) submitBtn.addEventListener('click', submitReview);
-
-    // conecta login buttons (existentes)
+    // connect login fallback buttons
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) loginBtn.addEventListener('click', startGoogleSignIn);
     const loginBtnMobile = document.getElementById('login-btn-mobile');
@@ -513,20 +491,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginAction = document.getElementById('login-action');
     if (loginAction) loginAction.addEventListener('click', startGoogleSignIn);
 
-    // iniciar escuta de reviews
+    // start listening reviews (Firestore or local)
     listenReviews();
 
-    // attach any user menus created by initial updateAuthUI
+    // attach any user menus rendered by updateAuthUI
     attachUserMenuHandlers();
 
-    console.log('[script] inicialização completa (corrigido)');
+    console.log('[script] inicialização completa (fixes applied)');
   } catch (e) {
-    console.error('[script] erro na inicialização:', e);
+    console.error('[script] init error', e);
   }
 });
 
 /* ===========================
-   Debug helpers
+   DEBUG HELPERS
    =========================== */
 window.debugFirebase = function() {
   if (typeof firebase === 'undefined') { console.log('Firebase não definido'); return; }
