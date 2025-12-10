@@ -7,14 +7,20 @@ const firebaseConfig = {
     appId: "1:623047073166:web:83d31c6c017b2e70af58df"
 };
 
-const WHATSAPP_PHONE = '5551997395967';
+const WHATSAPP_PHONE = '5551997395967'; // Ajustado para o número do index.html
 
 /* ===========================
-   RUNTIME VARIABLES
+   RUNTIME/AUTH VARIABLES
    =========================== */
 let firebaseAuth = null;
 let firebaseDB = null;
 let currentUser = null;
+
+// Variáveis para Paginação
+let selectedRating = 10;
+let lastReviewSnapshot = null;
+const PAGE_SIZE = 5;
+
 
 /* ===========================
    UTIL: Notificações
@@ -50,6 +56,7 @@ function mostrarNotificacao(mensagem, tipo = 'info') {
 }
 window.mostrarNotificacao = mostrarNotificacao;
 
+
 /* ===========================
    Inicializa Firebase (modo compat)
    =========================== */
@@ -71,7 +78,6 @@ window.mostrarNotificacao = mostrarNotificacao;
             console.log('[auth] onAuthStateChanged, uid=', user ? user.uid : null);
         });
 
-        // Handle redirect result (if redirect fallback used)
         firebaseAuth.getRedirectResult().then(result => {
             if (result && result.user) {
                 console.log('[auth] getRedirectResult user logged via redirect:', result.user.uid);
@@ -262,22 +268,33 @@ function criarBarraBusca() {
 }
 
 /* ===========================
-   LOGIN / AUTH UI
+   LOGIN / AUTH UI (Novo Dropdown)
    =========================== */
-function setLoginButtonLoading(loading = true) {
-    const btn = document.querySelector('#auth-area button, #login-btn, #login-btn-mobile, #login-action-btn');
-    if (!btn) return;
-    if (loading) {
-        btn.dataset._orig = btn.innerHTML;
-        btn.disabled = true;
-        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Aguarde...`;
-    } else {
-        btn.disabled = false;
-        if (btn.dataset._orig) btn.innerHTML = btn.dataset._orig;
-    }
+const userMenuBtn = document.getElementById('user-menu-btn');
+const userDropdown = document.getElementById('user-dropdown');
+const userDisplayNameSpan = document.getElementById('user-display-name');
+const loginBtnMobile = document.getElementById('login-btn-mobile');
+const logoutBtn = document.getElementById('logout-btn');
+const switchLoginBtn = document.getElementById('switch-login-btn');
+const loginAction = document.getElementById('login-action'); 
+
+
+function setAuthButtonsLoading(loading = true) {
+    const btns = [userMenuBtn, loginBtnMobile, document.getElementById('login-action-btn'), document.getElementById('logout-action')];
+    btns.forEach(btn => {
+        if (!btn) return;
+        if (loading) {
+            btn.dataset._orig = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Aguarde...`;
+        } else {
+            btn.disabled = false;
+            if (btn.dataset._orig) btn.innerHTML = btn.dataset._orig;
+        }
+    });
 }
 
-function startGoogleSignIn() {
+function startGoogleSignIn(forceReauth = false) {
     console.log('[signin] startGoogleSignIn called');
     if (typeof firebase === 'undefined' || !firebase.auth) {
         mostrarNotificacao('Firebase SDK não carregado.', 'error');
@@ -285,8 +302,12 @@ function startGoogleSignIn() {
     }
     if (!firebaseAuth) firebaseAuth = firebase.auth();
 
-    setLoginButtonLoading(true);
+    setAuthButtonsLoading(true);
     const provider = new firebase.auth.GoogleAuthProvider();
+    if (forceReauth) {
+        // Força a reautenticação para mostrar a tela de seleção de conta (Trocar Login)
+        provider.setCustomParameters({ prompt: 'select_account' }); 
+    }
 
     firebaseAuth.signInWithPopup(provider)
       .then(result => {
@@ -309,59 +330,95 @@ function startGoogleSignIn() {
           mostrarNotificacao('Erro ao entrar com Google (veja console).', 'error');
         }
       })
-      .finally(() => setLoginButtonLoading(false));
+      .finally(() => setAuthButtonsLoading(false));
+}
+
+function toggleUserDropdown() {
+    if (!currentUser) { // Se não logado, clica para logar
+        startGoogleSignIn();
+        return;
+    }
+    userDropdown.classList.toggle('hidden');
+    if (!userDropdown.classList.contains('hidden')) {
+        document.addEventListener('click', closeUserDropdownOutside, true);
+    } else {
+        document.removeEventListener('click', closeUserDropdownOutside, true);
+    }
+}
+
+function closeUserDropdown() {
+    if(userDropdown) userDropdown.classList.add('hidden');
+    document.removeEventListener('click', closeUserDropdownOutside, true);
+}
+
+function closeUserDropdownOutside(event) {
+    if (userMenuBtn && !userMenuBtn.contains(event.target) && userDropdown && !userDropdown.contains(event.target)) {
+        closeUserDropdown();
+    }
 }
 
 function updateAuthUI(user) {
-    const authArea = document.getElementById('auth-area');
-    const loginBtnMobile = document.getElementById('login-btn-mobile');
-    const loginAction = document.getElementById('login-action');
+    currentUser = user;
     const userNameEl = document.getElementById('user-name');
-
+    
     if (user) {
-        currentUser = user;
-        if (authArea) {
-            authArea.innerHTML = `
-                <img src="${user.photoURL || ''}" alt="${user.displayName || ''}" class="w-9 h-9 rounded-full border border-slate-700 shadow-sm" title="${user.displayName || 'Usuário'}" />
-                <button id="logout-btn" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded-lg">Sair</button>
+        // Desktop Header Button/Dropdown
+        if (userMenuBtn) {
+            const shortName = user.displayName ? user.displayName.split(' ')[0] : (user.email || 'Usuário');
+            userMenuBtn.innerHTML = `
+                <img src="${user.photoURL || 'https://www.gravatar.com/avatar/?d=mp'}" alt="${user.displayName || 'Usuário'}" class="w-6 h-6 rounded-full border border-slate-700 shadow-sm" />
+                <span id="user-display-name">${shortName}</span>
+                <i class="fas fa-chevron-down text-xs ml-1"></i>
             `;
-            const outBtn = document.getElementById('logout-btn');
-            if (outBtn) outBtn.addEventListener('click', () => firebaseAuth.signOut());
+            userMenuBtn.classList.remove('bg-indigo-600', 'hover:bg-indigo-500');
+            userMenuBtn.classList.add('bg-slate-700', 'hover:bg-slate-600');
         }
+        
+        // Mobile Login Button (Esconde)
         if (loginBtnMobile) loginBtnMobile.style.display = 'none';
-        if (loginAction) loginAction.innerHTML = `<button id="logout-action" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded-lg">Sair</button>`;
-        if (document.getElementById('logout-action')) {
-            document.getElementById('logout-action').addEventListener('click', () => firebaseAuth.signOut());
+
+        // Avaliações Section
+        if (loginAction) {
+            const logoutActionBtn = document.createElement('button');
+            logoutActionBtn.id = 'logout-action';
+            logoutActionBtn.className = 'bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded-lg transition-colors';
+            logoutActionBtn.innerHTML = 'Sair';
+            logoutActionBtn.addEventListener('click', () => firebaseAuth.signOut());
+            loginAction.innerHTML = '';
+            loginAction.appendChild(logoutActionBtn);
         }
-        if (userNameEl) userNameEl.textContent = user.displayName || user.email || 'Usuário';
+        if (userNameEl) userNameEl.textContent = `Logado como: ${user.displayName || user.email || 'Usuário'}`;
+
     } else {
-        currentUser = null;
-        if (authArea) {
-            authArea.innerHTML = `
-                <button id="login-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-lg flex items-center space-x-2">
-                    <i class="fab fa-google"></i><span>Login</span>
-                </button>
-            `;
-            const lbtn = document.getElementById('login-btn');
-            if (lbtn) lbtn.addEventListener('click', startGoogleSignIn);
+        // Desktop Header Button/Dropdown
+        if (userMenuBtn) {
+            userMenuBtn.innerHTML = `<i class="fab fa-google"></i><span id="user-display-name">Login</span>`;
+            userMenuBtn.classList.remove('bg-slate-700', 'hover:bg-slate-600');
+            userMenuBtn.classList.add('bg-indigo-600', 'hover:bg-indigo-500');
+            closeUserDropdown();
         }
-        if (loginBtnMobile) {
-            loginBtnMobile.style.display = 'inline-flex';
-            loginBtnMobile.addEventListener('click', startGoogleSignIn);
-        }
-        if (loginAction) loginAction.innerHTML = `<button id="login-action-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-lg">Entrar com Google</button>`;
-        if (document.getElementById('login-action-btn')) {
-            document.getElementById('login-action-btn').addEventListener('click', startGoogleSignIn);
+
+        // Mobile Login Button (Mostra)
+        if (loginBtnMobile) loginBtnMobile.style.display = 'inline-flex';
+
+        // Avaliações Section
+        if (loginAction) {
+            const loginActionBtn = document.createElement('button');
+            loginActionBtn.id = 'login-action-btn';
+            loginActionBtn.className = 'bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-lg transition-colors';
+            loginActionBtn.innerHTML = 'Entrar com Google';
+            loginActionBtn.addEventListener('click', startGoogleSignIn);
+            loginAction.innerHTML = '';
+            loginAction.appendChild(loginActionBtn);
         }
         if (userNameEl) userNameEl.textContent = 'Você não está conectado';
     }
 }
 
-/* ===========================
-   REVIEWS: UI e Firestore
-   =========================== */
-let selectedRating = 10;
 
+/* ===========================
+   REVIEWS: UI e Firestore (com Paginação)
+   =========================== */
 function renderStarsNumeric(container, selected = 10) {
     if (!container) return;
     container.innerHTML = '';
@@ -409,6 +466,9 @@ async function submitReview() {
         await firebaseDB.collection('reviews').add(review);
         mostrarNotificacao('Avaliação enviada! Obrigado.', 'success');
         if (reviewTextEl) reviewTextEl.value = '';
+        
+        // Recarrega a primeira página para mostrar a nova avaliação
+        fetchReviews(null, PAGE_SIZE, true); 
     } catch (err) {
         console.error('Erro ao enviar avaliação:', err);
         if (err && err.code === 'permission-denied') {
@@ -419,58 +479,133 @@ async function submitReview() {
     }
 }
 
-function listenReviews() {
+
+function setupReviewPaginationUI() {
     const reviewsListEl = document.getElementById('reviews-list');
-    const averageRatingEl = document.getElementById('average-rating');
-    if (!firebaseDB) {
-        if (reviewsListEl) reviewsListEl.innerHTML = '<div class="text-red-400">Firestore não configurado.</div>';
+    if (!reviewsListEl) return;
+    
+    let loadMoreBtn = document.getElementById('load-more-reviews');
+    if (!loadMoreBtn) {
+        loadMoreBtn = document.createElement('button');
+        loadMoreBtn.id = 'load-more-reviews';
+        loadMoreBtn.className = 'w-full bg-slate-700 hover:bg-slate-600 text-white px-4 py-3 rounded-lg font-semibold mt-4 hidden transition-all duration-300';
+        loadMoreBtn.innerHTML = '<i class="fas fa-arrow-down"></i> Carregar Mais Avaliações';
+        loadMoreBtn.addEventListener('click', loadMoreReviews);
+        reviewsListEl.parentNode.appendChild(loadMoreBtn);
+    }
+}
+
+function renderReviews(docs, isFirstLoad = true) {
+    const reviewsListEl = document.getElementById('reviews-list');
+    if (!reviewsListEl) return;
+    
+    if (isFirstLoad) {
+        reviewsListEl.innerHTML = '';
+    }
+    
+    if (!docs.length && isFirstLoad) {
+        reviewsListEl.innerHTML = '<div class="text-slate-400 text-center">Ainda não há avaliações. Seja o primeiro!</div>'; 
         return;
     }
-    try {
-        firebaseDB.collection('reviews').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
-            const docs = [];
-            let sum = 0;
-            snapshot.forEach(doc => {
-                const data = doc.data();
-                docs.push(Object.assign({ id: doc.id }, data));
-                sum += (data.rating || 0);
-            });
-            const avg = docs.length ? (sum / docs.length).toFixed(1) : '--';
-            if (averageRatingEl) averageRatingEl.textContent = avg;
-            if (!reviewsListEl) return;
-            if (!docs.length) { reviewsListEl.innerHTML = '<div class="text-slate-400">Ainda não há avaliações. Seja o primeiro!</div>'; return; }
-            reviewsListEl.innerHTML = '';
-            docs.forEach(d => {
-                const when = d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().toLocaleString() : '';
-                const item = document.createElement('div');
-                item.className = 'bg-slate-900/50 p-4 rounded-lg border border-slate-700/40';
-                item.innerHTML = `
-                    <div class="flex items-start gap-3">
-                        <img src="${d.photoURL || 'https://www.gravatar.com/avatar/?d=mp'}" alt="${d.name || 'Usuário'}" class="w-12 h-12 rounded-full object-cover" />
-                        <div class="flex-1">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <div class="font-semibold">${d.name || 'Usuário'}</div>
-                                    <div class="text-sm text-slate-400">${when}</div>
-                                </div>
-                                <div class="text-yellow-400 font-bold">${d.rating || 0} / 10</div>
-                            </div>
-                            <p class="mt-2 text-slate-300">${d.comment || ''}</p>
+
+    docs.forEach(d => {
+        if (document.getElementById(`review-${d.id}`)) return; 
+        
+        const when = d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().toLocaleString() : '';
+        const item = document.createElement('div');
+        item.id = `review-${d.id}`; 
+        item.className = 'bg-slate-900/50 p-4 rounded-lg border border-slate-700/40';
+        item.innerHTML = `
+            <div class="flex items-start gap-3">
+                <img src="${d.photoURL || 'https://www.gravatar.com/avatar/?d=mp'}" alt="${d.name || 'Usuário'}" class="w-12 h-12 rounded-full object-cover" />
+                <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="font-semibold">${d.name || 'Usuário'}</div>
+                            <div class="text-sm text-slate-400">${when}</div>
                         </div>
+                        <div class="text-yellow-400 font-bold">${d.rating || 0} / 10</div>
                     </div>
-                `;
-                reviewsListEl.appendChild(item);
-            });
-        }, err => {
-            console.error('Erro ao ler reviews (onSnapshot):', err);
-            if (reviewsListEl) reviewsListEl.innerHTML = '<div class="text-red-400">Erro ao carregar avaliações.</div>';
-            if (err && err.code === 'permission-denied') {
-                mostrarNotificacao('Permissão negada ao ler avaliações. Ajuste as regras do Firestore.', 'error');
-            }
-        });
-    } catch (e) {
-        console.error('listenReviews exception:', e);
+                    <p class="mt-2 text-slate-300">${d.comment || ''}</p>
+                </div>
+            </div>
+        `;
+        reviewsListEl.appendChild(item);
+    });
+}
+
+function updateAverageRating(docs) {
+    const averageRatingEl = document.getElementById('average-rating');
+    const sum = docs.reduce((acc, d) => acc + (d.rating || 0), 0);
+    const avg = docs.length ? (sum / docs.length).toFixed(1) : '--';
+    if (averageRatingEl) averageRatingEl.textContent = avg;
+}
+
+async function fetchReviews(startAfterDoc = null, limit = PAGE_SIZE, isFirstLoad = true) {
+    const reviewsListEl = document.getElementById('reviews-list');
+    const loadMoreBtn = document.getElementById('load-more-reviews');
+    if (!firebaseDB) {
+        if (reviewsListEl) reviewsListEl.innerHTML = '<div class="text-red-400 text-center">Firestore não configurado.</div>';
+        return;
     }
+    
+    if(loadMoreBtn) { loadMoreBtn.disabled = true; loadMoreBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Carregando...'; }
+    if (isFirstLoad && reviewsListEl) reviewsListEl.innerHTML = '<div class="text-slate-400 text-center">Carregando avaliações...</div>';
+    
+    try {
+        let query = firebaseDB.collection('reviews').orderBy('createdAt', 'desc');
+        if (startAfterDoc) query = query.startAfter(startAfterDoc);
+        query = query.limit(limit);
+
+        const snapshot = await query.get();
+        const docs = [];
+        snapshot.forEach(doc => docs.push(Object.assign({ id: doc.id }, doc.data())));
+        
+        lastReviewSnapshot = snapshot.docs[snapshot.docs.length - 1];
+
+        renderReviews(docs, isFirstLoad);
+        
+        if (isFirstLoad) {
+            // Tenta carregar todos os documentos para o cálculo da média
+            // Se falhar por permissão, a média fica em '--'
+            try {
+                const allDocsSnapshot = await firebaseDB.collection('reviews').get();
+                const allDocs = [];
+                allDocsSnapshot.forEach(doc => allDocs.push(Object.assign({ id: doc.id }, doc.data())));
+                updateAverageRating(allDocs);
+            } catch (e) {
+                console.warn('[Reviews] Não foi possível calcular a média total. Possível erro de permissão para ler todos os documentos.', e);
+                updateAverageRating([]);
+            }
+        }
+
+        if (loadMoreBtn) {
+            if (docs.length < PAGE_SIZE) {
+                loadMoreBtn.classList.add('hidden');
+                loadMoreBtn.innerHTML = 'Fim das Avaliações';
+            } else {
+                loadMoreBtn.classList.remove('hidden');
+                loadMoreBtn.innerHTML = '<i class="fas fa-arrow-down"></i> Carregar Mais Avaliações';
+            }
+            loadMoreBtn.disabled = false;
+        }
+
+    } catch (err) {
+        console.error('Erro ao ler avaliações (fetchReviews):', err);
+        // Suprime a notificação de erro, mas mantém a mensagem no console.
+        if (reviewsListEl && isFirstLoad) {
+            reviewsListEl.innerHTML = '<div class="text-slate-400 text-center">Avaliações não puderam ser carregadas. (Pode haver restrições de permissão).</div>';
+        }
+        if(loadMoreBtn) { loadMoreBtn.classList.add('hidden'); loadMoreBtn.disabled = false; }
+    }
+}
+
+function loadMoreReviews() {
+    fetchReviews(lastReviewSnapshot, PAGE_SIZE, false);
+}
+
+function listenReviews() {
+    // Função original substituída pela implementação com paginação (fetchReviews)
 }
 
 /* ===========================
@@ -508,16 +643,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitBtn = document.getElementById('submit-review');
     if (submitBtn) submitBtn.addEventListener('click', submitReview);
 
-    // conecta login buttons (fallbacks)
-    const loginBtn = document.getElementById('login-btn');
-    if (loginBtn) loginBtn.addEventListener('click', startGoogleSignIn);
-    const loginBtnMobile = document.getElementById('login-btn-mobile');
+    // Conecta eventos do Dropdown
+    if (userMenuBtn) userMenuBtn.addEventListener('click', toggleUserDropdown);
+    if (logoutBtn) logoutBtn.addEventListener('click', (e) => { e.preventDefault(); closeUserDropdown(); firebaseAuth.signOut(); });
+    if (switchLoginBtn) switchLoginBtn.addEventListener('click', (e) => { e.preventDefault(); closeUserDropdown(); startGoogleSignIn(true); });
     if (loginBtnMobile) loginBtnMobile.addEventListener('click', startGoogleSignIn);
-    const loginAction = document.getElementById('login-action');
-    if (loginAction) loginAction.addEventListener('click', startGoogleSignIn);
 
-    // start listening reviews (realtime)
-    listenReviews();
+    // start fetching reviews (paginated)
+    setupReviewPaginationUI();
+    fetchReviews(null, PAGE_SIZE, true); 
 
     console.log('[script] inicialização completa');
 });
