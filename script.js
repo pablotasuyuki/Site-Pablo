@@ -7,7 +7,7 @@ const firebaseConfig = {
     appId: "1:623047073166:web:83d31c6c017b2e70af58df"
 };
 
-const WHATSAPP_PHONE = '5551997395967'; // Ajustado para o número do index.html
+const WHATSAPP_PHONE = '5551997395967';
 
 /* ===========================
    RUNTIME/AUTH VARIABLES
@@ -276,10 +276,12 @@ const userDisplayNameSpan = document.getElementById('user-display-name');
 const loginBtnMobile = document.getElementById('login-btn-mobile');
 const logoutBtn = document.getElementById('logout-btn');
 const switchLoginBtn = document.getElementById('switch-login-btn');
-const loginAction = document.getElementById('login-action'); 
+// Div que contém o botão de Login/Logout na seção Avaliações
+const loginAction = document.getElementById('user-actions'); 
 
 
 function setAuthButtonsLoading(loading = true) {
+    // Busca todos os botões de ação de login/logout por ID
     const btns = [userMenuBtn, loginBtnMobile, document.getElementById('login-action-btn'), document.getElementById('logout-action')];
     btns.forEach(btn => {
         if (!btn) return;
@@ -377,20 +379,24 @@ function updateAuthUI(user) {
         // Mobile Login Button (Esconde)
         if (loginBtnMobile) loginBtnMobile.style.display = 'none';
 
-        // Avaliações Section
-        if (loginAction) {
+        // Avaliações Section (Substitui Login por Sair)
+        if (loginAction) { 
             const logoutActionBtn = document.createElement('button');
             logoutActionBtn.id = 'logout-action';
             logoutActionBtn.className = 'bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded-lg transition-colors';
             logoutActionBtn.innerHTML = 'Sair';
             logoutActionBtn.addEventListener('click', () => firebaseAuth.signOut());
-            loginAction.innerHTML = '';
-            loginAction.appendChild(logoutActionBtn);
+            
+            // Remove qualquer botão antigo e adiciona o novo
+            loginAction.innerHTML = ''; 
+            loginAction.appendChild(logoutActionBtn); 
         }
+        
+        // Atualiza o nome de usuário/status na seção de avaliações
         if (userNameEl) userNameEl.textContent = `Logado como: ${user.displayName || user.email || 'Usuário'}`;
 
     } else {
-        // Desktop Header Button/Dropdown
+        // Desktop Header Button/Dropdown (Volta para Login)
         if (userMenuBtn) {
             userMenuBtn.innerHTML = `<i class="fab fa-google"></i><span id="user-display-name">Login</span>`;
             userMenuBtn.classList.remove('bg-slate-700', 'hover:bg-slate-600');
@@ -401,16 +407,20 @@ function updateAuthUI(user) {
         // Mobile Login Button (Mostra)
         if (loginBtnMobile) loginBtnMobile.style.display = 'inline-flex';
 
-        // Avaliações Section
+        // Avaliações Section (Volta para Login)
         if (loginAction) {
             const loginActionBtn = document.createElement('button');
             loginActionBtn.id = 'login-action-btn';
             loginActionBtn.className = 'bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-lg transition-colors';
             loginActionBtn.innerHTML = 'Entrar com Google';
             loginActionBtn.addEventListener('click', startGoogleSignIn);
-            loginAction.innerHTML = '';
+            
+            // Remove qualquer botão antigo e adiciona o novo
+            loginAction.innerHTML = ''; 
             loginAction.appendChild(loginActionBtn);
         }
+        
+        // Atualiza o nome de usuário/status na seção de avaliações
         if (userNameEl) userNameEl.textContent = 'Você não está conectado';
     }
 }
@@ -567,7 +577,6 @@ async function fetchReviews(startAfterDoc = null, limit = PAGE_SIZE, isFirstLoad
         
         if (isFirstLoad) {
             // Tenta carregar todos os documentos para o cálculo da média
-            // Se falhar por permissão, a média fica em '--'
             try {
                 const allDocsSnapshot = await firebaseDB.collection('reviews').get();
                 const allDocs = [];
