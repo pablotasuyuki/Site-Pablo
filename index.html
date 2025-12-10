@@ -1,25 +1,25 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="description" content="Serviços profissionais de TI, Programação e Desenvolvimento. Manutenção, suporte técnico, desenvolvimento de software e mais.">
     <title>Serviços de TI - Pablo Tasuyuki</title>
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-    
+
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white font-['Inter']">
-    
+
     <!-- Header/Navigation -->
     <header class="fixed w-full top-0 z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-700/50 shadow-lg">
         <nav class="container mx-auto px-4 py-4">
@@ -35,31 +35,48 @@
                         <p class="text-xs text-slate-400">Serviços de TI & Desenvolvimento</p>
                     </div>
                 </div>
-                
+
                 <div class="hidden md:flex items-center space-x-6">
                     <a href="#sobre" class="text-slate-300 hover:text-cyan-400 transition-colors duration-300">Sobre</a>
                     <a href="#servicos-externos" class="text-slate-300 hover:text-cyan-400 transition-colors duration-300">Serviços Externos</a>
                     <a href="#servicos-internos" class="text-slate-300 hover:text-cyan-400 transition-colors duration-300">Serviços Internos</a>
                     <a href="#contato" class="text-slate-300 hover:text-cyan-400 transition-colors duration-300">Contato</a>
+                    <a href="#avaliacoes" class="text-slate-300 hover:text-cyan-400 transition-colors duration-300">Avaliações</a>
                 </div>
-                
-                <a href="https://api.whatsapp.com/send?phone=5551997395967&text=Olá!%20Tenho%20interesse%20nos%20seus%20serviços%20de%20TI." 
-                   class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-105">
-                    <i class="fab fa-whatsapp text-xl"></i>
-                    <span class="hidden sm:inline font-semibold">51 9 9739-5967</span>
-                </a>
-                
-                <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-cyan-400">
-                    <i class="fas fa-bars text-2xl"></i>
-                </button>
+
+                <div class="flex items-center space-x-3">
+                    <div id="auth-area" class="hidden md:flex items-center space-x-3">
+                        <button id="login-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-lg flex items-center space-x-2 transition-all duration-300 shadow-sm">
+                            <i class="fab fa-google"></i>
+                            <span>Login</span>
+                        </button>
+                    </div>
+
+                    <a id="whatsapp-top" href="https://api.whatsapp.com/send?phone=5551997395967&text=Olá!%20Tenho%20interesse%20nos%20seus%20serviços%20de%20TI." 
+                       class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-105">
+                        <i class="fab fa-whatsapp text-xl"></i>
+                        <span class="hidden sm:inline font-semibold">51 9 9739-5967</span>
+                    </a>
+
+                    <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-cyan-400">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
             </div>
-            
+
             <!-- Mobile Menu -->
             <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 space-y-3">
                 <a href="#sobre" class="block text-slate-300 hover:text-cyan-400 transition-colors duration-300">Sobre</a>
                 <a href="#servicos-externos" class="block text-slate-300 hover:text-cyan-400 transition-colors duration-300">Serviços Externos</a>
                 <a href="#servicos-internos" class="block text-slate-300 hover:text-cyan-400 transition-colors duration-300">Serviços Internos</a>
                 <a href="#contato" class="block text-slate-300 hover:text-cyan-400 transition-colors duration-300">Contato</a>
+                <a href="#avaliacoes" class="block text-slate-300 hover:text-cyan-400 transition-colors duration-300">Avaliações</a>
+                <div class="pt-2">
+                    <button id="login-btn-mobile" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg flex items-center justify-center space-x-2">
+                        <i class="fab fa-google"></i>
+                        <span>Login</span>
+                    </button>
+                </div>
             </div>
         </nav>
     </header>
@@ -98,7 +115,7 @@
                 </h2>
                 <div class="w-24 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 mx-auto rounded-full"></div>
             </div>
-            
+
             <div class="bg-slate-900/50 backdrop-blur-sm rounded-2xl p-8 md:p-12 shadow-2xl border border-slate-700/50">
                 <div class="flex flex-col md:flex-row items-center gap-8">
                     <div class="w-32 h-32 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center shadow-2xl">
@@ -107,16 +124,16 @@
                     <div class="flex-1 text-center md:text-left">
                         <h3 class="text-2xl font-bold mb-4 text-cyan-400">Pablo Tasuyuki</h3>
                         <p class="text-slate-300 text-lg leading-relaxed mb-6">
-                            Profissional especializado em TI, Programação e Desenvolvimento de Software. 
-                            Oferecendo soluções completas para empresas e usuários domésticos, desde suporte técnico 
+                            Profissional especializado em TI, Programação e Desenvolvimento de Software.
+                            Oferecendo soluções completas para empresas e usuários domésticos, desde suporte técnico
                             até desenvolvimento de sistemas personalizados.
                         </p>
                         <div class="flex justify-center md:justify-start space-x-4">
-                            <a href="https://www.instagram.com/pablo_tasuyuki/" target="_blank" 
+                            <a href="https://www.instagram.com/pablo_tasuyuki/" target="_blank"
                                class="w-12 h-12 bg-gradient-to-br from-pink-600 to-purple-600 rounded-lg flex items-center justify-center hover:scale-110 transition-transform duration-300 shadow-lg hover:shadow-pink-500/50">
                                 <i class="fab fa-instagram text-white text-xl"></i>
                             </a>
-                            <a href="https://www.linkedin.com/in/tasuyuki-pablo-a1360b3a0/" target="_blank" 
+                            <a href="https://www.linkedin.com/in/tasuyuki-pablo-a1360b3a0/" target="_blank"
                                class="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center hover:scale-110 transition-transform duration-300 shadow-lg hover:shadow-blue-500/50">
                                 <i class="fab fa-linkedin text-white text-xl"></i>
                             </a>
@@ -142,7 +159,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Acesso Remoto -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-desktop text-white text-2xl"></i>
@@ -157,15 +174,15 @@
                         </div>
                         <p class="text-slate-400 text-sm">Adicional: R$ 40,00/h</p>
                     </div>
-                    <button onclick="solicitarServico('Acesso Remoto (1h)')" 
-                            class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-cyan-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Acesso Remoto (1h)"
+                            class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Atendimento Técnico Externo -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-tools text-white text-2xl"></i>
@@ -180,15 +197,15 @@
                         </div>
                         <p class="text-slate-400 text-sm">Adicional: R$ 60,00/h</p>
                     </div>
-                    <button onclick="solicitarServico('Atendimento Técnico Externo (1h)')" 
-                            class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-blue-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Atendimento Técnico Externo (1h)"
+                            class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Acesso Remoto para Servidor -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-server text-white text-2xl"></i>
@@ -203,15 +220,15 @@
                         </div>
                         <p class="text-slate-400 text-sm">Adicional: R$ 80,00/h</p>
                     </div>
-                    <button onclick="solicitarServico('Acesso Remoto para Servidor (1h)')" 
-                            class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-purple-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Acesso Remoto para Servidor (1h)"
+                            class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Solicitação Específica -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-teal-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-lightbulb text-white text-2xl"></i>
@@ -225,15 +242,15 @@
                             <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Solicitação Específica')" 
-                            class="w-full bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-500 hover:to-teal-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-cyan-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Solicitação Específica"
+                            class="w-full bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-500 hover:to-teal-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Orçamento
                     </button>
                 </div>
 
                 <!-- Busca/Entrega -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-shipping-fast text-white text-2xl"></i>
@@ -246,15 +263,15 @@
                             <span class="text-3xl font-bold text-green-400">R$ 30,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Busca/Entrega')" 
-                            class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-green-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Busca/Entrega"
+                            class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Busca/Entrega/Instalação -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-truck-loading text-white text-2xl"></i>
@@ -267,15 +284,15 @@
                             <span class="text-3xl font-bold text-emerald-400">R$ 80,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Busca/Entrega/Instalação Física Computadores')" 
-                            class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-emerald-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Busca/Entrega/Instalação Física Computadores"
+                            class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Instalação de Apps/Jogos Externo -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-gamepad text-white text-2xl"></i>
@@ -289,15 +306,15 @@
                         </div>
                         <p class="text-slate-400 text-sm">Adicional: R$ 30,00</p>
                     </div>
-                    <button onclick="solicitarServico('Instalação de Apps/Jogos (Externo)')" 
-                            class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-indigo-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Instalação de Apps/Jogos (Externo)"
+                            class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Backup em Nuvem -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-sky-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-cloud-upload-alt text-white text-2xl"></i>
@@ -311,15 +328,15 @@
                             <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Backup em Nuvem')" 
-                            class="w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-sky-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Backup em Nuvem"
+                            class="w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Orçamento
                     </button>
                 </div>
 
                 <!-- Serviços de Rede -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-network-wired text-white text-2xl"></i>
@@ -333,15 +350,15 @@
                             <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Serviços de Rede, Reestruturação e Cabeamento')" 
-                            class="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-orange-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Serviços de Rede, Reestruturação e Cabeamento"
+                            class="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Orçamento
                     </button>
                 </div>
 
                 <!-- Pacotes Conjuntos Externo -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-layer-group text-white text-2xl"></i>
@@ -355,15 +372,15 @@
                             <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Pacotes Conjuntos (Externo)')" 
-                            class="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-violet-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Pacotes Conjuntos (Externo)"
+                            class="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Orçamento
                     </button>
                 </div>
 
                 <!-- Ativação Office 365 -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-file-word text-white text-2xl"></i>
@@ -377,15 +394,15 @@
                             <span class="text-3xl font-bold text-blue-400">R$ 90,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Ativação Office 365 Permanente (Externo)')" 
-                            class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-blue-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Ativação Office 365 Permanente (Externo)"
+                            class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Ativação Windows Externo -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-sky-600 to-blue-700 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fab fa-windows text-white text-2xl"></i>
@@ -399,15 +416,15 @@
                             <span class="text-3xl font-bold text-sky-400">R$ 70,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Ativação Windows Permanente (Externo)')" 
-                            class="w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-sky-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Ativação Windows Permanente (Externo)"
+                            class="w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Antivírus Endpoint -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-shield-virus text-white text-2xl"></i>
@@ -421,8 +438,8 @@
                             <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Antivírus Endpoint')" 
-                            class="w-full bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-red-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Antivírus Endpoint"
+                            class="w-full bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Orçamento
                     </button>
@@ -446,7 +463,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Backup de Dados -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-hdd text-white text-2xl"></i>
@@ -459,15 +476,15 @@
                             <span class="text-3xl font-bold text-cyan-400">R$ 70,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Backup de Dados')" 
-                            class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-cyan-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Backup de Dados"
+                            class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Formatação -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-sync-alt text-white text-2xl"></i>
@@ -480,15 +497,15 @@
                             <span class="text-3xl font-bold text-blue-400">R$ 100,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Formatação')" 
-                            class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-blue-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Formatação"
+                            class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Formatação com Backup -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-save text-white text-2xl"></i>
@@ -502,15 +519,15 @@
                             <span class="text-3xl font-bold text-purple-400">R$ 150,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Formatação com Backup')" 
-                            class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-purple-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Formatação com Backup"
+                            class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Formatação com Backup >300GB -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-pink-500 to-rose-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-database text-white text-2xl"></i>
@@ -524,15 +541,15 @@
                             <span class="text-3xl font-bold text-pink-400">R$ 200,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Formatação com Backup acima de 300GB')" 
-                            class="w-full bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-pink-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Formatação com Backup acima de 300GB"
+                            class="w-full bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Formatação de Macbook -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-slate-500 to-slate-700 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fab fa-apple text-white text-2xl"></i>
@@ -546,15 +563,15 @@
                             <span class="text-3xl font-bold text-slate-300">R$ 250,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Formatação em Macbook com Backup')" 
-                            class="w-full bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-500 hover:to-slate-600 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-slate-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Formatação em Macbook com Backup"
+                            class="w-full bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-500 hover:to-slate-600 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Instalação de Aplicativos Básicos -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-th text-white text-2xl"></i>
@@ -567,15 +584,15 @@
                             <span class="text-3xl font-bold text-green-400">R$ 500,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Serviço de Instalação de Aplicativos Básicos')" 
-                            class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-green-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Serviço de Instalação de Aplicativos Básicos"
+                            class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Instalação de Componentes -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-microchip text-white text-2xl"></i>
@@ -588,15 +605,15 @@
                             <span class="text-3xl font-bold text-emerald-400">R$ 80,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Serviço de Instalação de Componentes')" 
-                            class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-emerald-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Serviço de Instalação de Componentes"
+                            class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Manutenção Preventiva Desktop -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-wrench text-white text-2xl"></i>
@@ -609,15 +626,15 @@
                             <span class="text-3xl font-bold text-indigo-400">R$ 120,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Manutenção Preventiva em Desktop')" 
-                            class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-indigo-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Manutenção Preventiva em Desktop"
+                            class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Manutenção Preventiva Notebook -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-laptop text-white text-2xl"></i>
@@ -630,15 +647,15 @@
                             <span class="text-3xl font-bold text-violet-400">R$ 160,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Manutenção Preventiva em Notebook/Netbook/Ultrabook')" 
-                            class="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-violet-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Manutenção Preventiva em Notebook/Netbook/Ultrabook"
+                            class="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Recuperação de Dados 120GB-320GB -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-life-ring text-white text-2xl"></i>
@@ -652,15 +669,15 @@
                             <span class="text-3xl font-bold text-orange-400">R$ 250,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Recuperação de Dados em HD de 120GB até 320GB')" 
-                            class="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-orange-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Recuperação de Dados em HD de 120GB até 320GB"
+                            class="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Recuperação de Dados 500GB -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-rose-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-life-ring text-white text-2xl"></i>
@@ -674,15 +691,15 @@
                             <span class="text-3xl font-bold text-red-400">R$ 350,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Recuperação de Dados em HD de 500GB')" 
-                            class="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-red-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Recuperação de Dados em HD de 500GB"
+                            class="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Recuperação de Dados 1TB -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-rose-500 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-life-ring text-white text-2xl"></i>
@@ -696,15 +713,15 @@
                             <span class="text-3xl font-bold text-rose-400">R$ 450,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Recuperação de Dados em HD de 1TB')" 
-                            class="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-rose-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Recuperação de Dados em HD de 1TB"
+                            class="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Instalação de Apps/Jogos Interno -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-sky-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-gamepad text-white text-2xl"></i>
@@ -718,15 +735,15 @@
                         </div>
                         <p class="text-slate-400 text-sm">Adicional: R$ 35,00</p>
                     </div>
-                    <button onclick="solicitarServico('Instalação de Apps/Jogos (Interno)')" 
-                            class="w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-sky-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Instalação de Apps/Jogos (Interno)"
+                            class="w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Ativação Windows Interno -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fab fa-windows text-white text-2xl"></i>
@@ -740,15 +757,15 @@
                             <span class="text-3xl font-bold text-blue-400">R$ 70,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Ativação Windows Permanente (Interno)')" 
-                            class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-blue-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Ativação Windows Permanente (Interno)"
+                            class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Ativação Office 365 Interno -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-file-word text-white text-2xl"></i>
@@ -762,15 +779,15 @@
                             <span class="text-3xl font-bold text-indigo-400">R$ 90,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Ativação Office 365 Permanente (Interno)')" 
-                            class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-indigo-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Ativação Office 365 Permanente (Interno)"
+                            class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Pacotes Conjuntos Interno -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-fuchsia-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-layer-group text-white text-2xl"></i>
@@ -784,15 +801,15 @@
                             <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Pacotes Conjuntos (Interno)')" 
-                            class="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-purple-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Pacotes Conjuntos (Interno)"
+                            class="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Orçamento
                     </button>
                 </div>
 
                 <!-- Clonagem de Sistema -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-clone text-white text-2xl"></i>
@@ -805,15 +822,15 @@
                             <span class="text-3xl font-bold text-teal-400">R$ 150,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Serviço de Clonagem de Sistema')" 
-                            class="w-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-teal-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Serviço de Clonagem de Sistema"
+                            class="w-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Diagnóstico -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-search text-white text-2xl"></i>
@@ -827,15 +844,15 @@
                             <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Serviço de Diagnóstico')" 
-                            class="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-amber-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Serviço de Diagnóstico"
+                            class="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Orçamento
                     </button>
                 </div>
 
                 <!-- Diagnóstico em HD -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-stethoscope text-white text-2xl"></i>
@@ -848,15 +865,15 @@
                             <span class="text-3xl font-bold text-orange-400">R$ 100,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Serviço de Diagnóstico em HD')" 
-                            class="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-orange-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Serviço de Diagnóstico em HD"
+                            class="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Montagem Desktop Gamer -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-trophy text-white text-2xl"></i>
@@ -870,15 +887,15 @@
                             <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Serviço de Montagem de Desktop Gamer')" 
-                            class="w-full bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-red-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Serviço de Montagem de Desktop Gamer"
+                            class="w-full bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Orçamento
                     </button>
                 </div>
 
                 <!-- Quebra de Senha Windows -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-key text-white text-2xl"></i>
@@ -892,15 +909,15 @@
                             <span class="text-3xl font-bold text-yellow-400">R$ 120,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Serviço de Quebra de Senha Windows (7, 10, 11)')" 
-                            class="w-full bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-500 hover:to-amber-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-yellow-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Serviço de Quebra de Senha Windows (7, 10, 11)"
+                            class="w-full bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-500 hover:to-amber-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Quebra de Senha Windows Server -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-unlock-alt text-white text-2xl"></i>
@@ -914,15 +931,15 @@
                             <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Serviço de Quebra de Senha Windows Server')" 
-                            class="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-amber-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Serviço de Quebra de Senha Windows Server"
+                            class="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Orçamento
                     </button>
                 </div>
 
                 <!-- Troca Bateria BIOS -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-lime-500 to-green-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-battery-half text-white text-2xl"></i>
@@ -936,15 +953,15 @@
                             <span class="text-3xl font-bold text-lime-400">R$ 120,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Troca da Bateria da BIOS de Notebook (Serviço + Peça)')" 
-                            class="w-full bg-gradient-to-r from-lime-600 to-green-600 hover:from-lime-500 hover:to-green-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-lime-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Troca da Bateria da BIOS de Notebook (Serviço + Peça)"
+                            class="w-full bg-gradient-to-r from-lime-600 to-green-600 hover:from-lime-500 hover:to-green-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Troca Microfone/Webcam -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-video text-white text-2xl"></i>
@@ -958,15 +975,15 @@
                             <span class="text-3xl font-bold text-green-400">R$ 150,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Serviço de Troca de Microfone/Webcam/Auto-falante em Desktop/PC (Serviço + Peça)')" 
-                            class="w-full bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-500 hover:to-teal-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-green-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Serviço de Troca de Microfone/Webcam/Auto-falante em Desktop/PC (Serviço + Peça)"
+                            class="w-full bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-500 hover:to-teal-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- VPN até 10 Usuários -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-shield-alt text-white text-2xl"></i>
@@ -980,15 +997,15 @@
                             <span class="text-3xl font-bold text-cyan-400">R$ 350,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('VPN até 10 Usuários')" 
-                            class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-cyan-500/50 flex items-center justify-center gap-2">
+                    <button data-service="VPN até 10 Usuários"
+                            class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Kaspersky -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-shield-virus text-white text-2xl"></i>
@@ -1001,15 +1018,15 @@
                             <span class="text-3xl font-bold text-red-400">R$ 69,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Kaspersky (Antivírus para Usuário Doméstico)')" 
-                            class="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-red-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Kaspersky (Antivírus para Usuário Doméstico)"
+                            class="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Instalação Windows Server -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-server text-white text-2xl"></i>
@@ -1023,15 +1040,15 @@
                             <span class="text-3xl font-bold text-blue-400">R$ 350,00</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Instalação de Windows Server')" 
-                            class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-blue-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Instalação de Windows Server"
+                            class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Serviço
                     </button>
                 </div>
 
                 <!-- Desenvolvimento de Sistema -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-code text-white text-2xl"></i>
@@ -1045,15 +1062,15 @@
                             <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Desenvolvimento de Sistema')" 
-                            class="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-violet-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Desenvolvimento de Sistema"
+                            class="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Orçamento
                     </button>
                 </div>
 
                 <!-- Desenvolvimento de App -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-mobile-alt text-white text-2xl"></i>
@@ -1067,15 +1084,15 @@
                             <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Desenvolvimento de App')" 
-                            class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-purple-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Desenvolvimento de App"
+                            class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Orçamento
                     </button>
                 </div>
 
                 <!-- Desenvolvimento de Game -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-pink-500 to-red-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-gamepad text-white text-2xl"></i>
@@ -1089,15 +1106,15 @@
                             <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Desenvolvimento de Game')" 
-                            class="w-full bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-500 hover:to-red-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-pink-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Desenvolvimento de Game"
+                            class="w-full bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-500 hover:to-red-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Orçamento
                     </button>
                 </div>
 
                 <!-- Criação de Site -->
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-purple-500/20 hover:-translate-y-2">
+                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
                             <i class="fas fa-globe text-white text-2xl"></i>
@@ -1111,12 +1128,13 @@
                             <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
                         </div>
                     </div>
-                    <button onclick="solicitarServico('Criação de Site')" 
-                            class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-cyan-500/50 flex items-center justify-center gap-2">
+                    <button data-service="Criação de Site"
+                            class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
                         <i class="fab fa-whatsapp"></i>
                         Solicitar Orçamento
                     </button>
                 </div>
+
             </div>
         </div>
     </section>
@@ -1136,19 +1154,19 @@
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- WhatsApp -->
-                <a href="https://api.whatsapp.com/send?phone=5551995625408&text=Olá!%20Tenho%20interesse%20nos%20seus%20serviços%20de%20TI." 
-                   class="bg-slate-900/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50 hover:border-green-500/50 transition-all duration-300 shadow-lg hover:shadow-green-500/20 hover:-translate-y-2 text-center group">
+                <a id="whatsapp-card" href="https://api.whatsapp.com/send?phone=5551997395967&text=Olá!%20Tenho%20interesse%20nos%20seus%20serviços%20de%20TI." 
+                   class="bg-slate-900/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50 hover:border-green-500/50 transition-all duration-300 shadow-lg hover:shadow-green-500/20 text-center group">
                     <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
                         <i class="fab fa-whatsapp text-white text-3xl"></i>
                     </div>
                     <h3 class="text-xl font-bold mb-2 text-white">WhatsApp</h3>
                     <p class="text-slate-400 text-sm mb-3">Fale diretamente comigo</p>
-                    <p class="text-green-400 font-semibold">51 9 9562-5408</p>
+                    <p class="text-green-400 font-semibold">51 9 9739-5967</p>
                 </a>
 
                 <!-- Instagram -->
                 <a href="https://www.instagram.com/pablo_tasuyuki/" target="_blank"
-                   class="bg-slate-900/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50 hover:border-pink-500/50 transition-all duration-300 shadow-lg hover:shadow-pink-500/20 hover:-translate-y-2 text-center group">
+                   class="bg-slate-900/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50 hover:border-pink-500/50 transition-all duration-300 shadow-lg hover:shadow-pink-500/20 text-center group">
                     <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
                         <i class="fab fa-instagram text-white text-3xl"></i>
                     </div>
@@ -1159,7 +1177,7 @@
 
                 <!-- LinkedIn -->
                 <a href="https://www.linkedin.com/in/tasuyuki-pablo-a1360b3a0/" target="_blank"
-                   class="bg-slate-900/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 shadow-lg hover:shadow-blue-500/20 hover:-translate-y-2 text-center group">
+                   class="bg-slate-900/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 shadow-lg hover:shadow-blue-500/20 text-center group">
                     <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
                         <i class="fab fa-linkedin text-white text-3xl"></i>
                     </div>
@@ -1167,6 +1185,53 @@
                     <p class="text-slate-400 text-sm mb-3">Conecte no LinkedIn</p>
                     <p class="text-blue-400 font-semibold">Tasuyuki Pablo</p>
                 </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Avaliações Section -->
+    <section id="avaliacoes" class="py-20 px-4 bg-slate-800/40">
+        <div class="container mx-auto max-w-4xl">
+            <div class="text-center mb-8">
+                <h2 class="text-4xl font-bold font-['Poppins'] mb-2 bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent">
+                    Avaliações dos Clientes
+                </h2>
+                <p class="text-slate-300">Avalie de 0 a 10 estrelas e deixe seu comentário. As avaliações são públicas — só é possível comentar após login com Google.</p>
+            </div>
+
+            <div class="bg-slate-900/50 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-slate-700/50 mb-6">
+                <div id="review-form-area" class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-slate-300">Avaliação média:</div>
+                            <div id="average-rating" class="text-3xl font-bold text-yellow-400">--</div>
+                        </div>
+                        <div id="user-info" class="text-right text-slate-400">
+                            <div id="user-name">Você não está conectado</div>
+                            <div id="user-actions" class="mt-2">
+                                <button id="login-action" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-lg">Entrar com Google</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-700/40">
+                        <div class="mb-3">
+                            <label class="text-slate-300 mb-1 block">Sua nota (0-10):</label>
+                            <div id="rating-stars" class="flex gap-1"></div>
+                        </div>
+                        <div>
+                            <label class="text-slate-300 mb-1 block">Comentário:</label>
+                            <textarea id="review-text" rows="3" class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-400" placeholder="Conte sua experiência..."></textarea>
+                        </div>
+                        <div class="flex justify-end mt-4">
+                            <button id="submit-review" class="bg-yellow-500 hover:bg-yellow-400 text-slate-900 px-5 py-3 rounded-lg font-semibold">Enviar Avaliação</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="reviews-list" class="space-y-4">
+                <div class="text-slate-400">Carregando avaliações...</div>
             </div>
         </div>
     </section>
@@ -1179,7 +1244,7 @@
                 <div>
                     <h3 class="text-xl font-bold mb-4 text-cyan-400">Pablo Tasuyuki</h3>
                     <p class="text-slate-400 text-sm leading-relaxed">
-                        Profissional de TI oferecendo serviços completos de suporte técnico, 
+                        Profissional de TI oferecendo serviços completos de suporte técnico,
                         desenvolvimento de software e soluções tecnológicas personalizadas.
                     </p>
                 </div>
@@ -1192,6 +1257,7 @@
                         <li><a href="#servicos-externos" class="text-slate-400 hover:text-cyan-400 transition-colors duration-300">Serviços Externos</a></li>
                         <li><a href="#servicos-internos" class="text-slate-400 hover:text-cyan-400 transition-colors duration-300">Serviços Internos</a></li>
                         <li><a href="#contato" class="text-slate-400 hover:text-cyan-400 transition-colors duration-300">Contato</a></li>
+                        <li><a href="#avaliacoes" class="text-slate-400 hover:text-cyan-400 transition-colors duration-300">Avaliações</a></li>
                     </ul>
                 </div>
 
@@ -1199,10 +1265,10 @@
                 <div>
                     <h3 class="text-xl font-bold mb-4 text-cyan-400">Contato</h3>
                     <div class="space-y-3">
-                        <a href="https://api.whatsapp.com/send?phone=5551995625408" 
+                        <a href="https://api.whatsapp.com/send?phone=5551997395967"
                            class="flex items-center space-x-2 text-slate-400 hover:text-green-400 transition-colors duration-300">
                             <i class="fab fa-whatsapp"></i>
-                            <span>51 9 9562-5408</span>
+                            <span>51 9 9739-5967</span>
                         </a>
                         <a href="https://www.instagram.com/pablo_tasuyuki/" target="_blank"
                            class="flex items-center space-x-2 text-slate-400 hover:text-pink-400 transition-colors duration-300">
@@ -1227,12 +1293,18 @@
     </footer>
 
     <!-- Floating WhatsApp Button -->
-    <a href="https://api.whatsapp.com/send?phone=5551995625408&text=Olá!%20Tenho%20interesse%20nos%20seus%20serviços%20de%20TI." 
+    <a id="floating-whatsapp" href="https://api.whatsapp.com/send?phone=5551997395967&text=Olá!%20Tenho%20interesse%20nos%20seus%20serviços%20de%20TI."
        class="fixed bottom-6 right-6 w-16 h-16 bg-green-600 hover:bg-green-500 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300 z-50 animate-bounce-slow">
         <i class="fab fa-whatsapp text-white text-3xl"></i>
     </a>
 
+    <!-- Firebase SDKs (compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
     <!-- Custom JavaScript -->
-    <script src="script.js"></script>
+    <!-- Substitua js/script.js pelo arquivo completo atualizado (contendo seu firebaseConfig) -->
+    <script src="js/script.js"></script>
 </body>
 </html>
