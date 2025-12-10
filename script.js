@@ -1,3 +1,26 @@
+/**
+ * js/script.js
+ * Serviços de TI - Pablo Tasuyuki
+ *
+ * Arquivo completo e final com:
+ * - Inicialização Firebase (modo compat) com seu firebaseConfig
+ * - Google Sign-In (popup com fallback para redirect) e tratamento de redirect result
+ * - Firestore reviews (envio, leitura em realtime com onSnapshot) com tratamento de permissões
+ * - UI: login/logout, render de estrelas 1-10, envio de review
+ * - Mobile menu, smooth scroll, lazy load imagens, animações de cards, botão voltar ao topo
+ * - Migração de onclicks para data-service (WhatsApp), prevenção de clique duplo, notificações
+ *
+ * IMPORTANTE:
+ * - Garanta que index.html inclua os SDKs compat ANTES deste script:
+ *   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+ *   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+ *   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+ *   <script src="script.js"></script>
+ */
+
+/* ===========================
+   FIREBASE CONFIG (colado)
+   =========================== */
 const firebaseConfig = {
     apiKey: "AIzaSyDALe6eKby-7JaCBvej9iqr95Y97s6oHWg",
     authDomain: "flutter-ai-playground-7971c.firebaseapp.com",
@@ -9,13 +32,15 @@ const firebaseConfig = {
 
 const WHATSAPP_PHONE = '5551997395967';
 
-/* Firebase runtime (compat) */
+/* ===========================
+   RUNTIME VARIABLES
+   =========================== */
 let firebaseAuth = null;
 let firebaseDB = null;
 let currentUser = null;
 
 /* ===========================
-   UTIL: Notificações simples
+   UTIL: Notificações
    =========================== */
 function mostrarNotificacao(mensagem, tipo = 'info') {
     const notificacao = document.createElement('div');
@@ -40,23 +65,21 @@ function mostrarNotificacao(mensagem, tipo = 'info') {
         </div>
     `;
     document.body.appendChild(notificacao);
-    // entrada
     requestAnimationFrame(() => { notificacao.style.transform = 'translateX(0)'; });
-    // saída
     setTimeout(() => {
         notificacao.style.transform = 'translateX(400px)';
-        setTimeout(() => { try { notificacao.remove(); } catch (e) {} }, 300);
+        setTimeout(() => { try { notificacao.remove(); } catch(e) {} }, 300);
     }, 3000);
 }
 window.mostrarNotificacao = mostrarNotificacao;
 
 /* ===========================
-   Inicialização Firebase (modo compat)
+   Inicializa Firebase (modo compat)
    =========================== */
 (function initFirebase() {
     try {
         if (typeof firebase === 'undefined') {
-            console.warn('[Firebase] SDK não detectado. Verifique inclusão dos scripts antes do script.js');
+            console.warn('[Firebase] SDK compat não detectado. Verifique se os scripts foram incluídos antes do script.js');
             return;
         }
         if (!firebase.apps || !firebase.apps.length) {
@@ -64,11 +87,23 @@ window.mostrarNotificacao = mostrarNotificacao;
         }
         firebaseAuth = firebase.auth();
         firebaseDB = firebase.firestore();
+
         firebaseAuth.onAuthStateChanged(user => {
             currentUser = user;
             updateAuthUI(user);
             console.log('[auth] onAuthStateChanged, uid=', user ? user.uid : null);
         });
+
+        // Handle redirect result (if redirect fallback used)
+        firebaseAuth.getRedirectResult().then(result => {
+            if (result && result.user) {
+                console.log('[auth] getRedirectResult user logged via redirect:', result.user.uid);
+                mostrarNotificacao('Autenticado (redirect) com sucesso!', 'success');
+            }
+        }).catch(err => {
+            if (err && err.code) console.warn('[auth] getRedirectResult error:', err.code, err.message);
+        });
+
         console.log('[Firebase] inicializado com sucesso (modo compat)');
     } catch (err) {
         console.error('[Firebase] erro ao inicializar:', err);
@@ -76,7 +111,7 @@ window.mostrarNotificacao = mostrarNotificacao;
 })();
 
 /* ===========================
-   Mobile menu
+   MOBILE MENU
    =========================== */
 function initMobileMenu() {
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -87,11 +122,8 @@ function initMobileMenu() {
         mobileMenu.classList.toggle('mobile-menu-enter');
         const icon = mobileMenuBtn.querySelector('i');
         if (icon) {
-            if (mobileMenu.classList.contains('hidden')) {
-                icon.classList.remove('fa-times'); icon.classList.add('fa-bars');
-            } else {
-                icon.classList.remove('fa-bars'); icon.classList.add('fa-times');
-            }
+            if (mobileMenu.classList.contains('hidden')) { icon.classList.remove('fa-times'); icon.classList.add('fa-bars'); }
+            else { icon.classList.remove('fa-bars'); icon.classList.add('fa-times'); }
         }
     });
     mobileMenu.querySelectorAll('a').forEach(link => {
@@ -104,7 +136,7 @@ function initMobileMenu() {
 }
 
 /* ===========================
-   Smooth scroll
+   SMOOTH SCROLL
    =========================== */
 function initSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -123,7 +155,7 @@ function initSmoothScroll() {
 }
 
 /* ===========================
-   Solicitar serviço -> WhatsApp
+   WHATSAPP: solicitar serviço
    =========================== */
 function abrirWhatsAppMensagem(serviceName) {
     const mensagem = `Olá! Tenho interesse no serviço: ${serviceName}`;
@@ -160,7 +192,7 @@ function migrateSolicitarServicoHandlers() {
 }
 
 /* ===========================
-   Header scroll effect
+   HEADER EFFECT
    =========================== */
 function initHeaderEffect() {
     const header = document.querySelector('header');
@@ -172,7 +204,7 @@ function initHeaderEffect() {
 }
 
 /* ===========================
-   Cards animation (IntersectionObserver)
+   CARD OBSERVER
    =========================== */
 function initCardObserver() {
     const observer = new IntersectionObserver((entries) => {
@@ -187,7 +219,7 @@ function initCardObserver() {
 }
 
 /* ===========================
-   Lazy load imgs
+   LAZY IMAGES
    =========================== */
 function initLazyImages() {
     if (!('IntersectionObserver' in window)) return;
@@ -205,7 +237,7 @@ function initLazyImages() {
 }
 
 /* ===========================
-   Back to top button
+   BACK TO TOP
    =========================== */
 function criarBotaoVoltarTopo() {
     if (document.getElementById('back-to-top')) return;
@@ -223,7 +255,7 @@ function criarBotaoVoltarTopo() {
 }
 
 /* ===========================
-   Busca de serviços
+   BUSCA
    =========================== */
 function criarBarraBusca() {
     const hero = document.querySelector('section.pt-32') || document.querySelector('section');
@@ -253,7 +285,7 @@ function criarBarraBusca() {
 }
 
 /* ===========================
-   Login / Auth UI
+   LOGIN / AUTH UI
    =========================== */
 function setLoginButtonLoading(loading = true) {
     const btn = document.querySelector('#auth-area button, #login-btn, #login-btn-mobile, #login-action-btn');
@@ -269,31 +301,38 @@ function setLoginButtonLoading(loading = true) {
 }
 
 function startGoogleSignIn() {
+    console.log('[signin] startGoogleSignIn called');
     if (typeof firebase === 'undefined' || !firebase.auth) {
-        mostrarNotificacao('Firebase não configurado ou SDK ausente.', 'error');
+        mostrarNotificacao('Firebase SDK não carregado.', 'error');
         return;
     }
     if (!firebaseAuth) firebaseAuth = firebase.auth();
+
     setLoginButtonLoading(true);
     const provider = new firebase.auth.GoogleAuthProvider();
+
     firebaseAuth.signInWithPopup(provider)
-        .then(result => {
-            mostrarNotificacao('Logado com sucesso!', 'success');
-            console.log('[signin] user:', result.user && result.user.uid);
-        })
-        .catch(err => {
-            console.error('[signin] erro:', err);
-            if (err.code === 'auth/unauthorized-domain') {
-                mostrarNotificacao('Domínio não autorizado no Firebase. Adicione seu domínio em Authentication → Authorized domains.', 'error');
-            } else if (err.code === 'auth/popup-blocked') {
-                mostrarNotificacao('Popup bloqueado. Permita popups para este site.', 'warning');
-            } else if (err.code === 'auth/popup-closed-by-user') {
-                mostrarNotificacao('Login cancelado.', 'info');
-            } else {
-                mostrarNotificacao('Erro ao entrar com Google. Veja console.', 'error');
-            }
-        })
-        .finally(() => setLoginButtonLoading(false));
+      .then(result => {
+        console.log('[signin] signInWithPopup success', result.user && result.user.uid);
+        mostrarNotificacao('Logado com sucesso!', 'success');
+      })
+      .catch(err => {
+        console.error('[signin] signInWithPopup erro:', err);
+        const fallback = ['auth/popup-blocked', 'auth/popup-closed-by-user', 'auth/cancelled-popup-request'];
+        if (err && err.code && fallback.includes(err.code)) {
+          mostrarNotificacao('Popup bloqueado ou fechado — redirecionando...', 'warning');
+          firebaseAuth.signInWithRedirect(provider);
+          return;
+        }
+        if (err && err.code === 'auth/unauthorized-domain') {
+          mostrarNotificacao('Domínio não autorizado. Adicione-o em Authentication → Authorized domains.', 'error');
+        } else if (err && err.code === 'auth/operation-not-allowed') {
+          mostrarNotificacao('Provedor Google desabilitado no Firebase. Ative em Authentication → Sign-in method.', 'error');
+        } else {
+          mostrarNotificacao('Erro ao entrar com Google (veja console).', 'error');
+        }
+      })
+      .finally(() => setLoginButtonLoading(false));
 }
 
 function updateAuthUI(user) {
@@ -342,9 +381,10 @@ function updateAuthUI(user) {
 }
 
 /* ===========================
-   Reviews (UI 1..10, Firestore)
+   REVIEWS: UI e Firestore
    =========================== */
 let selectedRating = 10;
+
 function renderStarsNumeric(container, selected = 10) {
     if (!container) return;
     container.innerHTML = '';
@@ -365,7 +405,6 @@ function renderStarsNumeric(container, selected = 10) {
     }
 }
 
-/* Submit review */
 async function submitReview() {
     if (!firebaseAuth || !firebaseDB) {
         mostrarNotificacao('Firebase não configurado. Não é possível enviar avaliações.', 'error');
@@ -395,11 +434,14 @@ async function submitReview() {
         if (reviewTextEl) reviewTextEl.value = '';
     } catch (err) {
         console.error('Erro ao enviar avaliação:', err);
-        mostrarNotificacao('Erro ao enviar avaliação', 'error');
+        if (err && err.code === 'permission-denied') {
+            mostrarNotificacao('Permissão negada ao gravar. Verifique as regras do Firestore.', 'error');
+        } else {
+            mostrarNotificacao('Erro ao enviar avaliação (veja console).', 'error');
+        }
     }
 }
 
-/* Listen reviews realtime */
 function listenReviews() {
     const reviewsListEl = document.getElementById('reviews-list');
     const averageRatingEl = document.getElementById('average-rating');
@@ -407,48 +449,55 @@ function listenReviews() {
         if (reviewsListEl) reviewsListEl.innerHTML = '<div class="text-red-400">Firestore não configurado.</div>';
         return;
     }
-    firebaseDB.collection('reviews').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
-        const docs = [];
-        let sum = 0;
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            docs.push(Object.assign({ id: doc.id }, data));
-            sum += (data.rating || 0);
-        });
-        const avg = docs.length ? (sum / docs.length).toFixed(1) : '--';
-        if (averageRatingEl) averageRatingEl.textContent = avg;
-        if (!reviewsListEl) return;
-        if (!docs.length) { reviewsListEl.innerHTML = '<div class="text-slate-400">Ainda não há avaliações. Seja o primeiro!</div>'; return; }
-        reviewsListEl.innerHTML = '';
-        docs.forEach(d => {
-            const when = d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().toLocaleString() : '';
-            const item = document.createElement('div');
-            item.className = 'bg-slate-900/50 p-4 rounded-lg border border-slate-700/40';
-            item.innerHTML = `
-                <div class="flex items-start gap-3">
-                    <img src="${d.photoURL || 'https://www.gravatar.com/avatar/?d=mp'}" alt="${d.name || 'Usuário'}" class="w-12 h-12 rounded-full object-cover" />
-                    <div class="flex-1">
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <div class="font-semibold">${d.name || 'Usuário'}</div>
-                                <div class="text-sm text-slate-400">${when}</div>
+    try {
+        firebaseDB.collection('reviews').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+            const docs = [];
+            let sum = 0;
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                docs.push(Object.assign({ id: doc.id }, data));
+                sum += (data.rating || 0);
+            });
+            const avg = docs.length ? (sum / docs.length).toFixed(1) : '--';
+            if (averageRatingEl) averageRatingEl.textContent = avg;
+            if (!reviewsListEl) return;
+            if (!docs.length) { reviewsListEl.innerHTML = '<div class="text-slate-400">Ainda não há avaliações. Seja o primeiro!</div>'; return; }
+            reviewsListEl.innerHTML = '';
+            docs.forEach(d => {
+                const when = d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().toLocaleString() : '';
+                const item = document.createElement('div');
+                item.className = 'bg-slate-900/50 p-4 rounded-lg border border-slate-700/40';
+                item.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <img src="${d.photoURL || 'https://www.gravatar.com/avatar/?d=mp'}" alt="${d.name || 'Usuário'}" class="w-12 h-12 rounded-full object-cover" />
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <div class="font-semibold">${d.name || 'Usuário'}</div>
+                                    <div class="text-sm text-slate-400">${when}</div>
+                                </div>
+                                <div class="text-yellow-400 font-bold">${d.rating || 0} / 10</div>
                             </div>
-                            <div class="text-yellow-400 font-bold">${d.rating || 0} / 10</div>
+                            <p class="mt-2 text-slate-300">${d.comment || ''}</p>
                         </div>
-                        <p class="mt-2 text-slate-300">${d.comment || ''}</p>
                     </div>
-                </div>
-            `;
-            reviewsListEl.appendChild(item);
+                `;
+                reviewsListEl.appendChild(item);
+            });
+        }, err => {
+            console.error('Erro ao ler reviews (onSnapshot):', err);
+            if (reviewsListEl) reviewsListEl.innerHTML = '<div class="text-red-400">Erro ao carregar avaliações.</div>';
+            if (err && err.code === 'permission-denied') {
+                mostrarNotificacao('Permissão negada ao ler avaliações. Ajuste as regras do Firestore.', 'error');
+            }
         });
-    }, err => {
-        console.error('Erro ao ler reviews:', err);
-        if (reviewsListEl) reviewsListEl.innerHTML = '<div class="text-red-400">Erro ao carregar avaliações.</div>';
-    });
+    } catch (e) {
+        console.error('listenReviews exception:', e);
+    }
 }
 
 /* ===========================
-   Prevenção clique duplo somente em botões importantes
+   Prevenção clique duplo
    =========================== */
 let clickPrevenido = false;
 document.addEventListener('click', (e) => {
@@ -462,7 +511,7 @@ document.addEventListener('click', (e) => {
 });
 
 /* ===========================
-   Inicialização de componentes ao carregar DOM
+   Inicialização ao carregar DOM
    =========================== */
 document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
@@ -474,15 +523,15 @@ document.addEventListener('DOMContentLoaded', () => {
     criarBotaoVoltarTopo();
     criarBarraBusca();
 
-    // Inicializa rating UI
+    // rating UI
     const ratingContainer = document.getElementById('rating-stars');
     if (ratingContainer) renderStarsNumeric(ratingContainer, selectedRating);
 
-    // Conecta submit review
+    // conecta submit review
     const submitBtn = document.getElementById('submit-review');
     if (submitBtn) submitBtn.addEventListener('click', submitReview);
 
-    // conecta login buttons fallback
+    // conecta login buttons (fallbacks)
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) loginBtn.addEventListener('click', startGoogleSignIn);
     const loginBtnMobile = document.getElementById('login-btn-mobile');
@@ -490,19 +539,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginAction = document.getElementById('login-action');
     if (loginAction) loginAction.addEventListener('click', startGoogleSignIn);
 
-    // start listening reviews
+    // start listening reviews (realtime)
     listenReviews();
 
     console.log('[script] inicialização completa');
 });
 
 /* ===========================
-   Debug helper
+   Debug helpers
    =========================== */
 window.debugFirebase = function() {
-    console.log('firebase?', typeof firebase !== 'undefined' ? firebase : 'undefined');
-    console.log('firebaseAuth var?', !!firebaseAuth);
-    console.log('currentUser', currentUser);
+    if (typeof firebase === 'undefined') {
+        console.log('Firebase não definido nesta página.');
+        return;
+    }
+    try {
+        console.log('firebase.app().options =', firebase.app().options);
+        console.log('firebase.apps.length =', firebase.apps.length);
+        console.log('firebase.auth() available?', !!firebase.auth);
+        console.log('firebase.firestore() available?', !!firebase.firestore);
+        console.log('firebaseAuth var?', !!firebaseAuth);
+        console.log('currentUser', currentUser);
+    } catch (e) {
+        console.error('debugFirebase error', e);
+    }
 };
 
 window.solicitarServico = function(serviceName) {
