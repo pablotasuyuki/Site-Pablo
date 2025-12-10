@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Mini-jogos interativos com ranking global. Tetris, Space Shooter, Snake e muito mais!">
+    <title>🎮 Mini-Jogos - Pablo Tasuyuki</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="games-style.css">
+
+    <!-- Firebase SDK (Compat Mode) -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white font-['Inter']">
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="fixed top-20 right-4 z-50 space-y-2"></div>
+
+    <!-- Header -->
+    <header class="fixed top-0 w-full bg-slate-900/95 backdrop-blur-md shadow-lg z-40 border-b border-purple-500/30">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center gap-3 group">
+                    <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center transform group-hover:scale-110 transition-transform">
+                        <i class="fas fa-gamepad text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">Mini-Jogos</h1>
+                        <p class="text-xs text-gray-400">Pablo Tasuyuki</p>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center gap-6">
+                    <a href="index.html" class="nav-link"><i class="fas fa-home mr-2"></i>Home</a>
+                    <a href="#games" class="nav-link active"><i class="fas fa-gamepad mr-2"></i>Jogos</a>
+                    <a href="#rankings" class="nav-link"><i class="fas fa-trophy mr-2"></i>Rankings</a>
+                    <a href="#profile" class="nav-link" id="nav-profile" style="display:none;"><i class="fas fa-user mr-2"></i>Perfil</a>
+                </div>
+
+                <!-- User Auth -->
+                <div class="flex items-center gap-4">
+                    <!-- Login Button -->
+                    <button id="login-btn" class="hidden md:flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-2 rounded-full font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all">
+                        <i class="fab fa-google"></i>
+                        <span>Login com Google</span>
+                    </button>
+
+                    <!-- User Info (Hidden by Default) -->
+                    <div id="user-info" class="hidden items-center gap-3">
+                        <img id="user-avatar" src="" alt="Avatar" class="w-10 h-10 rounded-full border-2 border-purple-400">
+                        <div class="hidden md:block">
+                            <p id="user-name" class="text-sm font-semibold"></p>
+                            <p id="user-score" class="text-xs text-purple-400">0 pontos totais</p>
+                        </div>
+                        <button id="logout-btn" class="text-red-400 hover:text-red-300 ml-2">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+
+                    <!-- Mobile Menu Button -->
+                    <button id="mobile-menu-btn" class="md:hidden text-2xl">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 border-t border-purple-500/30 pt-4">
+                <div class="flex flex-col gap-3">
+                    <a href="index.html" class="nav-link-mobile"><i class="fas fa-home mr-2"></i>Home</a>
+                    <a href="#games" class="nav-link-mobile"><i class="fas fa-gamepad mr-2"></i>Jogos</a>
+                    <a href="#rankings" class="nav-link-mobile"><i class="fas fa-trophy mr-2"></i>Rankings</a>
+                    <a href="#profile" class="nav-link-mobile" id="nav-profile-mobile" style="display:none;"><i class="fas fa-user mr-2"></i>Perfil</a>
+                    <button id="login-btn-mobile" class="nav-link-mobile bg-gradient-to-r from-purple-600 to-pink-600 text-center rounded-lg py-2">
+                        <i class="fab fa-google mr-2"></i>Login com Google
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-24 pb-12">
+
+        <!-- Hero Section -->
+        <section class="container mx-auto px-4 py-12 text-center">
+            <div class="animate-fade-in">
+                <h1 class="text-5xl md:text-7xl font-bold mb-6 retro-text">
+                    🎮 MINI-JOGOS
+                </h1>
+                <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+                    Divirta-se com os melhores mini-jogos clássicos! Desafie seus amigos e conquiste o topo do ranking global!
+                </p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <div class="stat-card">
+                        <div class="text-3xl font-bold text-purple-400" id="total-players">0</div>
+                        <div class="text-sm text-gray-400">Jogadores</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-3xl font-bold text-pink-400" id="total-games">0</div>
+                        <div class="text-sm text-gray-400">Partidas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="text-3xl font-bold text-yellow-400">6</div>
+                        <div class="text-sm text-gray-400">Jogos</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Games Grid -->
+        <section id="games" class="container mx-auto px-4 py-12">
+            <h2 class="text-4xl font-bold mb-8 text-center bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                Escolha Seu Jogo
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Tetris -->
+                <div class="game-card" data-game="tetris">
+                    <div class="game-icon">🧱</div>
+                    <h3 class="game-title">Tetris</h3>
+                    <p class="game-description">Clássico jogo de blocos! Encaixe as peças e complete linhas.</p>
+                    <div class="game-stats">
+                        <div><i class="fas fa-trophy text-yellow-400"></i> Record: <span class="record-score" data-game="tetris">0</span></div>
+                        <div><i class="fas fa-gamepad text-purple-400"></i> <span class="play-count" data-game="tetris">0</span> partidas</div>
+                    </div>
+                    <button class="play-btn" data-game="tetris">
+                        <i class="fas fa-play mr-2"></i>Jogar Agora
+                    </button>
+                </div>
+
+                <!-- Space Shooter -->
+                <div class="game-card" data-game="space-shooter">
+                    <div class="game-icon">🚀</div>
+                    <h3 class="game-title">Space Shooter</h3>
+                    <p class="game-description">Destrua asteroides e inimigos espaciais!</p>
+                    <div class="game-stats">
+                        <div><i class="fas fa-trophy text-yellow-400"></i> Record: <span class="record-score" data-game="space-shooter">0</span></div>
+                        <div><i class="fas fa-gamepad text-purple-400"></i> <span class="play-count" data-game="space-shooter">0</span> partidas</div>
+                    </div>
+                    <button class="play-btn" data-game="space-shooter">
+                        <i class="fas fa-play mr-2"></i>Jogar Agora
+                    </button>
+                </div>
+
+                <!-- Snake Game -->
+                <div class="game-card" data-game="snake">
+                    <div class="game-icon">🐍</div>
+                    <h3 class="game-title">Snake Game</h3>
+                    <p class="game-description">Controle a cobra e coma frutas sem bater!</p>
+                    <div class="game-stats">
+                        <div><i class="fas fa-trophy text-yellow-400"></i> Record: <span class="record-score" data-game="snake">0</span></div>
+                        <div><i class="fas fa-gamepad text-purple-400"></i> <span class="play-count" data-game="snake">0</span> partidas</div>
+                    </div>
+                    <button class="play-btn" data-game="snake">
+                        <i class="fas fa-play mr-2"></i>Jogar Agora
+                    </button>
+                </div>
+
+                <!-- Click Challenge -->
+                <div class="game-card" data-game="click-challenge">
+                    <div class="game-icon">🎯</div>
+                    <h3 class="game-title">Click Challenge</h3>
+                    <p class="game-description">Teste seus reflexos! Clique nos alvos rapidamente.</p>
+                    <div class="game-stats">
+                        <div><i class="fas fa-trophy text-yellow-400"></i> Record: <span class="record-score" data-game="click-challenge">0</span></div>
+                        <div><i class="fas fa-gamepad text-purple-400"></i> <span class="play-count" data-game="click-challenge">0</span> partidas</div>
+                    </div>
+                    <button class="play-btn" data-game="click-challenge">
+                        <i class="fas fa-play mr-2"></i>Jogar Agora
+                    </button>
+                </div>
+
+                <!-- Pong -->
+                <div class="game-card" data-game="pong">
+                    <div class="game-icon">🏓</div>
+                    <h3 class="game-title">Pong Classic</h3>
+                    <p class="game-description">Jogo clássico de ping-pong contra a IA!</p>
+                    <div class="game-stats">
+                        <div><i class="fas fa-trophy text-yellow-400"></i> Record: <span class="record-score" data-game="pong">0</span></div>
+                        <div><i class="fas fa-gamepad text-purple-400"></i> <span class="play-count" data-game="pong">0</span> partidas</div>
+                    </div>
+                    <button class="play-btn" data-game="pong">
+                        <i class="fas fa-play mr-2"></i>Jogar Agora
+                    </button>
+                </div>
+
+                <!-- Memory Game -->
+                <div class="game-card" data-game="memory">
+                    <div class="game-icon">🎨</div>
+                    <h3 class="game-title">Memory Game</h3>
+                    <p class="game-description">Encontre os pares de cartas correspondentes!</p>
+                    <div class="game-stats">
+                        <div><i class="fas fa-trophy text-yellow-400"></i> Record: <span class="record-score" data-game="memory">0</span></div>
+                        <div><i class="fas fa-gamepad text-purple-400"></i> <span class="play-count" data-game="memory">0</span> partidas</div>
+                    </div>
+                    <button class="play-btn" data-game="memory">
+                        <i class="fas fa-play mr-2"></i>Jogar Agora
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Rankings Section -->
+        <section id="rankings" class="container mx-auto px-4 py-12">
+            <h2 class="text-4xl font-bold mb-8 text-center bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                🏆 Rankings Globais
+            </h2>
+
+            <!-- Game Selector -->
+            <div class="flex flex-wrap justify-center gap-3 mb-8">
+                <button class="ranking-tab active" data-game="tetris">🧱 Tetris</button>
+                <button class="ranking-tab" data-game="space-shooter">🚀 Space Shooter</button>
+                <button class="ranking-tab" data-game="snake">🐍 Snake</button>
+                <button class="ranking-tab" data-game="click-challenge">🎯 Click Challenge</button>
+                <button class="ranking-tab" data-game="pong">🏓 Pong</button>
+                <button class="ranking-tab" data-game="memory">🎨 Memory</button>
+            </div>
+
+            <!-- Rankings Display -->
+            <div class="max-w-4xl mx-auto bg-slate-800/50 backdrop-blur-md rounded-2xl p-6 border border-purple-500/30">
+                <div id="rankings-container">
+                    <!-- Preenchido dinamicamente -->
+                    <div class="text-center text-gray-400 py-12">
+                        <i class="fas fa-spinner fa-spin text-4xl mb-4"></i>
+                        <p>Carregando rankings...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profile Section -->
+        <section id="profile" class="container mx-auto px-4 py-12" style="display:none;">
+            <h2 class="text-4xl font-bold mb-8 text-center bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                👤 Meu Perfil
+            </h2>
+
+            <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
+                
+                <!-- User Stats -->
+                <div class="bg-slate-800/50 backdrop-blur-md rounded-2xl p-6 border border-purple-500/30">
+                    <div class="flex items-center gap-4 mb-6">
+                        <img id="profile-avatar" src="" alt="Avatar" class="w-20 h-20 rounded-full border-4 border-purple-400">
+                        <div>
+                            <h3 id="profile-name" class="text-2xl font-bold"></h3>
+                            <p class="text-gray-400">Membro desde <span id="profile-since">2025</span></p>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">Total de Pontos:</span>
+                            <span id="profile-total-score" class="font-bold text-purple-400">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">Partidas Jogadas:</span>
+                            <span id="profile-total-games" class="font-bold text-pink-400">0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-400">Jogo Favorito:</span>
+                            <span id="profile-favorite" class="font-bold text-yellow-400">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personal Records -->
+                <div class="bg-slate-800/50 backdrop-blur-md rounded-2xl p-6 border border-purple-500/30">
+                    <h3 class="text-xl font-bold mb-4">🏆 Meus Recordes</h3>
+                    <div id="profile-records" class="space-y-2">
+                        <!-- Preenchido dinamicamente -->
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Game Modal -->
+    <div id="game-modal" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-slate-900 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-auto border-2 border-purple-500/50 shadow-2xl">
+            
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between p-4 border-b border-purple-500/30">
+                <div class="flex items-center gap-3">
+                    <span id="modal-game-icon" class="text-3xl"></span>
+                    <div>
+                        <h3 id="modal-game-title" class="text-xl font-bold"></h3>
+                        <p class="text-sm text-gray-400">Pontuação: <span id="current-score" class="text-purple-400 font-semibold">0</span></p>
+                    </div>
+                </div>
+                <button id="close-modal" class="text-3xl hover:text-red-400 transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Game Canvas Container -->
+            <div class="p-4">
+                <div id="game-container" class="bg-black rounded-xl overflow-hidden flex items-center justify-center min-h-[400px] border-2 border-purple-500/30">
+                    <canvas id="game-canvas"></canvas>
+                </div>
+
+                <!-- Game Instructions -->
+                <div id="game-instructions" class="mt-4 p-4 bg-slate-800/50 rounded-xl">
+                    <h4 class="font-bold mb-2 text-purple-400">📖 Instruções:</h4>
+                    <p id="instructions-text" class="text-sm text-gray-300"></p>
+                </div>
+
+                <!-- Game Over Screen -->
+                <div id="game-over-screen" class="hidden">
+                    <div class="text-center py-8">
+                        <h2 class="text-4xl font-bold mb-4 retro-text">GAME OVER</h2>
+                        <p class="text-2xl mb-2">Pontuação Final: <span id="final-score" class="text-yellow-400 font-bold">0</span></p>
+                        <p id="high-score-message" class="text-lg text-purple-400 mb-6"></p>
+                        <div class="flex justify-center gap-4">
+                            <button id="play-again-btn" class="bg-gradient-to-r from-purple-600 to-pink-600 px-8 py-3 rounded-full font-bold hover:shadow-lg hover:shadow-purple-500/50 transition-all">
+                                <i class="fas fa-redo mr-2"></i>Jogar Novamente
+                            </button>
+                            <button id="change-game-btn" class="bg-slate-700 px-8 py-3 rounded-full font-bold hover:bg-slate-600 transition-all">
+                                <i class="fas fa-gamepad mr-2"></i>Escolher Outro Jogo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 border-t border-purple-500/30 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="text-gray-400">
+                © 2025 <span class="text-purple-400 font-semibold">Pablo Tasuyuki</span> - Todos os direitos reservados
+            </p>
+            <p class="text-sm text-gray-500 mt-2">
+                Mini-Jogos v1.0 | <a href="index.html" class="text-purple-400 hover:text-purple-300">Voltar ao Site Principal</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="fixed bottom-6 right-6 bg-gradient-to-r from-purple-600 to-pink-600 w-12 h-12 rounded-full flex items-center justify-center shadow-lg opacity-0 pointer-events-none transition-all hover:shadow-purple-500/50 z-40">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Game Script -->
+    <script src="games-script.js"></script>
+</body>
+</html>
