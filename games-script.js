@@ -1,18 +1,3 @@
-/**
- * =====================================================
- * GAMES SCRIPT JS - Mini-Jogos Pablo Tasuyuki
- * =====================================================
- * * Funcionalidades:
- * - 6 Mini-jogos clássicos
- * - NOVO: Otamashis (Clicker/RPG PVE)
- * - Sistema de autenticação Google (Firebase)
- * - Progressão de Nível, XP e Atributos
- */
-
-// =====================================================
-// FIREBASE CONFIGURATION
-// =====================================================
-
 const firebaseConfig = {
     apiKey: "AIzaSyDALe6eKby-7JaCBvej9iqr95Y97s6oHWg",
     authDomain: "flutter-ai-playground-7971c.firebaseapp.com",
@@ -39,9 +24,9 @@ let otamashisInterval = null; // Loop para animações RPG
 
 // VARIÁVEIS DE PROGRESSÃO
 let playStartTime = 0;
-const XP_PER_SCORE_POINT = 0.5;
-const XP_PER_MINUTE = 10;
-const XP_PER_LEVEL = 25;
+const XP_PER_SCORE_POINT = 0.01;
+const XP_PER_MINUTE = 5;
+const XP_PER_LEVEL = 100;
 const ATTR_POINTS_PER_LEVEL = 1;
 
 // CONFIGURAÇÃO RPG
@@ -166,6 +151,10 @@ async function handleLogin() {
         const provider = new firebase.auth.GoogleAuthProvider();
         const result = await auth.signInWithPopup(provider);
         showNotification('Login realizado com sucesso!', 'success');
+        
+        // NOVO: Recarrega a página após login bem-sucedido
+        window.location.reload(); 
+        
     } catch (error) {
         console.error('Erro no login:', error);
         if (error.code === 'auth/popup-blocked') {
@@ -184,6 +173,10 @@ async function handleLogout() {
     try {
         await auth.signOut();
         showNotification('Logout realizado com sucesso!', 'success');
+        
+        // NOVO: Recarrega a página após logout
+        window.location.reload();
+        
     } catch (error) {
         console.error('Erro ao fazer logout:', error);
         showNotification('Erro ao fazer logout.', 'error');
@@ -565,17 +558,14 @@ function initOtamashis() {
         const profile = doc.data();
         const attrs = profile.attributes || {};
 
-        // Atributos de Batalha (Força, Destreza, etc.)
         const force = attrs.forca || 1;
         
-        // Inicializa o estado do jogo
         otamashisState = {
-            playerDamage: 1 + force * 2, // Dano base + 2 por ponto de Força
-            playerHealth: 10 + force * 5, // Vida base + 5 por ponto de Força
-            playerGold: profile.rpgGold || 0, // Novo: Carrega Gold do perfil
+            playerDamage: 1 + force * 3,
+            playerHealth: 10 + force * 5,
+            playerGold: profile.rpgGold || 0,
             playerXP: profile.totalXP || 0,
-            currentStage: profile.rpgStage || 1, // Novo: Carrega Estágio do perfil
-            // Stats do monstro
+            currentStage: profile.rpgStage || 1,
             monsterHealth: 100,
             monsterMaxHealth: 100,
             monsterXPValue: 10,
@@ -584,24 +574,20 @@ function initOtamashis() {
             monsterName: 'Slime de Lama'
         };
 
-        // Calcula a vida do monstro no estágio atual
-        otamashisState.monsterMaxHealth = 100 * Math.pow(1.5, otamashisState.currentStage - 1);
+        otamashisState.monsterMaxHealth = Math.round(100 * Math.pow(1.1, otamashisState.currentStage - 1)); // Fator de 1.2
         otamashisState.monsterHealth = otamashisState.monsterMaxHealth;
         
         renderOtamashisUI();
         
-        // Remove listener antigo e adiciona o novo (evita duplicatas)
         document.getElementById('game-container').removeEventListener('click', handleMonsterClick);
         document.getElementById('game-container').addEventListener('click', handleMonsterClick);
         
-        // Inicia o loop de animação
         if (otamashisInterval) clearInterval(otamashisInterval);
         otamashisInterval = setInterval(updateOtamashisLoop, 1000/30);
     });
 }
 
 function updateOtamashisLoop() {
-    // Atualiza a sombra/glow do monstro
     const monsterEl = document.getElementById('monster-area');
     if (monsterEl) {
         const healthPct = otamashisState.monsterHealth / otamashisState.monsterMaxHealth;
@@ -610,15 +596,12 @@ function updateOtamashisLoop() {
 }
 
 async function handleMonsterClick(e) {
-    // Garante que o clique seja na área do monstro e não na borda do container
     if (!e.target.closest('#monster-area')) return;
     
     if (otamashisState.monsterHealth <= 0) return;
 
-    // 1. Aplicar Dano
     otamashisState.monsterHealth -= otamashisState.playerDamage;
     
-    // 2. Animação de Dano (feedback)
     const damagePopup = document.createElement('div');
     damagePopup.className = 'absolute text-xl font-bold text-red-500 animate-damage-popup';
     damagePopup.textContent = `-${otamashisState.playerDamage}`;
@@ -630,7 +613,6 @@ async function handleMonsterClick(e) {
     container.appendChild(damagePopup);
     setTimeout(() => damagePopup.remove(), 800);
     
-    // 3. Verificar Morte
     if (otamashisState.monsterHealth <= 0) {
         otamashisState.monsterHealth = 0;
         
@@ -642,14 +624,11 @@ async function handleMonsterClick(e) {
         
         showNotification(`Monstro derrotado! +${rewardsXP} XP, +${rewardsGold} Gold!`, 'success');
         
-        // Salva estado do RPG no Firebase e verifica nível UP
         await saveRPGState(otamashisState.playerGold, rewardsXP, otamashisState.currentStage);
         
-        // Avançar estágio após um pequeno delay
         setTimeout(advanceStage, 1000);
     }
     
-    // 4. Atualizar UI
     renderOtamashisUI();
 }
 
@@ -668,7 +647,6 @@ async function saveRPGState(gold, xpGained, currentStage) {
     let attributePoints = data.attributePoints || 0;
     if (levelsGained > 0) {
         attributePoints += levelsGained * ATTR_POINTS_PER_LEVEL;
-        showNotification(`UP! Você subiu para o Nível ${newLevelData.level}! Ganhou ${levelsGained * ATTR_POINTS_PER_LEVEL} ponto(s) de atributo!`, 'success');
     }
     
     await userRef.update({
@@ -679,14 +657,13 @@ async function saveRPGState(gold, xpGained, currentStage) {
         attributePoints: attributePoints
     });
     
-    // Recarregar perfil para atualizar a barra de XP e pontos de atributo
     loadUserData();
 }
 
 function advanceStage() {
     otamashisState.currentStage++;
     
-    otamashisState.monsterMaxHealth = Math.round(100 * Math.pow(1.1, otamashisState.currentStage - 1));
+    otamashisState.monsterMaxHealth = Math.round(100 * Math.pow(1.2, otamashisState.currentStage - 1));
     otamashisState.monsterHealth = otamashisState.monsterMaxHealth;
     otamashisState.monsterXPValue = Math.round(otamashisState.monsterXPValue * 1.5);
     otamashisState.monsterGoldValue = Math.round(otamashisState.monsterGoldValue * 1.5);
@@ -743,12 +720,6 @@ function renderOtamashisUI() {
     document.getElementById('game-container').style.display = 'flex';
 }
 
-// =====================================================
-// [OUTROS JOGOS CANVAS ABAIXO]
-// (Manteremos o código completo para fins de estrutura)
-// =====================================================
-
-// ... [Código COMPLETO de initTetris, initSpaceShooter, initSnake, initClickChallenge, initPong, initMemory] ...
 function initTetris() {
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
@@ -1595,7 +1566,6 @@ function initMemory() {
     draw();
 }
 
-
 // =====================================================
 // GAME MANAGEMENT
 // =====================================================
@@ -1629,7 +1599,7 @@ function startGame(gameName) {
         document.getElementById('game-container').style.display = 'flex';
         if (otamashisInterval) clearInterval(otamashisInterval);
         document.getElementById('game-container').innerHTML = '';
-        otamashisState = {}; // Reinicia o estado do RPG
+        otamashisState = {};
     }
 
     document.getElementById('game-modal').classList.add('show');
@@ -1696,8 +1666,6 @@ function closeGame() {
     otamashisState = {};
     
     document.getElementById('game-container').innerHTML = '<canvas id="game-canvas"></canvas>';
-    
-    // Remove o listener do clique do monstro para evitar cliques duplicados em outros jogos
     document.getElementById('game-container').removeEventListener('click', handleMonsterClick);
 }
 
@@ -1769,7 +1737,6 @@ backToTop.addEventListener('click', () => {
 // INITIALIZATION
 // =====================================================
 
-// Carregar rankings iniciais
 loadRankings('tetris');
 loadGlobalStats();
 
