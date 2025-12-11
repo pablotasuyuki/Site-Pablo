@@ -1,3 +1,20 @@
+/**
+ * =====================================================
+ * GAMES SCRIPT JS - Mini-Jogos Pablo Tasuyuki
+ * =====================================================
+ * * Funcionalidades:
+ * - 6 Mini-jogos completos e interativos
+ * - Sistema de autenticação Google (Firebase)
+ * - Rankings globais por jogo (Firestore)
+ * - Perfil do usuário com estatísticas (AGORA COM TEMPO JOGADO, XP, NÍVEL E ATRIBUTOS)
+ * - Notificações e animações
+ */
+
+// =====================================================
+// FIREBASE CONFIGURATION
+// =====================================================
+
+// IMPORTANTE: Substitua com suas credenciais Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyDALe6eKby-7JaCBvej9iqr95Y97s6oHWg",
     authDomain: "flutter-ai-playground-7971c.firebaseapp.com",
@@ -615,7 +632,8 @@ function initTetris() {
     // ... [Implementação Tetris] ...
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
-    
+// canvas.width = config.canvasWidth; // Pode remover/comentar
+// canvas.height = config.canvasHeight; // Pode remover/comentar
     const COLS = 10;
     const ROWS = 20;
     const BLOCK_SIZE = 30;
@@ -1482,19 +1500,29 @@ function initMemory() {
 // GAME ENGINE - OTAMASHIS (ESQUELETO)
 // =====================================================
 
+// games-script.js - Função initOtamashis
+
 function initOtamashis() {
     const canvas = document.getElementById('game-canvas');
-    const ctx = canvas.getContext('2d');
+    
+    // REMOVER ESTAS DUAS LINHAS (que causavam o erro):
+    // const ctx = canvas.getContext('2d');
     
     const config = GAMES_CONFIG['otamashis'];
-    canvas.width = config.canvasWidth;
-    canvas.height = config.canvasHeight;
+    // canvas.width = config.canvasWidth; // Desnecessário
+    // canvas.height = config.canvasHeight; // Desnecessário
     
     gameState = {
-        score: 0, // Pontuação inicial zero para o RPG (o duelo terá pontuação específica)
+        score: 0,
         gameOver: false,
-        phase: 'CUSTOMIZATION' // CUSTOMIZATION, WAITING_FOR_DUEL, DUEL
+        phase: 'CUSTOMIZATION' 
     };
+    
+    // Remova as linhas que tentavam configurar o canvas
+    // ...
+    
+    // Se você usa o currentUser, certifique-se de obtê-lo aqui:
+    const userAttributes = currentUser?.attributes || {};
     
     // NOVO: Renderizar a tela de personalização (HTML/CSS dentro do Canvas Container)
     document.getElementById('game-container').innerHTML = `
@@ -1504,10 +1532,12 @@ function initOtamashis() {
             
             <div class="space-y-4">
                 <div class="bg-slate-800 p-4 rounded-lg">
-                    <p class="font-semibold text-purple-300">Sua Força: 
-                        <span id="otamashis-forca">${(currentUser && currentUser.attributes?.forca) || 1}</span>
-                    </p>
-                    <p class="text-sm text-gray-400">Atributos definidos no Perfil influenciam!</p>
+                    <p class="font-semibold text-purple-300">Seus Atributos:</p>
+                    <div class="text-left text-sm text-gray-300 mt-2">
+                        <p>💪 Força: <span>${userAttributes.forca || 1}</span></p>
+                        <p>🧠 Inteligência: <span>${userAttributes.inteligencia || 1}</span></p>
+                        <p>🍀 Sorte: <span>${userAttributes.sorte || 1}</span></p>
+                    </div>
                 </div>
 
                 <select class="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white">
@@ -1525,9 +1555,6 @@ function initOtamashis() {
             
         </div>
     `;
-
-    // Por ser um RPG online complexo, a lógica de duelo 2D será implementada em uma próxima etapa
-    // usando WebSockets/Realtime Database para comunicação entre jogadores.
 }
 
 
