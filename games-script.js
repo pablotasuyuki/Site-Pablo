@@ -24,9 +24,9 @@ let otamashisInterval = null; // Loop para animações RPG
 
 // VARIÁVEIS DE PROGRESSÃO
 let playStartTime = 0;
-const XP_PER_SCORE_POINT = 0.01;
-const XP_PER_MINUTE = 5;
-const XP_PER_LEVEL = 100;
+const XP_PER_SCORE_POINT = 0.5;
+const XP_PER_MINUTE = 10;
+const XP_PER_LEVEL = 25;
 const ATTR_POINTS_PER_LEVEL = 1;
 
 // CONFIGURAÇÃO RPG
