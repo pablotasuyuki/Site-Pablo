@@ -26,6 +26,19 @@ let playStartTime = 0; // Início do cronômetro de jogo
 const XP_PER_SCORE_POINT = 0.01; // XP por ponto de score
 const XP_PER_MINUTE = 5; // XP base por minuto jogado
 
+// VARIÁVEIS DE RPG
+const XP_PER_LEVEL = 100; // 100 XP por nível
+const ATTR_POINTS_PER_LEVEL = 1; // 1 Ponto de Atributo por nível
+
+const ATTRIBUTE_NAMES = {
+    inteligencia: { name: 'Inteligência', icon: '🧠', desc: 'Aumenta dano mágico e precisão de feitiços.' },
+    carisma: { name: 'Carisma', icon: '✨', desc: 'Melhora chances de encontrar itens raros e interação social.' },
+    sorte: { name: 'Sorte', icon: '🍀', desc: 'Aumenta chance de crítico e evasão.' },
+    fe: { name: 'Fé', icon: '🙏', desc: 'Aumenta resistência a maldições e cura.' },
+    destreza: { name: 'Destreza', icon: '🏃', desc: 'Aumenta velocidade de ataque e chance de desvio.' },
+    forca: { name: 'Força', icon: '💪', desc: 'Aumenta dano físico e vida total.' }
+};
+
 const GAMES_CONFIG = {
     'tetris': {
         icon: '🧱',
@@ -68,11 +81,20 @@ const GAMES_CONFIG = {
         instructions: 'Clique nas cartas para virá-las. Encontre todos os pares correspondentes!',
         canvasWidth: 600,
         canvasHeight: 600
+    },
+    // NOVO JOGO RPG
+    'otamashis': {
+        icon: '⚔️',
+        title: 'Otamashis: Duel RPG',
+        instructions: 'Customize seu personagem! Use pontos de atributo ganhos ao subir de nível para melhorar suas habilidades. Em breve: encontre um oponente para duelar online (2D).',
+        canvasWidth: 800,
+        canvasHeight: 600,
+        isRPG: true
     }
 };
 
 // =====================================================
-// UTILITY FUNCTIONS
+// UTILIDADES E CÁLCULO DE NÍVEL
 // =====================================================
 
 function showNotification(message, type = 'info') {
@@ -97,6 +119,30 @@ function formatNumber(num) {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
+function calculateLevel(totalXP) {
+    let level = 1;
+    let xpNeeded = XP_PER_LEVEL;
+    
+    while (totalXP >= xpNeeded) {
+        level++;
+        xpNeeded = level * XP_PER_LEVEL; // XP necessário para o próximo nível (pode usar curva exponencial se quiser)
+    }
+    
+    const xpCurrentLevel = (level - 1) * XP_PER_LEVEL;
+    const xpToNextLevel = level * XP_PER_LEVEL;
+    const xpInLevel = totalXP - xpCurrentLevel;
+    const levelProgress = xpToNextLevel - xpCurrentLevel;
+    
+    return {
+        level,
+        xpCurrentLevel,
+        xpToNextLevel,
+        xpInLevel,
+        progress: (xpInLevel / levelProgress) * 100
+    };
+}
+
+
 // =====================================================
 // TEMPO E XP
 // =====================================================
@@ -110,7 +156,6 @@ function calculateXP(finalScore, minutesPlayed) {
     const scoreXP = finalScore * XP_PER_SCORE_POINT;
     const timeXP = minutesPlayed * XP_PER_MINUTE;
     
-    // XP é a soma da pontuação convertida e o bônus por tempo jogado
     const totalXP = Math.round(scoreXP + timeXP);
     
     return totalXP;
@@ -118,17 +163,15 @@ function calculateXP(finalScore, minutesPlayed) {
 
 function stopAndSaveGameStats(finalScore) {
     const endTime = Date.now();
-    if (playStartTime === 0) return; // Se o cronômetro não foi iniciado, sair.
+    if (playStartTime === 0) return;
     
     const minutesPlayed = Math.floor((endTime - playStartTime) / (1000 * 60));
     const earnedXP = calculateXP(finalScore, minutesPlayed);
     
     console.log(`[Timer] Partida finalizada. Tempo: ${minutesPlayed} min. XP Ganho: ${earnedXP}`);
     
-    // Zera o cronômetro
     playStartTime = 0; 
     
-    // Salvar pontuação e tempo
     saveScore(currentGame, finalScore, minutesPlayed, earnedXP);
 }
 
@@ -213,7 +256,7 @@ auth.getRedirectResult().then((result) => {
 // FIRESTORE FUNCTIONS
 // =====================================================
 
-async function saveScore(gameName, score, minutesPlayed = 0, earnedXP = 0) { // MODIFICADO
+async function saveScore(gameName, score, minutesPlayed = 0, earnedXP = 0) {
     if (!currentUser) {
         showNotification('Faça login para salvar sua pontuação!', 'info');
         return;
@@ -233,7 +276,7 @@ async function saveScore(gameName, score, minutesPlayed = 0, earnedXP = 0) { // 
         await db.collection('game-scores').add(scoreData);
         
         // 2. Atualizar perfil do usuário (recorde, tempo e XP)
-        await updateUserProfile(gameName, score, minutesPlayed, earnedXP); // Chamada modificada
+        await updateUserProfile(gameName, score, minutesPlayed, earnedXP); 
         
         showNotification(`Pontuação salva! +${earnedXP} XP!`, 'success');
         
@@ -246,30 +289,45 @@ async function saveScore(gameName, score, minutesPlayed = 0, earnedXP = 0) { // 
     }
 }
 
-async function updateUserProfile(gameName, score, minutesPlayed = 0, earnedXP = 0) { // MODIFICADO
+async function updateUserProfile(gameName, score, minutesPlayed = 0, earnedXP = 0) {
     const userRef = db.collection('user-profiles').doc(currentUser.uid);
     
     try {
         const doc = await userRef.get();
         let games = {};
-        let totalXP = 0;
+        let currentXP = 0;
+        let attributePoints = 0;
+        let attributes = {};
+        let initialLevel = 1;
 
         if (doc.exists) {
             const data = doc.data();
             games = data.games || {};
-            totalXP = data.totalXP || 0;
+            currentXP = data.totalXP || 0;
+            attributePoints = data.attributePoints || 0;
+            attributes = data.attributes || {};
+            initialLevel = calculateLevel(currentXP).level;
             
-            // Incrementa o XP total
-            totalXP += earnedXP; 
+            // 1. Incrementa o XP total
+            currentXP += earnedXP; 
         } else {
-            // Se for novo perfil
-            totalXP = earnedXP;
+            currentXP = earnedXP;
+            // Inicializar atributos base se for a primeira vez
+            Object.keys(ATTRIBUTE_NAMES).forEach(key => attributes[key] = 1);
         }
 
-        // Lógica do jogo específico
+        // 2. Calcular novo nível e pontos ganhos
+        const newLevelData = calculateLevel(currentXP);
+        const levelsGained = newLevelData.level - initialLevel;
+
+        if (levelsGained > 0) {
+            attributePoints += levelsGained * ATTR_POINTS_PER_LEVEL;
+            showNotification(`UP! Você subiu para o Nível ${newLevelData.level}! Ganhou ${levelsGained * ATTR_POINTS_PER_LEVEL} ponto(s) de atributo!`, 'success');
+        }
+
+        // 3. Lógica do jogo específico
         const gameData = games[gameName] || { bestScore: 0, playCount: 0, totalTimeMinutes: 0 };
         
-        // Atualiza tempo total jogado
         gameData.totalTimeMinutes += minutesPlayed;
 
         if (gameData.bestScore < score) {
@@ -280,19 +338,21 @@ async function updateUserProfile(gameName, score, minutesPlayed = 0, earnedXP = 
         gameData.lastPlayed = firebase.firestore.FieldValue.serverTimestamp();
         games[gameName] = gameData;
 
-        // Salva as mudanças
+        // 4. Salva as mudanças
         await userRef.set({ 
             userId: currentUser.uid,
             userName: currentUser.displayName,
             userPhoto: currentUser.photoURL,
-            // Mantém createdAt se existir, senão usa o atual
             createdAt: doc.exists ? doc.data().createdAt : firebase.firestore.FieldValue.serverTimestamp(), 
-            totalXP: totalXP, // Salva o novo XP total
+            totalXP: currentXP, 
+            level: newLevelData.level,
+            attributePoints: attributePoints, // Novo: Pontos para distribuir
+            attributes: attributes, // Novo: Valores dos atributos
             games: games
         });
 
     } catch (error) {
-        console.error('Erro ao atualizar perfil (XP/Tempo):', error);
+        console.error('Erro ao atualizar perfil (XP/Tempo/Nível):', error);
     }
 }
 
@@ -351,17 +411,23 @@ async function loadUserData() {
             const data = doc.data();
             const games = data.games || {};
             
-            // Atualizar estatísticas gerais
+            // --- CÁLCULO E EXIBIÇÃO DE NÍVEL ---
+            const xpData = calculateLevel(data.totalXP || 0);
+            
+            // Atualiza o display de XP e Nível no Header
+            document.getElementById('user-score').textContent = `Nível ${xpData.level} | ${formatNumber(data.totalXP || 0)} XP`; 
+            
+            // --- ESTATÍSTICAS GERAIS ---
             let totalScore = 0;
             let totalGames = 0;
-            let totalTime = 0; // NOVO
+            let totalTime = 0;
             let favoriteGame = '-';
             let maxPlayCount = 0;
             
             Object.keys(games).forEach(gameName => {
                 totalScore += games[gameName].bestScore || 0;
                 totalGames += games[gameName].playCount || 0;
-                totalTime += games[gameName].totalTimeMinutes || 0; // NOVO
+                totalTime += games[gameName].totalTimeMinutes || 0;
                 
                 if (games[gameName].playCount > maxPlayCount) {
                     maxPlayCount = games[gameName].playCount;
@@ -369,32 +435,51 @@ async function loadUserData() {
                 }
             });
             
-            // Converte minutos para horas/minutos para exibição
             const hours = Math.floor(totalTime / 60);
             const minutes = totalTime % 60;
             const timeDisplay = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
             
-            // Atualiza o display de XP e tempo
-            document.getElementById('user-score').textContent = `${formatNumber(data.totalXP || 0)} XP`; // MODIFICADO
-            
-            // Atualizar recordes nos cards
+            // --- ATUALIZAÇÃO DOS CARDS DE JOGO ---
             Object.keys(GAMES_CONFIG).forEach(gameName => {
                 const recordElement = document.querySelector(`.record-score[data-game="${gameName}"]`);
                 const playCountElement = document.querySelector(`.play-count[data-game="${gameName}"]`);
-                
+                const levelElement = document.querySelector(`.rpg-level`);
+                const pointsElement = document.querySelector(`.rpg-points`);
+
                 if (games[gameName]) {
                     if (recordElement) recordElement.textContent = formatNumber(games[gameName].bestScore || 0);
                     if (playCountElement) playCountElement.textContent = games[gameName].playCount || 0;
                 }
+                
+                // Atualiza o card Otamashis
+                if (GAMES_CONFIG[gameName].isRPG) {
+                    if (levelElement) levelElement.textContent = xpData.level;
+                    if (pointsElement) pointsElement.textContent = data.attributePoints || 0;
+                }
             });
             
-            // Atualizar perfil
+            // --- ATUALIZAR PERFIL (#profile) ---
             document.getElementById('profile-avatar').src = currentUser.photoURL || 'https://via.placeholder.com/150';
             document.getElementById('profile-name').textContent = currentUser.displayName || 'Jogador';
-            document.getElementById('profile-total-score').textContent = formatNumber(data.totalXP || 0); // MODIFICADO PARA XP
+            document.getElementById('profile-total-score').textContent = formatNumber(data.totalXP || 0);
             document.getElementById('profile-total-games').textContent = totalGames;
-            document.getElementById('profile-total-time').textContent = timeDisplay; // NOVO: Tempo total
+            document.getElementById('profile-total-time').textContent = timeDisplay;
             document.getElementById('profile-favorite').textContent = favoriteGame;
+            
+            // Renderiza barra de XP e nível
+            const xpBarContainer = document.getElementById('xp-bar-container');
+            const xpHtml = `
+                <div class="mb-4">
+                    <p class="text-sm font-semibold">Nível ${xpData.level} <span class="float-right text-xs text-purple-400">${formatNumber(xpData.xpInLevel)} / ${formatNumber(xpData.xpToNextLevel - xpData.xpCurrentLevel)} XP</span></p>
+                    <div class="h-3 bg-slate-700 rounded-full overflow-hidden mt-1">
+                        <div id="xp-bar" class="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500" style="width: ${xpData.progress}%;"></div>
+                    </div>
+                </div>
+            `;
+            if (xpBarContainer) xpBarContainer.innerHTML = xpHtml;
+
+            // Renderiza Atributos
+            renderAttributes(data.attributes || {}, data.attributePoints || 0);
             
             // Atualizar recordes pessoais
             const recordsContainer = document.getElementById('profile-records');
@@ -404,7 +489,6 @@ async function loadUserData() {
                 const config = GAMES_CONFIG[gameName];
                 const gameData = games[gameName];
                 
-                // Exibe o tempo jogado por jogo no perfil
                 const gameTime = gameData ? (gameData.totalTimeMinutes || 0) : 0;
                 const gameTimeDisplay = gameTime > 60 ? `${Math.floor(gameTime / 60)}h ${gameTime % 60}m` : `${gameTime}m`;
                 
@@ -442,10 +526,93 @@ async function loadGlobalStats() {
 }
 
 // =====================================================
-// GAME ENGINE - TETRIS
+// RPG ATTRIBUTES MANAGEMENT
+// =====================================================
+
+function renderAttributes(attributes, pointsAvailable) {
+    const attrContainer = document.getElementById('profile-attributes-container');
+    const pointsDisplay = document.getElementById('attribute-points-display');
+    if (!attrContainer || !pointsDisplay) return;
+
+    pointsDisplay.textContent = pointsAvailable;
+    let html = '';
+
+    Object.keys(ATTRIBUTE_NAMES).forEach(key => {
+        const attr = ATTRIBUTE_NAMES[key];
+        const value = attributes[key] || 1; // Valor base 1
+
+        const isDisabled = pointsAvailable === 0;
+
+        html += `
+            <div class="attribute-item ${isDisabled ? 'opacity-50' : ''}" data-attr="${key}">
+                <div class="flex items-center justify-between">
+                    <span class="font-semibold flex items-center gap-2">
+                        ${attr.icon} ${attr.name} (Lv. ${value})
+                    </span>
+                    <button class="add-attr-btn px-3 py-1 bg-purple-600 hover:bg-purple-500 rounded-full text-xs font-bold transition-colors"
+                            data-attr-key="${key}" ${isDisabled ? 'disabled' : ''}>
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">${attr.desc}</p>
+            </div>
+        `;
+    });
+
+    attrContainer.innerHTML = html;
+
+    // Adiciona event listeners aos novos botões
+    document.querySelectorAll('.add-attr-btn').forEach(btn => {
+        btn.addEventListener('click', handleAttributeIncrease);
+    });
+}
+
+async function handleAttributeIncrease(e) {
+    const attrKey = e.currentTarget.dataset.attrKey;
+    if (!attrKey || !currentUser) return;
+
+    e.currentTarget.disabled = true;
+
+    try {
+        const userRef = db.collection('user-profiles').doc(currentUser.uid);
+        const doc = await userRef.get();
+        if (!doc.exists) throw new Error("Perfil não encontrado.");
+
+        const data = doc.data();
+        let points = data.attributePoints || 0;
+        let attributes = data.attributes || {};
+
+        if (points <= 0) {
+            showNotification('Você não tem pontos de atributo disponíveis.', 'warning');
+            return;
+        }
+
+        // Incrementa o atributo e decrementa o ponto disponível
+        attributes[attrKey] = (attributes[attrKey] || 1) + 1;
+        points--;
+
+        await userRef.update({
+            attributePoints: points,
+            attributes: attributes
+        });
+
+        showNotification(`${ATTRIBUTE_NAMES[attrKey].icon} ${ATTRIBUTE_NAMES[attrKey].name} melhorado!`, 'success');
+        loadUserData(); // Recarrega para atualizar a UI
+
+    } catch (error) {
+        console.error('Erro ao distribuir atributo:', error);
+        showNotification('Erro ao salvar atributo.', 'error');
+    } finally {
+        e.currentTarget.disabled = false;
+    }
+}
+
+// =====================================================
+// GAME ENGINE - TETRIS (mantido)
 // =====================================================
 
 function initTetris() {
+    // ... [Implementação Tetris] ...
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
     
@@ -578,11 +745,9 @@ function initTetris() {
     }
     
     function draw() {
-        // Limpar canvas
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Desenhar grade
         ctx.strokeStyle = '#333';
         for (let x = 0; x <= COLS; x++) {
             ctx.beginPath();
@@ -597,7 +762,6 @@ function initTetris() {
             ctx.stroke();
         }
         
-        // Desenhar tabuleiro
         for (let y = 0; y < ROWS; y++) {
             for (let x = 0; x < COLS; x++) {
                 if (gameState.board[y][x]) {
@@ -609,7 +773,6 @@ function initTetris() {
             }
         }
         
-        // Desenhar peça atual
         if (gameState.currentPiece) {
             ctx.fillStyle = gameState.currentColor;
             for (let y = 0; y < gameState.currentPiece.length; y++) {
@@ -649,7 +812,6 @@ function initTetris() {
         gameLoop = requestAnimationFrame(update);
     }
     
-    // Controles
     document.addEventListener('keydown', (e) => {
         if (gameState.gameOver || currentGame !== 'tetris') return;
         
@@ -665,7 +827,7 @@ function initTetris() {
 }
 
 // =====================================================
-// GAME ENGINE - SPACE SHOOTER
+// GAME ENGINE - SPACE SHOOTER (mantido)
 // =====================================================
 
 function initSpaceShooter() {
@@ -699,7 +861,6 @@ function initSpaceShooter() {
     function update() {
         if (gameState.gameOver) return;
         
-        // Mover nave
         if (gameState.keys['ArrowLeft'] && gameState.ship.x > 0) {
             gameState.ship.x -= gameState.ship.speed;
         }
@@ -707,13 +868,11 @@ function initSpaceShooter() {
             gameState.ship.x += gameState.ship.speed;
         }
         
-        // Mover balas
         gameState.bullets = gameState.bullets.filter(bullet => {
             bullet.y -= 10;
             return bullet.y > 0;
         });
         
-        // Mover inimigos
         gameState.enemies = gameState.enemies.filter(enemy => {
             enemy.y += enemy.speed;
             
@@ -726,14 +885,12 @@ function initSpaceShooter() {
             return true;
         });
         
-        // Spawn inimigos
         gameState.spawnCounter++;
         if (gameState.spawnCounter >= gameState.spawnInterval) {
             spawnEnemy();
             gameState.spawnCounter = 0;
         }
         
-        // Detectar colisões
         gameState.bullets.forEach((bullet, bIndex) => {
             gameState.enemies.forEach((enemy, eIndex) => {
                 if (
@@ -755,11 +912,9 @@ function initSpaceShooter() {
     }
     
     function draw() {
-        // Background
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Estrelas
         ctx.fillStyle = '#fff';
         for (let i = 0; i < 50; i++) {
             const x = (i * 123) % canvas.width;
@@ -767,7 +922,6 @@ function initSpaceShooter() {
             ctx.fillRect(x, y, 2, 2);
         }
         
-        // Nave
         ctx.fillStyle = '#0ff';
         ctx.beginPath();
         ctx.moveTo(gameState.ship.x + 25, gameState.ship.y);
@@ -776,20 +930,17 @@ function initSpaceShooter() {
         ctx.closePath();
         ctx.fill();
         
-        // Balas
         ctx.fillStyle = '#ff0';
         gameState.bullets.forEach(bullet => {
             ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
         });
         
-        // Inimigos
         ctx.fillStyle = '#f00';
         gameState.enemies.forEach(enemy => {
             ctx.fillRect(enemy.x, enemy.y, enemy.width, enemy.height);
         });
     }
     
-    // Controles
     const keyHandler = (e) => {
         if (currentGame !== 'space-shooter') return;
         gameState.keys[e.key] = e.type === 'keydown';
@@ -811,7 +962,7 @@ function initSpaceShooter() {
 }
 
 // =====================================================
-// GAME ENGINE - SNAKE
+// GAME ENGINE - SNAKE (mantido)
 // =====================================================
 
 function initSnake() {
@@ -854,16 +1005,13 @@ function initSnake() {
         }
         gameState.moveCounter = 0;
         
-        // Atualizar direção
         gameState.direction = gameState.nextDirection;
         
-        // Nova cabeça
         const head = {
             x: gameState.snake[0].x + gameState.direction.x,
             y: gameState.snake[0].y + gameState.direction.y
         };
         
-        // Verificar colisões
         if (
             head.x < 0 || head.x >= GRID_SIZE ||
             head.y < 0 || head.y >= GRID_SIZE ||
@@ -876,7 +1024,6 @@ function initSnake() {
         
         gameState.snake.unshift(head);
         
-        // Verificar comida
         if (head.x === gameState.food.x && head.y === gameState.food.y) {
             gameState.score += 10;
             updateScore();
@@ -890,11 +1037,9 @@ function initSnake() {
     }
     
     function draw() {
-        // Background
         ctx.fillStyle = '#1a1a1a';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Grade
         ctx.strokeStyle = '#2a2a2a';
         for (let i = 0; i <= GRID_SIZE; i++) {
             ctx.beginPath();
@@ -903,23 +1048,19 @@ function initSnake() {
             ctx.stroke();
             ctx.beginPath();
             ctx.moveTo(0, i * CELL_SIZE);
-            ctx.lineTo(0, i * CELL_SIZE);
             ctx.lineTo(canvas.width, i * CELL_SIZE);
             ctx.stroke();
         }
         
-        // Comida
         ctx.fillStyle = '#f00';
         ctx.fillRect(gameState.food.x * CELL_SIZE, gameState.food.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
         
-        // Cobra
         gameState.snake.forEach((segment, index) => {
             ctx.fillStyle = index === 0 ? '#0f0' : '#0a0';
             ctx.fillRect(segment.x * CELL_SIZE, segment.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
         });
     }
     
-    // Controles
     const keyHandler = (e) => {
         if (currentGame !== 'snake' || gameState.gameOver) return;
         
@@ -938,7 +1079,7 @@ function initSnake() {
 }
 
 // =====================================================
-// GAME ENGINE - CLICK CHALLENGE
+// GAME ENGINE - CLICK CHALLENGE (mantido)
 // =====================================================
 
 function initClickChallenge() {
@@ -970,7 +1111,6 @@ function initClickChallenge() {
     function update() {
         if (gameState.gameOver) return;
         
-        // Timer
         gameState.timeLeft -= 1/60;
         if (gameState.timeLeft <= 0) {
             gameState.gameOver = true;
@@ -978,14 +1118,12 @@ function initClickChallenge() {
             return;
         }
         
-        // Spawn targets
         const now = Date.now();
         if (now - gameState.lastSpawn > 800) {
             spawnTarget();
             gameState.lastSpawn = now;
         }
         
-        // Update targets
         gameState.targets = gameState.targets.filter(target => {
             target.life -= 16;
             return target.life > 0;
@@ -996,17 +1134,14 @@ function initClickChallenge() {
     }
     
     function draw() {
-        // Background
         ctx.fillStyle = '#0a0a0a';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Timer
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 24px Arial';
         ctx.textAlign = 'center';
         ctx.fillText(`Tempo: ${Math.ceil(gameState.timeLeft)}s`, canvas.width / 2, 40);
         
-        // Targets
         gameState.targets.forEach(target => {
             const alpha = Math.min(1, target.life / 500);
             ctx.globalAlpha = alpha;
@@ -1020,7 +1155,6 @@ function initClickChallenge() {
             ctx.lineWidth = 3;
             ctx.stroke();
             
-            // Crosshair
             ctx.strokeStyle = '#000';
             ctx.lineWidth = 2;
             ctx.beginPath();
@@ -1034,7 +1168,6 @@ function initClickChallenge() {
         ctx.globalAlpha = 1;
     }
     
-    // Click handler
     const clickHandler = (e) => {
         if (currentGame !== 'click-challenge' || gameState.gameOver) return;
         
@@ -1065,7 +1198,7 @@ function initClickChallenge() {
 }
 
 // =====================================================
-// GAME ENGINE - PONG
+// GAME ENGINE - PONG (mantido)
 // =====================================================
 
 function initPong() {
@@ -1088,7 +1221,6 @@ function initPong() {
     function update() {
         if (gameState.gameOver) return;
         
-        // Mover paddle do jogador
         if (gameState.keys['ArrowUp'] && gameState.playerPaddle.y > 0) {
             gameState.playerPaddle.y -= gameState.playerPaddle.speed;
         }
@@ -1096,7 +1228,6 @@ function initPong() {
             gameState.playerPaddle.y += gameState.playerPaddle.speed;
         }
         
-        // IA simples
         const paddleCenter = gameState.aiPaddle.y + gameState.aiPaddle.height / 2;
         if (paddleCenter < gameState.ball.y - 10) {
             gameState.aiPaddle.y += gameState.aiPaddle.speed;
@@ -1104,16 +1235,13 @@ function initPong() {
             gameState.aiPaddle.y -= gameState.aiPaddle.speed;
         }
         
-        // Mover bola
         gameState.ball.x += gameState.ball.speedX;
         gameState.ball.y += gameState.ball.speedY;
         
-        // Colisão com topo/fundo
         if (gameState.ball.y - gameState.ball.radius < 0 || gameState.ball.y + gameState.ball.radius > canvas.height) {
             gameState.ball.speedY *= -1;
         }
         
-        // Colisão com paddles
         if (
             gameState.ball.x - gameState.ball.radius < gameState.playerPaddle.x + gameState.playerPaddle.width &&
             gameState.ball.y > gameState.playerPaddle.y &&
@@ -1132,7 +1260,6 @@ function initPong() {
             gameState.ball.speedX *= -1.1;
         }
         
-        // Reset se sair da tela
         if (gameState.ball.x < 0) {
             gameState.aiScore++;
             if (gameState.aiScore >= 5) {
@@ -1161,11 +1288,9 @@ function initPong() {
     }
     
     function draw() {
-        // Background
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Linha central
         ctx.strokeStyle = '#444';
         ctx.setLineDash([10, 10]);
         ctx.beginPath();
@@ -1174,27 +1299,23 @@ function initPong() {
         ctx.stroke();
         ctx.setLineDash([]);
         
-        // Placar
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 32px Arial';
         ctx.textAlign = 'center';
         ctx.fillText(`${gameState.score}`, canvas.width / 4, 50);
         ctx.fillText(`${gameState.aiScore}`, (canvas.width / 4) * 3, 50);
         
-        // Paddles
         ctx.fillStyle = '#0f0';
         ctx.fillRect(gameState.playerPaddle.x, gameState.playerPaddle.y, gameState.playerPaddle.width, gameState.playerPaddle.height);
         ctx.fillStyle = '#f00';
         ctx.fillRect(gameState.aiPaddle.x, gameState.aiPaddle.y, gameState.aiPaddle.width, gameState.aiPaddle.height);
         
-        // Bola
         ctx.fillStyle = '#fff';
         ctx.beginPath();
         ctx.arc(gameState.ball.x, gameState.ball.y, gameState.ball.radius, 0, Math.PI * 2);
         ctx.fill();
     }
     
-    // Controles
     const keyHandler = (e) => {
         if (currentGame !== 'pong') return;
         gameState.keys[e.key] = e.type === 'keydown';
@@ -1203,7 +1324,6 @@ function initPong() {
     document.addEventListener('keydown', keyHandler);
     document.addEventListener('keyup', keyHandler);
     
-    // Mouse control
     canvas.addEventListener('mousemove', (e) => {
         if (currentGame !== 'pong') return;
         const rect = canvas.getBoundingClientRect();
@@ -1215,7 +1335,7 @@ function initPong() {
 }
 
 // =====================================================
-// GAME ENGINE - MEMORY GAME
+// GAME ENGINE - MEMORY GAME (mantido)
 // =====================================================
 
 function initMemory() {
@@ -1254,14 +1374,12 @@ function initMemory() {
         ctx.fillStyle = '#1a1a1a';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Desenhar cartas
         gameState.cards.forEach((card, index) => {
             const row = Math.floor(index / COLS);
             const col = index % COLS;
             const x = OFFSET_X + col * (CARD_SIZE + PADDING);
             const y = OFFSET_Y + row * (CARD_SIZE + PADDING);
             
-            // Fundo da carta
             if (card.matched) {
                 ctx.fillStyle = '#0a0';
             } else if (card.revealed) {
@@ -1272,12 +1390,10 @@ function initMemory() {
             
             ctx.fillRect(x, y, CARD_SIZE, CARD_SIZE);
             
-            // Borda
             ctx.strokeStyle = card.revealed || card.matched ? '#fff' : '#555';
             ctx.lineWidth = 3;
             ctx.strokeRect(x, y, CARD_SIZE, CARD_SIZE);
             
-            // Símbolo
             if (card.revealed || card.matched) {
                 ctx.font = '60px Arial';
                 ctx.textAlign = 'center';
@@ -1285,14 +1401,12 @@ function initMemory() {
                 ctx.fillStyle = '#fff';
                 ctx.fillText(card.symbol, x + CARD_SIZE/2, y + CARD_SIZE/2);
             } else {
-                // Padrão no verso
                 ctx.fillStyle = '#555';
                 ctx.font = 'bold 40px Arial';
                 ctx.fillText('?', x + CARD_SIZE/2, y + CARD_SIZE/2);
             }
         });
         
-        // Info
         ctx.fillStyle = '#fff';
         ctx.font = 'bold 20px Arial';
         ctx.textAlign = 'left';
@@ -1321,7 +1435,6 @@ function initMemory() {
                     gameState.score += 50;
                     updateScore();
                     
-                    // Verificar se ganhou
                     if (gameState.cards.every(c => c.matched)) {
                         gameState.score += Math.max(0, 500 - gameState.moves * 10);
                         updateScore();
@@ -1343,7 +1456,6 @@ function initMemory() {
         draw();
     }
     
-    // Click handler
     canvas.addEventListener('click', (e) => {
         if (currentGame !== 'memory') return;
         
@@ -1367,6 +1479,59 @@ function initMemory() {
 }
 
 // =====================================================
+// GAME ENGINE - OTAMASHIS (ESQUELETO)
+// =====================================================
+
+function initOtamashis() {
+    const canvas = document.getElementById('game-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    const config = GAMES_CONFIG['otamashis'];
+    canvas.width = config.canvasWidth;
+    canvas.height = config.canvasHeight;
+    
+    gameState = {
+        score: 0, // Pontuação inicial zero para o RPG (o duelo terá pontuação específica)
+        gameOver: false,
+        phase: 'CUSTOMIZATION' // CUSTOMIZATION, WAITING_FOR_DUEL, DUEL
+    };
+    
+    // NOVO: Renderizar a tela de personalização (HTML/CSS dentro do Canvas Container)
+    document.getElementById('game-container').innerHTML = `
+        <div id="otamashis-customization-ui" class="text-center p-8 w-full max-w-lg bg-slate-900/80 rounded-xl border border-purple-500/50">
+            <h3 class="text-3xl font-bold text-pink-400 mb-4">Personalização Otamashis ⚔️</h3>
+            <p class="text-gray-400 mb-6">Em desenvolvimento: Escolha arma, roupas e encontre oponentes.</p>
+            
+            <div class="space-y-4">
+                <div class="bg-slate-800 p-4 rounded-lg">
+                    <p class="font-semibold text-purple-300">Sua Força: 
+                        <span id="otamashis-forca">${(currentUser && currentUser.attributes?.forca) || 1}</span>
+                    </p>
+                    <p class="text-sm text-gray-400">Atributos definidos no Perfil influenciam!</p>
+                </div>
+
+                <select class="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white">
+                    <option>Pistola</option>
+                    <option>Katana</option>
+                    <option>Espada</option>
+                    <option>Cajado de Fogo</option>
+                    <option>Arco</option>
+                </select>
+
+                <button id="find-duel-btn" class="w-full bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-400 hover:to-teal-400 text-white py-3 rounded-lg font-bold">
+                    <i class="fas fa-search"></i> Encontrar Duelo (Em Breve)
+                </button>
+            </div>
+            
+        </div>
+    `;
+
+    // Por ser um RPG online complexo, a lógica de duelo 2D será implementada em uma próxima etapa
+    // usando WebSockets/Realtime Database para comunicação entre jogadores.
+}
+
+
+// =====================================================
 // GAME MANAGEMENT
 // =====================================================
 
@@ -1386,18 +1551,29 @@ function startGame(gameName) {
     
     // Configurar canvas
     const canvas = document.getElementById('game-canvas');
-    canvas.width = config.canvasWidth;
-    canvas.height = config.canvasHeight;
+    const ctx = canvas.getContext('2d');
     
     // Esconder game over
     document.getElementById('game-over-screen').classList.add('hidden');
     document.getElementById('game-container').classList.remove('hidden');
     
+    // Limpa o canvas para jogos baseados em Canvas
+    if (!config.isRPG) {
+        canvas.style.display = 'block';
+        document.getElementById('game-container').innerHTML = '<canvas id="game-canvas"></canvas>';
+    } else {
+        // Esconde o canvas para jogos baseados em DOM (como o RPG)
+        canvas.style.display = 'none'; 
+        document.getElementById('game-container').innerHTML = '';
+    }
+
     // Mostrar modal
     document.getElementById('game-modal').classList.add('show');
     
-    // NOVO: Inicia o cronômetro
-    startPlayTimer(); 
+    // Inicia o cronômetro (somente se não for o Otamashis temporariamente)
+    if (!config.isRPG) { 
+        startPlayTimer(); 
+    }
     
     // Iniciar jogo específico
     switch(gameName) {
@@ -1407,6 +1583,7 @@ function startGame(gameName) {
         case 'click-challenge': initClickChallenge(); break;
         case 'pong': initPong(); break;
         case 'memory': initMemory(); break;
+        case 'otamashis': initOtamashis(); break; // NOVO: Inicia a tela do RPG
     }
 }
 
@@ -1419,12 +1596,13 @@ function endGame() {
     const finalScore = gameState.score;
     document.getElementById('final-score').textContent = formatNumber(finalScore);
     
-    // NOVO: Para o cronômetro e salva as estatísticas (tempo e XP)
-    stopAndSaveGameStats(finalScore); 
+    // Para o cronômetro e salva as estatísticas (tempo e XP)
+    if (!GAMES_CONFIG[currentGame].isRPG) {
+        stopAndSaveGameStats(finalScore); 
+    }
     
     // Verificar se é recorde pessoal
     const recordElement = document.querySelector(`.record-score[data-game="${currentGame}"]`);
-    // Usar try/catch para garantir que a leitura do recorde não falhe
     let currentRecord = 0;
     try {
         currentRecord = recordElement ? parseInt(recordElement.textContent.replace(/\./g, '')) : 0;
@@ -1449,15 +1627,17 @@ function closeGame() {
         gameLoop = null;
     }
     
-    // Garante que o timer pare se o jogo for fechado antes do Game Over
-    if(playStartTime !== 0) {
-        // Salva pontuação 0, mas rastreia o tempo jogado
+    // Salva pontuação 0, mas rastreia o tempo jogado (se não for o RPG)
+    if(playStartTime !== 0 && !GAMES_CONFIG[currentGame].isRPG) {
         stopAndSaveGameStats(0); 
     }
     
     document.getElementById('game-modal').classList.remove('show');
     currentGame = null;
     gameState = {};
+    
+    // Limpar UI do RPG, se necessário (Será refeito na próxima abertura)
+    document.getElementById('game-container').innerHTML = '<canvas id="game-canvas"></canvas>';
 }
 
 // =====================================================
@@ -1539,9 +1719,4 @@ backToTop.addEventListener('click', () => {
 loadRankings('tetris');
 loadGlobalStats();
 
-// Impedir scroll quando modal aberto
-document.getElementById('game-modal').addEventListener('click', (e) => {
-    // Não fechar ao clicar fora
-});
-
-console.log('🎮 Mini-Jogos carregados com sucesso! Sistema de Tempo/XP ativado.');
+console.log('🎮 Mini-Jogos carregados com sucesso! Sistema de Tempo/XP/Nível/Atributos ativado.');
