@@ -1,21 +1,3 @@
-/**
- * =====================================================
- * GAMES SCRIPT JS - Mini-Jogos Pablo Tasuyuki
- * =====================================================
- * 
- * Funcionalidades:
- * - 6 Mini-jogos completos e interativos
- * - Sistema de autenticação Google (Firebase)
- * - Rankings globais por jogo (Firestore)
- * - Perfil do usuário com estatísticas
- * - Notificações e animações
- */
-
-// =====================================================
-// FIREBASE CONFIGURATION
-// =====================================================
-
-// IMPORTANTE: Substitua com suas credenciais Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyDALe6eKby-7JaCBvej9iqr95Y97s6oHWg",
     authDomain: "flutter-ai-playground-7971c.firebaseapp.com",
@@ -38,6 +20,11 @@ let currentUser = null;
 let currentGame = null;
 let gameLoop = null;
 let gameState = {};
+
+// NOVAS VARIÁVEIS PARA TEMPO E XP
+let playStartTime = 0; // Início do cronômetro de jogo
+const XP_PER_SCORE_POINT = 0.01; // XP por ponto de score
+const XP_PER_MINUTE = 5; // XP base por minuto jogado
 
 const GAMES_CONFIG = {
     'tetris': {
@@ -111,6 +98,41 @@ function formatNumber(num) {
 }
 
 // =====================================================
+// TEMPO E XP
+// =====================================================
+
+function startPlayTimer() {
+    playStartTime = Date.now();
+    console.log(`[Timer] Cronômetro de jogo iniciado para ${currentGame}.`);
+}
+
+function calculateXP(finalScore, minutesPlayed) {
+    const scoreXP = finalScore * XP_PER_SCORE_POINT;
+    const timeXP = minutesPlayed * XP_PER_MINUTE;
+    
+    // XP é a soma da pontuação convertida e o bônus por tempo jogado
+    const totalXP = Math.round(scoreXP + timeXP);
+    
+    return totalXP;
+}
+
+function stopAndSaveGameStats(finalScore) {
+    const endTime = Date.now();
+    if (playStartTime === 0) return; // Se o cronômetro não foi iniciado, sair.
+    
+    const minutesPlayed = Math.floor((endTime - playStartTime) / (1000 * 60));
+    const earnedXP = calculateXP(finalScore, minutesPlayed);
+    
+    console.log(`[Timer] Partida finalizada. Tempo: ${minutesPlayed} min. XP Ganho: ${earnedXP}`);
+    
+    // Zera o cronômetro
+    playStartTime = 0; 
+    
+    // Salvar pontuação e tempo
+    saveScore(currentGame, finalScore, minutesPlayed, earnedXP);
+}
+
+// =====================================================
 // AUTHENTICATION
 // =====================================================
 
@@ -138,7 +160,7 @@ async function handleLogout() {
         await auth.signOut();
         showNotification('Logout realizado com sucesso!', 'success');
     } catch (error) {
-        console.error('Erro no logout:', error);
+        console.error('Erro ao fazer logout:', error);
         showNotification('Erro ao fazer logout.', 'error');
     }
 }
@@ -191,7 +213,7 @@ auth.getRedirectResult().then((result) => {
 // FIRESTORE FUNCTIONS
 // =====================================================
 
-async function saveScore(gameName, score) {
+async function saveScore(gameName, score, minutesPlayed = 0, earnedXP = 0) { // MODIFICADO
     if (!currentUser) {
         showNotification('Faça login para salvar sua pontuação!', 'info');
         return;
@@ -207,61 +229,70 @@ async function saveScore(gameName, score) {
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
         };
 
+        // 1. Salvar pontuação principal (para rankings)
         await db.collection('game-scores').add(scoreData);
         
-        // Atualizar perfil do usuário
-        await updateUserProfile(gameName, score);
+        // 2. Atualizar perfil do usuário (recorde, tempo e XP)
+        await updateUserProfile(gameName, score, minutesPlayed, earnedXP); // Chamada modificada
         
-        showNotification('Pontuação salva com sucesso!', 'success');
+        showNotification(`Pontuação salva! +${earnedXP} XP!`, 'success');
         
-        // Recarregar rankings
+        // Recarregar rankings e perfil
         loadRankings(gameName);
+        loadUserData();
     } catch (error) {
         console.error('Erro ao salvar pontuação:', error);
         showNotification('Erro ao salvar pontuação.', 'error');
     }
 }
 
-async function updateUserProfile(gameName, score) {
+async function updateUserProfile(gameName, score, minutesPlayed = 0, earnedXP = 0) { // MODIFICADO
     const userRef = db.collection('user-profiles').doc(currentUser.uid);
     
     try {
         const doc = await userRef.get();
-        
+        let games = {};
+        let totalXP = 0;
+
         if (doc.exists) {
             const data = doc.data();
-            const games = data.games || {};
+            games = data.games || {};
+            totalXP = data.totalXP || 0;
             
-            if (!games[gameName] || games[gameName].bestScore < score) {
-                games[gameName] = {
-                    bestScore: score,
-                    playCount: (games[gameName]?.playCount || 0) + 1,
-                    lastPlayed: firebase.firestore.FieldValue.serverTimestamp()
-                };
-            } else {
-                games[gameName].playCount = (games[gameName].playCount || 0) + 1;
-                games[gameName].lastPlayed = firebase.firestore.FieldValue.serverTimestamp();
-            }
-            
-            await userRef.update({ games });
+            // Incrementa o XP total
+            totalXP += earnedXP; 
         } else {
-            // Criar novo perfil
-            await userRef.set({
-                userId: currentUser.uid,
-                userName: currentUser.displayName,
-                userPhoto: currentUser.photoURL,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                games: {
-                    [gameName]: {
-                        bestScore: score,
-                        playCount: 1,
-                        lastPlayed: firebase.firestore.FieldValue.serverTimestamp()
-                    }
-                }
-            });
+            // Se for novo perfil
+            totalXP = earnedXP;
         }
+
+        // Lógica do jogo específico
+        const gameData = games[gameName] || { bestScore: 0, playCount: 0, totalTimeMinutes: 0 };
+        
+        // Atualiza tempo total jogado
+        gameData.totalTimeMinutes += minutesPlayed;
+
+        if (gameData.bestScore < score) {
+            gameData.bestScore = score;
+        }
+        
+        gameData.playCount += 1;
+        gameData.lastPlayed = firebase.firestore.FieldValue.serverTimestamp();
+        games[gameName] = gameData;
+
+        // Salva as mudanças
+        await userRef.set({ 
+            userId: currentUser.uid,
+            userName: currentUser.displayName,
+            userPhoto: currentUser.photoURL,
+            // Mantém createdAt se existir, senão usa o atual
+            createdAt: doc.exists ? doc.data().createdAt : firebase.firestore.FieldValue.serverTimestamp(), 
+            totalXP: totalXP, // Salva o novo XP total
+            games: games
+        });
+
     } catch (error) {
-        console.error('Erro ao atualizar perfil:', error);
+        console.error('Erro ao atualizar perfil (XP/Tempo):', error);
     }
 }
 
@@ -323,12 +354,14 @@ async function loadUserData() {
             // Atualizar estatísticas gerais
             let totalScore = 0;
             let totalGames = 0;
+            let totalTime = 0; // NOVO
             let favoriteGame = '-';
             let maxPlayCount = 0;
             
             Object.keys(games).forEach(gameName => {
                 totalScore += games[gameName].bestScore || 0;
                 totalGames += games[gameName].playCount || 0;
+                totalTime += games[gameName].totalTimeMinutes || 0; // NOVO
                 
                 if (games[gameName].playCount > maxPlayCount) {
                     maxPlayCount = games[gameName].playCount;
@@ -336,7 +369,13 @@ async function loadUserData() {
                 }
             });
             
-            document.getElementById('user-score').textContent = `${formatNumber(totalScore)} pontos totais`;
+            // Converte minutos para horas/minutos para exibição
+            const hours = Math.floor(totalTime / 60);
+            const minutes = totalTime % 60;
+            const timeDisplay = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+            
+            // Atualiza o display de XP e tempo
+            document.getElementById('user-score').textContent = `${formatNumber(data.totalXP || 0)} XP`; // MODIFICADO
             
             // Atualizar recordes nos cards
             Object.keys(GAMES_CONFIG).forEach(gameName => {
@@ -352,8 +391,9 @@ async function loadUserData() {
             // Atualizar perfil
             document.getElementById('profile-avatar').src = currentUser.photoURL || 'https://via.placeholder.com/150';
             document.getElementById('profile-name').textContent = currentUser.displayName || 'Jogador';
-            document.getElementById('profile-total-score').textContent = formatNumber(totalScore);
+            document.getElementById('profile-total-score').textContent = formatNumber(data.totalXP || 0); // MODIFICADO PARA XP
             document.getElementById('profile-total-games').textContent = totalGames;
+            document.getElementById('profile-total-time').textContent = timeDisplay; // NOVO: Tempo total
             document.getElementById('profile-favorite').textContent = favoriteGame;
             
             // Atualizar recordes pessoais
@@ -364,10 +404,17 @@ async function loadUserData() {
                 const config = GAMES_CONFIG[gameName];
                 const gameData = games[gameName];
                 
+                // Exibe o tempo jogado por jogo no perfil
+                const gameTime = gameData ? (gameData.totalTimeMinutes || 0) : 0;
+                const gameTimeDisplay = gameTime > 60 ? `${Math.floor(gameTime / 60)}h ${gameTime % 60}m` : `${gameTime}m`;
+                
                 recordsHtml += `
                     <div class="record-item">
-                        <span>${config.icon} ${config.title}</span>
+                        <span class="flex items-center gap-2">${config.icon} ${config.title}</span>
                         <span class="font-bold text-purple-400">${gameData ? formatNumber(gameData.bestScore) : '0'}</span>
+                    </div>
+                    <div class="text-xs text-gray-500 flex justify-end mb-2">
+                        <i class="fas fa-clock mr-1"></i> Tempo Jogado: ${gameTimeDisplay}
                     </div>
                 `;
             });
@@ -856,6 +903,7 @@ function initSnake() {
             ctx.stroke();
             ctx.beginPath();
             ctx.moveTo(0, i * CELL_SIZE);
+            ctx.lineTo(0, i * CELL_SIZE);
             ctx.lineTo(canvas.width, i * CELL_SIZE);
             ctx.stroke();
         }
@@ -1348,6 +1396,9 @@ function startGame(gameName) {
     // Mostrar modal
     document.getElementById('game-modal').classList.add('show');
     
+    // NOVO: Inicia o cronômetro
+    startPlayTimer(); 
+    
     // Iniciar jogo específico
     switch(gameName) {
         case 'tetris': initTetris(); break;
@@ -1368,12 +1419,18 @@ function endGame() {
     const finalScore = gameState.score;
     document.getElementById('final-score').textContent = formatNumber(finalScore);
     
-    // Salvar pontuação
-    saveScore(currentGame, finalScore);
+    // NOVO: Para o cronômetro e salva as estatísticas (tempo e XP)
+    stopAndSaveGameStats(finalScore); 
     
     // Verificar se é recorde pessoal
     const recordElement = document.querySelector(`.record-score[data-game="${currentGame}"]`);
-    const currentRecord = recordElement ? parseInt(recordElement.textContent.replace(/\./g, '')) : 0;
+    // Usar try/catch para garantir que a leitura do recorde não falhe
+    let currentRecord = 0;
+    try {
+        currentRecord = recordElement ? parseInt(recordElement.textContent.replace(/\./g, '')) : 0;
+    } catch(e) {
+        console.warn("Erro ao parsear recorde, usando 0.", e);
+    }
     
     if (finalScore > currentRecord) {
         document.getElementById('high-score-message').textContent = '🎉 Novo Recorde Pessoal! 🎉';
@@ -1390,6 +1447,12 @@ function closeGame() {
     if (gameLoop) {
         cancelAnimationFrame(gameLoop);
         gameLoop = null;
+    }
+    
+    // Garante que o timer pare se o jogo for fechado antes do Game Over
+    if(playStartTime !== 0) {
+        // Salva pontuação 0, mas rastreia o tempo jogado
+        stopAndSaveGameStats(0); 
     }
     
     document.getElementById('game-modal').classList.remove('show');
@@ -1418,8 +1481,7 @@ document.querySelectorAll('.play-btn').forEach(btn => {
         const gameName = e.currentTarget.dataset.game;
         
         if (!currentUser) {
-            showNotification('Faça login para jogar e salvar sua pontuação!', 'info');
-            // Pode jogar sem login, mas não salva
+            showNotification('Você está jogando offline. Faça login para salvar sua pontuação!', 'warning');
         }
         
         startGame(gameName);
@@ -1479,9 +1541,7 @@ loadGlobalStats();
 
 // Impedir scroll quando modal aberto
 document.getElementById('game-modal').addEventListener('click', (e) => {
-    if (e.target.id === 'game-modal') {
-        // Não fechar ao clicar fora
-    }
+    // Não fechar ao clicar fora
 });
 
-console.log('🎮 Mini-Jogos carregados com sucesso!');
+console.log('🎮 Mini-Jogos carregados com sucesso! Sistema de Tempo/XP ativado.');
