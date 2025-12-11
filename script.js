@@ -72,7 +72,6 @@ window.mostrarNotificacao = mostrarNotificacao;
         firebaseAuth = firebase.auth();
         firebaseDB = firebase.firestore();
 
-        // O onAuthStateChanged é mantido para UI dinâmica, mas o reload garante o estado total.
         firebaseAuth.onAuthStateChanged(user => {
             currentUser = user;
             updateAuthUI(user);
@@ -83,7 +82,6 @@ window.mostrarNotificacao = mostrarNotificacao;
             if (result && result.user) {
                 console.log('[auth] getRedirectResult user logged via redirect:', result.user.uid);
                 mostrarNotificacao('Autenticado (redirect) com sucesso!', 'success');
-                // NOVO: Recarrega a página após redirecionamento
                 window.location.reload(); 
             }
         }).catch(err => {
@@ -157,7 +155,7 @@ function solicitarServicoHandler(ev) {
     el.innerHTML = '<i class="fas fa-check"></i> Abrindo WhatsApp...';
     el.classList.add('success');
     abrirWhatsAppMensagem(serviceName);
-    setTimeout(() => { try { el.innerHTML = originalHTML; el.classList.remove('success'); } catch(e){} }, 2000);
+    setTimeout(() => { try { el.innerHTML = originalHTML; el.classList.remove('success'); } catch(e) {} }, 2000);
 }
 
 function migrateSolicitarServicoHandlers() {
@@ -323,6 +321,10 @@ function startGoogleSignIn(forceReauth = false) {
       .catch(err => {
         console.error('[signin] signInWithPopup erro:', err);
         const fallback = ['auth/popup-blocked', 'auth/popup-closed-by-user', 'auth/cancelled-popup-request'];
+        
+        // CORREÇÃO: Reverte o estado de loading se o popup for fechado ou cancelado
+        setAuthButtonsLoading(false); 
+        
         if (err && err.code && fallback.includes(err.code)) {
           mostrarNotificacao('Popup bloqueado ou fechado — redirecionando...', 'warning');
           firebaseAuth.signInWithRedirect(provider);
@@ -335,8 +337,7 @@ function startGoogleSignIn(forceReauth = false) {
         } else {
           mostrarNotificacao('Erro ao entrar com Google (veja console).', 'error');
         }
-      })
-      .finally(() => setAuthButtonsLoading(false));
+      }); // .finally removido, pois setAuthButtonsLoading(false) está no catch
 }
 
 function toggleUserDropdown() {
@@ -450,7 +451,7 @@ function renderStarsNumeric(container, selected = 10) {
 
 async function submitReview() {
     if (!firebaseAuth || !firebaseDB) {
-        mostrarNotificacao('Firebase não configurado. Não é possível enviar avaliações.', 'error');
+        mostrarNotificacao('Firebase SDK não carregado.', 'error');
         return;
     }
     const user = firebaseAuth.currentUser;
