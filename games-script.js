@@ -1,3 +1,18 @@
+/**
+ * =====================================================
+ * GAMES SCRIPT JS - Mini-Jogos Pablo Tasuyuki
+ * =====================================================
+ * * Funcionalidades:
+ * - 6 Mini-jogos clássicos
+ * - NOVO: Otamashis (Clicker/RPG PVE)
+ * - Sistema de autenticação Google (Firebase)
+ * - Progressão de Nível, XP e Atributos
+ */
+
+// =====================================================
+// FIREBASE CONFIGURATION
+// =====================================================
+
 const firebaseConfig = {
     apiKey: "AIzaSyDALe6eKby-7JaCBvej9iqr95Y97s6oHWg",
     authDomain: "flutter-ai-playground-7971c.firebaseapp.com",
@@ -671,10 +686,10 @@ async function saveRPGState(gold, xpGained, currentStage) {
 function advanceStage() {
     otamashisState.currentStage++;
     
-    otamashisState.monsterMaxHealth = Math.round(100 * Math.pow(1.5, otamashisState.currentStage - 1));
+    otamashisState.monsterMaxHealth = Math.round(100 * Math.pow(1.1, otamashisState.currentStage - 1));
     otamashisState.monsterHealth = otamashisState.monsterMaxHealth;
-    otamashisState.monsterXPValue = Math.round(otamashisState.monsterXPValue * 1.2);
-    otamashisState.monsterGoldValue = Math.round(otamashisState.monsterGoldValue * 1.2);
+    otamashisState.monsterXPValue = Math.round(otamashisState.monsterXPValue * 1.5);
+    otamashisState.monsterGoldValue = Math.round(otamashisState.monsterGoldValue * 1.5);
     otamashisState.monsterName = `Monstro do Estágio ${otamashisState.currentStage}`;
     
     renderOtamashisUI();
