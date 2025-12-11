@@ -43,14 +43,15 @@
                 </div>
 
                 <div class="flex items-center space-x-3">
+                    
                     <div id="auth-area" class="hidden md:block relative">
                         <button id="user-menu-btn" 
                                 class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-lg flex items-center space-x-2 transition-all duration-300 shadow-sm">
                             <i class="fab fa-google"></i><span id="user-display-name">Login</span>
                         </button>
                         <div id="user-dropdown" class="absolute right-0 mt-2 w-48 bg-slate-800 border border-slate-700 rounded-lg shadow-xl py-1 hidden z-50">
-                            <a id="logout-btn" href="#" class="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700"><i class="fas fa-sign-out-alt mr-2"></i>Sair</a>
-                            <a id="switch-login-btn" href="#" class="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-700"><i class="fas fa-exchange-alt mr-2"></i>Trocar Login</a>
+                            <a id="logout-btn" href="#" class="block px-4 py-2 text-sm text-red-400 hover:bg-slate-700 transition-colors"><i class="fas fa-sign-out-alt mr-2"></i>Sair</a>
+                            <a id="switch-login-btn" href="#" class="block px-4 py-2 text-sm text-cyan-400 hover:bg-slate-700 transition-colors"><i class="fas fa-exchange-alt mr-2"></i>Trocar Login</a>
                         </div>
                     </div>
 
@@ -59,15 +60,11 @@
                         <i class="fab fa-whatsapp text-xl"></i>
                         <span class="hidden sm:inline font-semibold">Entrar em Contato</span>
                     </a>
-
-                    <button id="login-btn-mobile" class="md:hidden text-slate-300 hover:text-cyan-400 bg-indigo-600 hover:bg-indigo-500 px-3 py-1 rounded-lg flex items-center space-x-2 transition-all duration-300 shadow-sm">
-                        <i class="fab fa-google"></i>
-                    </button>
                     
                     <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-cyan-400">
                         <i class="fas fa-bars text-2xl"></i>
                     </button>
-                </div>
+                    </div>
             </div>
 
             <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 space-y-3">
@@ -77,8 +74,9 @@
                 <a href="games.html" class="block text-slate-300 hover:text-pink-400 transition-colors duration-300">Mini-Jogos 🎮</a>
                 <a href="#contato" class="block text-slate-300 hover:text-cyan-400 transition-colors duration-300">Contato</a>
                 <a href="#avaliacoes" class="block text-slate-300 hover:text-cyan-400 transition-colors duration-300">Avaliações</a>
-                <div class="pt-2">
-                    <button id="login-btn-mobile-menu" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg flex items-center justify-center space-x-2">
+                
+                <div class="pt-2 border-t border-slate-700/50" id="user-actions">
+                    <button id="login-action-btn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg flex items-center justify-center space-x-2">
                         <i class="fab fa-google"></i>
                         <span>Login</span>
                     </button>
@@ -564,7 +562,7 @@
                     <p class="text-slate-400 text-sm mb-4">Instalação de apps essenciais</p>
                     <div class="mb-4">
                         <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-green-400">R$ 50,00</span>
+                            <span class="text-3xl font-bold text-green-400">R$ 500,00</span>
                         </div>
                     </div>
                     <button data-service="Serviço de Instalação de Aplicativos Básicos"
@@ -1286,5 +1284,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
     <script src="script.js"></script>
+
 </body>
 </html>
