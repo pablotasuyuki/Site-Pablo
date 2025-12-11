@@ -72,6 +72,7 @@ window.mostrarNotificacao = mostrarNotificacao;
         firebaseAuth = firebase.auth();
         firebaseDB = firebase.firestore();
 
+        // O onAuthStateChanged é mantido para UI dinâmica, mas o reload garante o estado total.
         firebaseAuth.onAuthStateChanged(user => {
             currentUser = user;
             updateAuthUI(user);
@@ -82,6 +83,8 @@ window.mostrarNotificacao = mostrarNotificacao;
             if (result && result.user) {
                 console.log('[auth] getRedirectResult user logged via redirect:', result.user.uid);
                 mostrarNotificacao('Autenticado (redirect) com sucesso!', 'success');
+                // NOVO: Recarrega a página após redirecionamento
+                window.location.reload(); 
             }
         }).catch(err => {
             if (err && err.code) console.warn('[auth] getRedirectResult error:', err.code, err.message);
@@ -276,12 +279,10 @@ const userDisplayNameSpan = document.getElementById('user-display-name');
 const loginBtnMobile = document.getElementById('login-btn-mobile');
 const logoutBtn = document.getElementById('logout-btn');
 const switchLoginBtn = document.getElementById('switch-login-btn');
-// Div que contém o botão de Login/Logout na seção Avaliações
 const loginAction = document.getElementById('user-actions'); 
 
 
 function setAuthButtonsLoading(loading = true) {
-    // Busca todos os botões de ação de login/logout por ID
     const btns = [userMenuBtn, loginBtnMobile, document.getElementById('login-action-btn'), document.getElementById('logout-action')];
     btns.forEach(btn => {
         if (!btn) return;
@@ -307,7 +308,6 @@ function startGoogleSignIn(forceReauth = false) {
     setAuthButtonsLoading(true);
     const provider = new firebase.auth.GoogleAuthProvider();
     if (forceReauth) {
-        // Força a reautenticação para mostrar a tela de seleção de conta (Trocar Login)
         provider.setCustomParameters({ prompt: 'select_account' }); 
     }
 
@@ -315,6 +315,10 @@ function startGoogleSignIn(forceReauth = false) {
       .then(result => {
         console.log('[signin] signInWithPopup success', result.user && result.user.uid);
         mostrarNotificacao('Logado com sucesso!', 'success');
+        
+        // NOVO: Recarrega a página após login bem-sucedido
+        window.location.reload(); 
+        
       })
       .catch(err => {
         console.error('[signin] signInWithPopup erro:', err);
@@ -336,7 +340,7 @@ function startGoogleSignIn(forceReauth = false) {
 }
 
 function toggleUserDropdown() {
-    if (!currentUser) { // Se não logado, clica para logar
+    if (!currentUser) { 
         startGoogleSignIn();
         return;
     }
@@ -364,7 +368,6 @@ function updateAuthUI(user) {
     const userNameEl = document.getElementById('user-name');
     
     if (user) {
-        // Desktop Header Button/Dropdown
         if (userMenuBtn) {
             const shortName = user.displayName ? user.displayName.split(' ')[0] : (user.email || 'Usuário');
             userMenuBtn.innerHTML = `
@@ -376,27 +379,27 @@ function updateAuthUI(user) {
             userMenuBtn.classList.add('bg-slate-700', 'hover:bg-slate-600');
         }
         
-        // Mobile Login Button (Esconde)
         if (loginBtnMobile) loginBtnMobile.style.display = 'none';
 
-        // Avaliações Section (Substitui Login por Sair)
         if (loginAction) { 
             const logoutActionBtn = document.createElement('button');
             logoutActionBtn.id = 'logout-action';
             logoutActionBtn.className = 'bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded-lg transition-colors';
             logoutActionBtn.innerHTML = 'Sair';
-            logoutActionBtn.addEventListener('click', () => firebaseAuth.signOut());
+            // MODIFICADO: Logout com recarregamento
+            logoutActionBtn.addEventListener('click', () => {
+                firebaseAuth.signOut().then(() => {
+                    window.location.reload(); 
+                });
+            });
             
-            // Remove qualquer botão antigo e adiciona o novo
             loginAction.innerHTML = ''; 
             loginAction.appendChild(logoutActionBtn); 
         }
         
-        // Atualiza o nome de usuário/status na seção de avaliações
         if (userNameEl) userNameEl.textContent = `Logado como: ${user.displayName || user.email || 'Usuário'}`;
 
     } else {
-        // Desktop Header Button/Dropdown (Volta para Login)
         if (userMenuBtn) {
             userMenuBtn.innerHTML = `<i class="fab fa-google"></i><span id="user-display-name">Login</span>`;
             userMenuBtn.classList.remove('bg-slate-700', 'hover:bg-slate-600');
@@ -404,10 +407,8 @@ function updateAuthUI(user) {
             closeUserDropdown();
         }
 
-        // Mobile Login Button (Mostra)
         if (loginBtnMobile) loginBtnMobile.style.display = 'inline-flex';
 
-        // Avaliações Section (Volta para Login)
         if (loginAction) {
             const loginActionBtn = document.createElement('button');
             loginActionBtn.id = 'login-action-btn';
@@ -415,12 +416,10 @@ function updateAuthUI(user) {
             loginActionBtn.innerHTML = 'Entrar com Google';
             loginActionBtn.addEventListener('click', startGoogleSignIn);
             
-            // Remove qualquer botão antigo e adiciona o novo
             loginAction.innerHTML = ''; 
             loginAction.appendChild(loginActionBtn);
         }
         
-        // Atualiza o nome de usuário/status na seção de avaliações
         if (userNameEl) userNameEl.textContent = 'Você não está conectado';
     }
 }
@@ -477,7 +476,6 @@ async function submitReview() {
         mostrarNotificacao('Avaliação enviada! Obrigado.', 'success');
         if (reviewTextEl) reviewTextEl.value = '';
         
-        // Recarrega a primeira página para mostrar a nova avaliação
         fetchReviews(null, PAGE_SIZE, true); 
     } catch (err) {
         console.error('Erro ao enviar avaliação:', err);
@@ -576,7 +574,6 @@ async function fetchReviews(startAfterDoc = null, limit = PAGE_SIZE, isFirstLoad
         renderReviews(docs, isFirstLoad);
         
         if (isFirstLoad) {
-            // Tenta carregar todos os documentos para o cálculo da média
             try {
                 const allDocsSnapshot = await firebaseDB.collection('reviews').get();
                 const allDocs = [];
@@ -601,7 +598,6 @@ async function fetchReviews(startAfterDoc = null, limit = PAGE_SIZE, isFirstLoad
 
     } catch (err) {
         console.error('Erro ao ler avaliações (fetchReviews):', err);
-        // Suprime a notificação de erro, mas mantém a mensagem no console.
         if (reviewsListEl && isFirstLoad) {
             reviewsListEl.innerHTML = '<div class="text-slate-400 text-center">Avaliações não puderam ser carregadas. (Pode haver restrições de permissão).</div>';
         }
@@ -654,7 +650,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Conecta eventos do Dropdown
     if (userMenuBtn) userMenuBtn.addEventListener('click', toggleUserDropdown);
-    if (logoutBtn) logoutBtn.addEventListener('click', (e) => { e.preventDefault(); closeUserDropdown(); firebaseAuth.signOut(); });
+    
+    // MODIFICADO: Logout com recarregamento
+    if (logoutBtn) logoutBtn.addEventListener('click', (e) => { 
+        e.preventDefault(); 
+        closeUserDropdown(); 
+        firebaseAuth.signOut().then(() => { 
+            window.location.reload(); 
+        }); 
+    });
+
+    // Trocar Login já chama startGoogleSignIn, que já tem o reload.
     if (switchLoginBtn) switchLoginBtn.addEventListener('click', (e) => { e.preventDefault(); closeUserDropdown(); startGoogleSignIn(true); });
     if (loginBtnMobile) loginBtnMobile.addEventListener('click', startGoogleSignIn);
 
