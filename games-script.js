@@ -1,20 +1,3 @@
-/**
- * =====================================================
- * GAMES SCRIPT JS - Mini-Jogos Pablo Tasuyuki
- * =====================================================
- * * Funcionalidades:
- * - 6 Mini-jogos completos e interativos
- * - Sistema de autenticação Google (Firebase)
- * - Rankings globais por jogo (Firestore)
- * - Perfil do usuário com estatísticas (AGORA COM TEMPO JOGADO, XP, NÍVEL E ATRIBUTOS)
- * - Notificações e animações
- */
-
-// =====================================================
-// FIREBASE CONFIGURATION
-// =====================================================
-
-// IMPORTANTE: Substitua com suas credenciais Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyDALe6eKby-7JaCBvej9iqr95Y97s6oHWg",
     authDomain: "flutter-ai-playground-7971c.firebaseapp.com",
@@ -24,7 +7,6 @@ const firebaseConfig = {
     appId: "1:623047073166:web:83d31c6c017b2e70af58df"
 };
 
-// Inicializar Firebase
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
@@ -35,78 +17,42 @@ const db = firebase.firestore();
 
 let currentUser = null;
 let currentGame = null;
-let gameLoop = null;
-let gameState = {};
+let gameLoop = null; // Loop para jogos Canvas
+let gameState = {}; // Estado do jogo Canvas
+let otamashisState = {}; // Estado do jogo RPG (Otamashis)
+let otamashisInterval = null; // Loop para animações RPG
 
-// NOVAS VARIÁVEIS PARA TEMPO E XP
-let playStartTime = 0; // Início do cronômetro de jogo
-const XP_PER_SCORE_POINT = 0.01; // XP por ponto de score
-const XP_PER_MINUTE = 5; // XP base por minuto jogado
+// VARIÁVEIS DE PROGRESSÃO
+let playStartTime = 0;
+const XP_PER_SCORE_POINT = 0.01;
+const XP_PER_MINUTE = 5;
+const XP_PER_LEVEL = 100;
+const ATTR_POINTS_PER_LEVEL = 1;
 
-// VARIÁVEIS DE RPG
-const XP_PER_LEVEL = 100; // 100 XP por nível
-const ATTR_POINTS_PER_LEVEL = 1; // 1 Ponto de Atributo por nível
-
+// CONFIGURAÇÃO RPG
 const ATTRIBUTE_NAMES = {
+    forca: { name: 'Força', icon: '💪', desc: 'Aumenta dano físico e vida total.' },
+    destreza: { name: 'Destreza', icon: '🏃', desc: 'Aumenta velocidade de ataque e chance de desvio.' },
     inteligencia: { name: 'Inteligência', icon: '🧠', desc: 'Aumenta dano mágico e precisão de feitiços.' },
     carisma: { name: 'Carisma', icon: '✨', desc: 'Melhora chances de encontrar itens raros e interação social.' },
     sorte: { name: 'Sorte', icon: '🍀', desc: 'Aumenta chance de crítico e evasão.' },
-    fe: { name: 'Fé', icon: '🙏', desc: 'Aumenta resistência a maldições e cura.' },
-    destreza: { name: 'Destreza', icon: '🏃', desc: 'Aumenta velocidade de ataque e chance de desvio.' },
-    forca: { name: 'Força', icon: '💪', desc: 'Aumenta dano físico e vida total.' }
+    fe: { name: 'Fé', icon: '🙏', desc: 'Aumenta resistência a maldições e cura.' }
 };
 
 const GAMES_CONFIG = {
-    'tetris': {
-        icon: '🧱',
-        title: 'Tetris',
-        instructions: 'Use as setas ← → para mover, ↑ para rotacionar e ↓ para descer rápido. Complete linhas para pontuar!',
-        canvasWidth: 300,
-        canvasHeight: 600
-    },
-    'space-shooter': {
-        icon: '🚀',
-        title: 'Space Shooter',
-        instructions: 'Use as setas ← → para mover a nave e ESPAÇO para atirar. Destrua asteroides e inimigos!',
-        canvasWidth: 600,
-        canvasHeight: 600
-    },
-    'snake': {
-        icon: '🐍',
-        title: 'Snake Game',
-        instructions: 'Use as setas para controlar a cobra. Coma frutas para crescer. Não bata nas paredes ou em si mesmo!',
-        canvasWidth: 500,
-        canvasHeight: 500
-    },
-    'click-challenge': {
-        icon: '🎯',
-        title: 'Click Challenge',
-        instructions: 'Clique nos alvos que aparecem na tela o mais rápido possível! Você tem 30 segundos!',
-        canvasWidth: 600,
-        canvasHeight: 600
-    },
-    'pong': {
-        icon: '🏓',
-        title: 'Pong Classic',
-        instructions: 'Use as setas ↑ ↓ ou mouse para mover sua raquete. Não deixe a bola passar!',
-        canvasWidth: 600,
-        canvasHeight: 400
-    },
-    'memory': {
-        icon: '🎨',
-        title: 'Memory Game',
-        instructions: 'Clique nas cartas para virá-las. Encontre todos os pares correspondentes!',
-        canvasWidth: 600,
-        canvasHeight: 600
-    },
-    // NOVO JOGO RPG
-    'otamashis': {
-        icon: '⚔️',
-        title: 'Otamashis: Duel RPG',
-        instructions: 'Customize seu personagem! Use pontos de atributo ganhos ao subir de nível para melhorar suas habilidades. Em breve: encontre um oponente para duelar online (2D).',
-        canvasWidth: 800,
-        canvasHeight: 600,
-        isRPG: true
+    'tetris': { icon: '🧱', title: 'Tetris', instructions: 'Use as setas ← → para mover, ↑ para rotacionar e ↓ para descer rápido. Complete linhas para pontuar!', canvasWidth: 300, canvasHeight: 600 },
+    'space-shooter': { icon: '🚀', title: 'Space Shooter', instructions: 'Use as setas ← → para mover a nave e ESPAÇO para atirar. Destrua asteroides e inimigos!', canvasWidth: 600, canvasHeight: 600 },
+    'snake': { icon: '🐍', title: 'Snake Game', instructions: 'Use as setas para controlar a cobra. Coma frutas para crescer. Não bata nas paredes ou em si mesmo!', canvasWidth: 500, canvasHeight: 500 },
+    'click-challenge': { icon: '🎯', title: 'Click Challenge', instructions: 'Clique nos alvos que aparecem na tela o mais rápido possível! Você tem 30 segundos!', canvasWidth: 600, canvasHeight: 600 },
+    'pong': { icon: '🏓', title: 'Pong Classic', instructions: 'Use as setas ↑ ↓ ou mouse para mover sua raquete. Não deixe a bola passar!', canvasWidth: 600, canvasHeight: 400 },
+    'memory': { icon: '🎨', title: 'Memory Game', instructions: 'Clique nas cartas para virá-las. Encontre todos os pares correspondentes!', canvasWidth: 600, canvasHeight: 600 },
+    'otamashis': { 
+        icon: '⚔️', 
+        title: 'Otamashis: Duel RPG', 
+        instructions: 'Clique no monstro para duelar! Use XP para subir de nível e pontos de atributo para aumentar seu dano e vida.', 
+        canvasWidth: 800, 
+        canvasHeight: 600, 
+        isRPG: true 
     }
 };
 
@@ -133,7 +79,11 @@ function showNotification(message, type = 'info') {
 }
 
 function formatNumber(num) {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    if (num === null || num === undefined) return '0';
+    if (Math.abs(num) >= 1e9) return (num / 1e9).toFixed(1) + 'B';
+    if (Math.abs(num) >= 1e6) return (num / 1e6).toFixed(1) + 'M';
+    if (Math.abs(num) >= 1e3) return (num / 1e3).toFixed(1) + 'K';
+    return Math.round(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
 function calculateLevel(totalXP) {
@@ -142,7 +92,7 @@ function calculateLevel(totalXP) {
     
     while (totalXP >= xpNeeded) {
         level++;
-        xpNeeded = level * XP_PER_LEVEL; // XP necessário para o próximo nível (pode usar curva exponencial se quiser)
+        xpNeeded = level * XP_PER_LEVEL;
     }
     
     const xpCurrentLevel = (level - 1) * XP_PER_LEVEL;
@@ -193,7 +143,7 @@ function stopAndSaveGameStats(finalScore) {
 }
 
 // =====================================================
-// AUTHENTICATION
+// AUTHENTICATION AND FIRESTORE
 // =====================================================
 
 async function handleLogin() {
@@ -229,7 +179,6 @@ function updateUIForUser(user) {
     currentUser = user;
     
     if (user) {
-        // Mostrar informações do usuário
         document.getElementById('login-btn').style.display = 'none';
         document.getElementById('login-btn-mobile').style.display = 'none';
         document.getElementById('user-info').classList.remove('hidden');
@@ -237,48 +186,28 @@ function updateUIForUser(user) {
         document.getElementById('user-avatar').src = user.photoURL || 'https://via.placeholder.com/150';
         document.getElementById('user-name').textContent = user.displayName || 'Jogador';
         
-        // Mostrar links de perfil
         document.getElementById('nav-profile').style.display = 'block';
         document.getElementById('nav-profile-mobile').style.display = 'block';
         
-        // Carregar dados do usuário
         loadUserData();
     } else {
-        // Esconder informações do usuário
         document.getElementById('login-btn').style.display = 'flex';
         document.getElementById('login-btn-mobile').style.display = 'block';
         document.getElementById('user-info').classList.add('hidden');
         document.getElementById('user-info').classList.remove('flex');
         
-        // Esconder links de perfil
         document.getElementById('nav-profile').style.display = 'none';
         document.getElementById('nav-profile-mobile').style.display = 'none';
         document.getElementById('profile').style.display = 'none';
     }
 }
-
-// Monitor de estado de autenticação
 auth.onAuthStateChanged(updateUIForUser);
-
-// Verificar resultado de redirect
-auth.getRedirectResult().then((result) => {
-    if (result.user) {
-        showNotification('Login realizado com sucesso!', 'success');
-    }
-}).catch((error) => {
-    console.error('Erro no redirect:', error);
-});
-
-// =====================================================
-// FIRESTORE FUNCTIONS
-// =====================================================
 
 async function saveScore(gameName, score, minutesPlayed = 0, earnedXP = 0) {
     if (!currentUser) {
         showNotification('Faça login para salvar sua pontuação!', 'info');
         return;
     }
-
     try {
         const scoreData = {
             userId: currentUser.uid,
@@ -289,15 +218,11 @@ async function saveScore(gameName, score, minutesPlayed = 0, earnedXP = 0) {
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
         };
 
-        // 1. Salvar pontuação principal (para rankings)
         await db.collection('game-scores').add(scoreData);
-        
-        // 2. Atualizar perfil do usuário (recorde, tempo e XP)
         await updateUserProfile(gameName, score, minutesPlayed, earnedXP); 
         
         showNotification(`Pontuação salva! +${earnedXP} XP!`, 'success');
         
-        // Recarregar rankings e perfil
         loadRankings(gameName);
         loadUserData();
     } catch (error) {
@@ -325,15 +250,12 @@ async function updateUserProfile(gameName, score, minutesPlayed = 0, earnedXP = 
             attributes = data.attributes || {};
             initialLevel = calculateLevel(currentXP).level;
             
-            // 1. Incrementa o XP total
             currentXP += earnedXP; 
         } else {
             currentXP = earnedXP;
-            // Inicializar atributos base se for a primeira vez
             Object.keys(ATTRIBUTE_NAMES).forEach(key => attributes[key] = 1);
         }
 
-        // 2. Calcular novo nível e pontos ganhos
         const newLevelData = calculateLevel(currentXP);
         const levelsGained = newLevelData.level - initialLevel;
 
@@ -342,7 +264,6 @@ async function updateUserProfile(gameName, score, minutesPlayed = 0, earnedXP = 
             showNotification(`UP! Você subiu para o Nível ${newLevelData.level}! Ganhou ${levelsGained * ATTR_POINTS_PER_LEVEL} ponto(s) de atributo!`, 'success');
         }
 
-        // 3. Lógica do jogo específico
         const gameData = games[gameName] || { bestScore: 0, playCount: 0, totalTimeMinutes: 0 };
         
         gameData.totalTimeMinutes += minutesPlayed;
@@ -355,7 +276,6 @@ async function updateUserProfile(gameName, score, minutesPlayed = 0, earnedXP = 
         gameData.lastPlayed = firebase.firestore.FieldValue.serverTimestamp();
         games[gameName] = gameData;
 
-        // 4. Salva as mudanças
         await userRef.set({ 
             userId: currentUser.uid,
             userName: currentUser.displayName,
@@ -363,8 +283,8 @@ async function updateUserProfile(gameName, score, minutesPlayed = 0, earnedXP = 
             createdAt: doc.exists ? doc.data().createdAt : firebase.firestore.FieldValue.serverTimestamp(), 
             totalXP: currentXP, 
             level: newLevelData.level,
-            attributePoints: attributePoints, // Novo: Pontos para distribuir
-            attributes: attributes, // Novo: Valores dos atributos
+            attributePoints: attributePoints,
+            attributes: attributes,
             games: games
         });
 
@@ -428,13 +348,10 @@ async function loadUserData() {
             const data = doc.data();
             const games = data.games || {};
             
-            // --- CÁLCULO E EXIBIÇÃO DE NÍVEL ---
             const xpData = calculateLevel(data.totalXP || 0);
             
-            // Atualiza o display de XP e Nível no Header
             document.getElementById('user-score').textContent = `Nível ${xpData.level} | ${formatNumber(data.totalXP || 0)} XP`; 
             
-            // --- ESTATÍSTICAS GERAIS ---
             let totalScore = 0;
             let totalGames = 0;
             let totalTime = 0;
@@ -456,7 +373,7 @@ async function loadUserData() {
             const minutes = totalTime % 60;
             const timeDisplay = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
             
-            // --- ATUALIZAÇÃO DOS CARDS DE JOGO ---
+            
             Object.keys(GAMES_CONFIG).forEach(gameName => {
                 const recordElement = document.querySelector(`.record-score[data-game="${gameName}"]`);
                 const playCountElement = document.querySelector(`.play-count[data-game="${gameName}"]`);
@@ -468,14 +385,12 @@ async function loadUserData() {
                     if (playCountElement) playCountElement.textContent = games[gameName].playCount || 0;
                 }
                 
-                // Atualiza o card Otamashis
                 if (GAMES_CONFIG[gameName].isRPG) {
                     if (levelElement) levelElement.textContent = xpData.level;
                     if (pointsElement) pointsElement.textContent = data.attributePoints || 0;
                 }
             });
             
-            // --- ATUALIZAR PERFIL (#profile) ---
             document.getElementById('profile-avatar').src = currentUser.photoURL || 'https://via.placeholder.com/150';
             document.getElementById('profile-name').textContent = currentUser.displayName || 'Jogador';
             document.getElementById('profile-total-score').textContent = formatNumber(data.totalXP || 0);
@@ -483,7 +398,6 @@ async function loadUserData() {
             document.getElementById('profile-total-time').textContent = timeDisplay;
             document.getElementById('profile-favorite').textContent = favoriteGame;
             
-            // Renderiza barra de XP e nível
             const xpBarContainer = document.getElementById('xp-bar-container');
             const xpHtml = `
                 <div class="mb-4">
@@ -495,10 +409,8 @@ async function loadUserData() {
             `;
             if (xpBarContainer) xpBarContainer.innerHTML = xpHtml;
 
-            // Renderiza Atributos
             renderAttributes(data.attributes || {}, data.attributePoints || 0);
             
-            // Atualizar recordes pessoais
             const recordsContainer = document.getElementById('profile-records');
             let recordsHtml = '';
             
@@ -523,7 +435,6 @@ async function loadUserData() {
             recordsContainer.innerHTML = recordsHtml;
         }
         
-        // Carregar estatísticas globais
         loadGlobalStats();
     } catch (error) {
         console.error('Erro ao carregar dados do usuário:', error);
@@ -556,29 +467,27 @@ function renderAttributes(attributes, pointsAvailable) {
 
     Object.keys(ATTRIBUTE_NAMES).forEach(key => {
         const attr = ATTRIBUTE_NAMES[key];
-        const value = attributes[key] || 1; // Valor base 1
+        const value = attributes[key] || 1;
 
         const isDisabled = pointsAvailable === 0;
 
         html += `
-            <div class="attribute-item ${isDisabled ? 'opacity-50' : ''}" data-attr="${key}">
+            <div class="attribute-item border-b border-slate-700/50 pb-2 mb-2 last:border-b-0" data-attr="${key}">
                 <div class="flex items-center justify-between">
                     <span class="font-semibold flex items-center gap-2">
                         ${attr.icon} ${attr.name} (Lv. ${value})
                     </span>
-                    <button class="add-attr-btn px-3 py-1 bg-purple-600 hover:bg-purple-500 rounded-full text-xs font-bold transition-colors"
-                            data-attr-key="${key}" ${isDisabled ? 'disabled' : ''}>
+                    <button class="add-attr-btn px-3 py-1 bg-purple-600 hover:bg-purple-500 rounded-full text-xs font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            data-attr-key="${key}" ${isDisabled ? 'disabled' : ''} title="${attr.desc}">
                         <i class="fas fa-plus"></i>
                     </button>
                 </div>
-                <p class="text-xs text-gray-500 mt-1">${attr.desc}</p>
             </div>
         `;
     });
 
     attrContainer.innerHTML = html;
 
-    // Adiciona event listeners aos novos botões
     document.querySelectorAll('.add-attr-btn').forEach(btn => {
         btn.addEventListener('click', handleAttributeIncrease);
     });
@@ -604,7 +513,6 @@ async function handleAttributeIncrease(e) {
             return;
         }
 
-        // Incrementa o atributo e decrementa o ponto disponível
         attributes[attrKey] = (attributes[attrKey] || 1) + 1;
         points--;
 
@@ -614,7 +522,7 @@ async function handleAttributeIncrease(e) {
         });
 
         showNotification(`${ATTRIBUTE_NAMES[attrKey].icon} ${ATTRIBUTE_NAMES[attrKey].name} melhorado!`, 'success');
-        loadUserData(); // Recarrega para atualizar a UI
+        loadUserData();
 
     } catch (error) {
         console.error('Erro ao distribuir atributo:', error);
@@ -625,15 +533,211 @@ async function handleAttributeIncrease(e) {
 }
 
 // =====================================================
-// GAME ENGINE - TETRIS (mantido)
+// GAME ENGINE - OTAMASHIS (Clicker/RPG PVE)
 // =====================================================
 
+function initOtamashis() {
+    if (!currentUser) {
+        handleLogin();
+        document.getElementById('game-container').innerHTML = `<div class="text-center text-red-400 py-12">Faça login para iniciar o RPG!</div>`;
+        return;
+    }
+    
+    const userData = auth.currentUser;
+    const userRef = db.collection('user-profiles').doc(userData.uid);
+    
+    userRef.get().then(doc => {
+        const profile = doc.data();
+        const attrs = profile.attributes || {};
+
+        // Atributos de Batalha (Força, Destreza, etc.)
+        const force = attrs.forca || 1;
+        
+        // Inicializa o estado do jogo
+        otamashisState = {
+            playerDamage: 1 + force * 2, // Dano base + 2 por ponto de Força
+            playerHealth: 10 + force * 5, // Vida base + 5 por ponto de Força
+            playerGold: profile.rpgGold || 0, // Novo: Carrega Gold do perfil
+            playerXP: profile.totalXP || 0,
+            currentStage: profile.rpgStage || 1, // Novo: Carrega Estágio do perfil
+            // Stats do monstro
+            monsterHealth: 100,
+            monsterMaxHealth: 100,
+            monsterXPValue: 10,
+            monsterGoldValue: 5,
+            monsterIcon: '👹',
+            monsterName: 'Slime de Lama'
+        };
+
+        // Calcula a vida do monstro no estágio atual
+        otamashisState.monsterMaxHealth = 100 * Math.pow(1.5, otamashisState.currentStage - 1);
+        otamashisState.monsterHealth = otamashisState.monsterMaxHealth;
+        
+        renderOtamashisUI();
+        
+        // Remove listener antigo e adiciona o novo (evita duplicatas)
+        document.getElementById('game-container').removeEventListener('click', handleMonsterClick);
+        document.getElementById('game-container').addEventListener('click', handleMonsterClick);
+        
+        // Inicia o loop de animação
+        if (otamashisInterval) clearInterval(otamashisInterval);
+        otamashisInterval = setInterval(updateOtamashisLoop, 1000/30);
+    });
+}
+
+function updateOtamashisLoop() {
+    // Atualiza a sombra/glow do monstro
+    const monsterEl = document.getElementById('monster-area');
+    if (monsterEl) {
+        const healthPct = otamashisState.monsterHealth / otamashisState.monsterMaxHealth;
+        monsterEl.style.boxShadow = `0 0 20px 5px rgba(239, 68, 68, ${1-healthPct})`;
+    }
+}
+
+async function handleMonsterClick(e) {
+    // Garante que o clique seja na área do monstro e não na borda do container
+    if (!e.target.closest('#monster-area')) return;
+    
+    if (otamashisState.monsterHealth <= 0) return;
+
+    // 1. Aplicar Dano
+    otamashisState.monsterHealth -= otamashisState.playerDamage;
+    
+    // 2. Animação de Dano (feedback)
+    const damagePopup = document.createElement('div');
+    damagePopup.className = 'absolute text-xl font-bold text-red-500 animate-damage-popup';
+    damagePopup.textContent = `-${otamashisState.playerDamage}`;
+    const container = document.getElementById('game-container');
+    
+    damagePopup.style.left = `${e.clientX - container.getBoundingClientRect().left - 10}px`; 
+    damagePopup.style.top = `${e.clientY - container.getBoundingClientRect().top - 30}px`; 
+    
+    container.appendChild(damagePopup);
+    setTimeout(() => damagePopup.remove(), 800);
+    
+    // 3. Verificar Morte
+    if (otamashisState.monsterHealth <= 0) {
+        otamashisState.monsterHealth = 0;
+        
+        const rewardsXP = otamashisState.monsterXPValue;
+        const rewardsGold = otamashisState.monsterGoldValue;
+        
+        otamashisState.playerXP += rewardsXP;
+        otamashisState.playerGold += rewardsGold;
+        
+        showNotification(`Monstro derrotado! +${rewardsXP} XP, +${rewardsGold} Gold!`, 'success');
+        
+        // Salva estado do RPG no Firebase e verifica nível UP
+        await saveRPGState(otamashisState.playerGold, rewardsXP, otamashisState.currentStage);
+        
+        // Avançar estágio após um pequeno delay
+        setTimeout(advanceStage, 1000);
+    }
+    
+    // 4. Atualizar UI
+    renderOtamashisUI();
+}
+
+async function saveRPGState(gold, xpGained, currentStage) {
+    const userRef = db.collection('user-profiles').doc(currentUser.uid);
+    const doc = await userRef.get();
+    const data = doc.data() || {};
+    
+    const currentXP = data.totalXP || 0;
+    const initialLevel = calculateLevel(currentXP).level;
+    const newXP = currentXP + xpGained;
+    
+    const newLevelData = calculateLevel(newXP);
+    const levelsGained = newLevelData.level - initialLevel;
+    
+    let attributePoints = data.attributePoints || 0;
+    if (levelsGained > 0) {
+        attributePoints += levelsGained * ATTR_POINTS_PER_LEVEL;
+        showNotification(`UP! Você subiu para o Nível ${newLevelData.level}! Ganhou ${levelsGained * ATTR_POINTS_PER_LEVEL} ponto(s) de atributo!`, 'success');
+    }
+    
+    await userRef.update({
+        rpgGold: gold,
+        rpgStage: currentStage,
+        totalXP: newXP,
+        level: newLevelData.level,
+        attributePoints: attributePoints
+    });
+    
+    // Recarregar perfil para atualizar a barra de XP e pontos de atributo
+    loadUserData();
+}
+
+function advanceStage() {
+    otamashisState.currentStage++;
+    
+    otamashisState.monsterMaxHealth = Math.round(100 * Math.pow(1.5, otamashisState.currentStage - 1));
+    otamashisState.monsterHealth = otamashisState.monsterMaxHealth;
+    otamashisState.monsterXPValue = Math.round(otamashisState.monsterXPValue * 1.2);
+    otamashisState.monsterGoldValue = Math.round(otamashisState.monsterGoldValue * 1.2);
+    otamashisState.monsterName = `Monstro do Estágio ${otamashisState.currentStage}`;
+    
+    renderOtamashisUI();
+}
+
+function renderOtamashisUI() {
+    const container = document.getElementById('game-container');
+    if (!container) return;
+
+    const healthPct = (otamashisState.monsterHealth / otamashisState.monsterMaxHealth) * 100;
+    const monsterIsDead = otamashisState.monsterHealth === 0;
+
+    container.innerHTML = `
+        <style>
+            @keyframes damage-popup { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-50px) scale(1.5); } }
+            .animate-damage-popup { animation: damage-popup 0.8s ease-out forwards; pointer-events: none; }
+        </style>
+        
+        <div class="otamashis-wrapper relative w-full h-full p-4 flex flex-col items-center justify-between">
+            
+            <div class="w-full flex justify-between p-3 bg-slate-800/80 rounded-xl border border-purple-500/30 shadow-lg">
+                <span class="text-yellow-400 font-bold"><i class="fas fa-coins mr-1"></i> ${formatNumber(otamashisState.playerGold)}</span>
+                <span class="text-purple-400 font-bold"><i class="fas fa-star mr-1"></i> ${formatNumber(otamashisState.playerXP)} XP</span>
+                <span class="text-green-400 font-bold"><i class="fas fa-heart mr-1"></i> ${formatNumber(otamashisState.playerHealth)} HP</span>
+            </div>
+            
+            <div id="monster-area" class="relative cursor-pointer select-none mt-8 w-48 h-48 flex flex-col items-center justify-center 
+                                           bg-gradient-to-br from-slate-700 to-slate-900 rounded-full border-4 ${monsterIsDead ? 'border-green-500/50' : 'border-red-600/50'} transition-all hover:scale-[1.02]">
+                <div class="text-6xl animate-float">${monsterIsDead ? '💀' : otamashisState.monsterIcon}</div>
+                <h4 class="text-white font-bold mt-2">${otamashisState.monsterName}</h4>
+                <p class="text-xs text-gray-400">Estágio ${otamashisState.currentStage}</p>
+
+                <div class="absolute -top-6 w-32 h-2 bg-slate-600 rounded-full overflow-hidden">
+                    <div class="h-full bg-red-500 transition-all duration-300" style="width: ${healthPct}%;"></div>
+                </div>
+                ${monsterIsDead ? '<span class="absolute text-xl font-bold text-green-400">DERROTADO!</span>' : ''}
+            </div>
+            
+            <div class="text-center mt-4">
+                <p class="text-3xl font-bold text-red-400">${formatNumber(otamashisState.monsterHealth)} / ${formatNumber(otamashisState.monsterMaxHealth)}</p>
+                <p class="text-sm text-gray-400">Dano por Clique: <span class="text-green-400">${otamashisState.playerDamage}</span></p>
+            </div>
+
+            <div class="w-full flex justify-around p-3 bg-slate-800/80 rounded-xl border border-purple-500/30 shadow-lg mt-auto">
+                <button class="text-pink-400 hover:text-pink-300 font-bold"><i class="fas fa-shopping-bag mr-1"></i> Loja (Em Breve)</button>
+                <button class="text-cyan-400 hover:text-cyan-300 font-bold"><i class="fas fa-search mr-1"></i> Buscar Duelo (Online)</button>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('game-container').style.display = 'flex';
+}
+
+// =====================================================
+// [OUTROS JOGOS CANVAS ABAIXO]
+// (Manteremos o código completo para fins de estrutura)
+// =====================================================
+
+// ... [Código COMPLETO de initTetris, initSpaceShooter, initSnake, initClickChallenge, initPong, initMemory] ...
 function initTetris() {
-    // ... [Implementação Tetris] ...
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
-// canvas.width = config.canvasWidth; // Pode remover/comentar
-// canvas.height = config.canvasHeight; // Pode remover/comentar
+    
     const COLS = 10;
     const ROWS = 20;
     const BLOCK_SIZE = 30;
@@ -844,10 +948,6 @@ function initTetris() {
     update();
 }
 
-// =====================================================
-// GAME ENGINE - SPACE SHOOTER (mantido)
-// =====================================================
-
 function initSpaceShooter() {
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
@@ -979,10 +1079,6 @@ function initSpaceShooter() {
     update();
 }
 
-// =====================================================
-// GAME ENGINE - SNAKE (mantido)
-// =====================================================
-
 function initSnake() {
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
@@ -1095,10 +1191,6 @@ function initSnake() {
     
     update();
 }
-
-// =====================================================
-// GAME ENGINE - CLICK CHALLENGE (mantido)
-// =====================================================
 
 function initClickChallenge() {
     const canvas = document.getElementById('game-canvas');
@@ -1214,10 +1306,6 @@ function initClickChallenge() {
     spawnTarget();
     update();
 }
-
-// =====================================================
-// GAME ENGINE - PONG (mantido)
-// =====================================================
 
 function initPong() {
     const canvas = document.getElementById('game-canvas');
@@ -1351,10 +1439,6 @@ function initPong() {
     
     update();
 }
-
-// =====================================================
-// GAME ENGINE - MEMORY GAME (mantido)
-// =====================================================
 
 function initMemory() {
     const canvas = document.getElementById('game-canvas');
@@ -1496,67 +1580,6 @@ function initMemory() {
     draw();
 }
 
-// =====================================================
-// GAME ENGINE - OTAMASHIS (ESQUELETO)
-// =====================================================
-
-// games-script.js - Função initOtamashis
-
-function initOtamashis() {
-    const canvas = document.getElementById('game-canvas');
-    
-    // REMOVER ESTAS DUAS LINHAS (que causavam o erro):
-    // const ctx = canvas.getContext('2d');
-    
-    const config = GAMES_CONFIG['otamashis'];
-    // canvas.width = config.canvasWidth; // Desnecessário
-    // canvas.height = config.canvasHeight; // Desnecessário
-    
-    gameState = {
-        score: 0,
-        gameOver: false,
-        phase: 'CUSTOMIZATION' 
-    };
-    
-    // Remova as linhas que tentavam configurar o canvas
-    // ...
-    
-    // Se você usa o currentUser, certifique-se de obtê-lo aqui:
-    const userAttributes = currentUser?.attributes || {};
-    
-    // NOVO: Renderizar a tela de personalização (HTML/CSS dentro do Canvas Container)
-    document.getElementById('game-container').innerHTML = `
-        <div id="otamashis-customization-ui" class="text-center p-8 w-full max-w-lg bg-slate-900/80 rounded-xl border border-purple-500/50">
-            <h3 class="text-3xl font-bold text-pink-400 mb-4">Personalização Otamashis ⚔️</h3>
-            <p class="text-gray-400 mb-6">Em desenvolvimento: Escolha arma, roupas e encontre oponentes.</p>
-            
-            <div class="space-y-4">
-                <div class="bg-slate-800 p-4 rounded-lg">
-                    <p class="font-semibold text-purple-300">Seus Atributos:</p>
-                    <div class="text-left text-sm text-gray-300 mt-2">
-                        <p>💪 Força: <span>${userAttributes.forca || 1}</span></p>
-                        <p>🧠 Inteligência: <span>${userAttributes.inteligencia || 1}</span></p>
-                        <p>🍀 Sorte: <span>${userAttributes.sorte || 1}</span></p>
-                    </div>
-                </div>
-
-                <select class="w-full p-3 bg-slate-800 border border-slate-700 rounded-lg text-white">
-                    <option>Pistola</option>
-                    <option>Katana</option>
-                    <option>Espada</option>
-                    <option>Cajado de Fogo</option>
-                    <option>Arco</option>
-                </select>
-
-                <button id="find-duel-btn" class="w-full bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-400 hover:to-teal-400 text-white py-3 rounded-lg font-bold">
-                    <i class="fas fa-search"></i> Encontrar Duelo (Em Breve)
-                </button>
-            </div>
-            
-        </div>
-    `;
-}
-
 
 // =====================================================
 // GAME MANAGEMENT
@@ -1570,39 +1593,32 @@ function startGame(gameName) {
     currentGame = gameName;
     const config = GAMES_CONFIG[gameName];
     
-    // Atualizar modal
     document.getElementById('modal-game-icon').textContent = config.icon;
     document.getElementById('modal-game-title').textContent = config.title;
     document.getElementById('instructions-text').textContent = config.instructions;
     document.getElementById('current-score').textContent = '0';
     
-    // Configurar canvas
     const canvas = document.getElementById('game-canvas');
-    const ctx = canvas.getContext('2d');
     
-    // Esconder game over
     document.getElementById('game-over-screen').classList.add('hidden');
     document.getElementById('game-container').classList.remove('hidden');
     
-    // Limpa o canvas para jogos baseados em Canvas
     if (!config.isRPG) {
-        canvas.style.display = 'block';
         document.getElementById('game-container').innerHTML = '<canvas id="game-canvas"></canvas>';
+        canvas.width = config.canvasWidth;
+        canvas.height = config.canvasHeight;
+        document.getElementById('game-container').style.display = 'block';
+
+        startPlayTimer(); 
     } else {
-        // Esconde o canvas para jogos baseados em DOM (como o RPG)
-        canvas.style.display = 'none'; 
+        document.getElementById('game-container').style.display = 'flex';
+        if (otamashisInterval) clearInterval(otamashisInterval);
         document.getElementById('game-container').innerHTML = '';
+        otamashisState = {}; // Reinicia o estado do RPG
     }
 
-    // Mostrar modal
     document.getElementById('game-modal').classList.add('show');
     
-    // Inicia o cronômetro (somente se não for o Otamashis temporariamente)
-    if (!config.isRPG) { 
-        startPlayTimer(); 
-    }
-    
-    // Iniciar jogo específico
     switch(gameName) {
         case 'tetris': initTetris(); break;
         case 'space-shooter': initSpaceShooter(); break;
@@ -1610,7 +1626,7 @@ function startGame(gameName) {
         case 'click-challenge': initClickChallenge(); break;
         case 'pong': initPong(); break;
         case 'memory': initMemory(); break;
-        case 'otamashis': initOtamashis(); break; // NOVO: Inicia a tela do RPG
+        case 'otamashis': initOtamashis(); break; 
     }
 }
 
@@ -1623,12 +1639,10 @@ function endGame() {
     const finalScore = gameState.score;
     document.getElementById('final-score').textContent = formatNumber(finalScore);
     
-    // Para o cronômetro e salva as estatísticas (tempo e XP)
     if (!GAMES_CONFIG[currentGame].isRPG) {
         stopAndSaveGameStats(finalScore); 
     }
     
-    // Verificar se é recorde pessoal
     const recordElement = document.querySelector(`.record-score[data-game="${currentGame}"]`);
     let currentRecord = 0;
     try {
@@ -1643,7 +1657,6 @@ function endGame() {
         document.getElementById('high-score-message').textContent = `Seu recorde: ${formatNumber(currentRecord)}`;
     }
     
-    // Mostrar tela de game over
     document.getElementById('game-container').classList.add('hidden');
     document.getElementById('game-over-screen').classList.remove('hidden');
 }
@@ -1653,8 +1666,11 @@ function closeGame() {
         cancelAnimationFrame(gameLoop);
         gameLoop = null;
     }
+    if (otamashisInterval) {
+        clearInterval(otamashisInterval);
+        otamashisInterval = null;
+    }
     
-    // Salva pontuação 0, mas rastreia o tempo jogado (se não for o RPG)
     if(playStartTime !== 0 && !GAMES_CONFIG[currentGame].isRPG) {
         stopAndSaveGameStats(0); 
     }
@@ -1662,27 +1678,27 @@ function closeGame() {
     document.getElementById('game-modal').classList.remove('show');
     currentGame = null;
     gameState = {};
+    otamashisState = {};
     
-    // Limpar UI do RPG, se necessário (Será refeito na próxima abertura)
     document.getElementById('game-container').innerHTML = '<canvas id="game-canvas"></canvas>';
+    
+    // Remove o listener do clique do monstro para evitar cliques duplicados em outros jogos
+    document.getElementById('game-container').removeEventListener('click', handleMonsterClick);
 }
 
 // =====================================================
 // EVENT LISTENERS
 // =====================================================
 
-// Login/Logout
 document.getElementById('login-btn').addEventListener('click', handleLogin);
 document.getElementById('login-btn-mobile').addEventListener('click', handleLogin);
 document.getElementById('logout-btn').addEventListener('click', handleLogout);
 
-// Mobile Menu
 document.getElementById('mobile-menu-btn').addEventListener('click', () => {
     const menu = document.getElementById('mobile-menu');
     menu.classList.toggle('hidden');
 });
 
-// Play Buttons
 document.querySelectorAll('.play-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         const gameName = e.currentTarget.dataset.game;
@@ -1695,14 +1711,12 @@ document.querySelectorAll('.play-btn').forEach(btn => {
     });
 });
 
-// Modal Controls
 document.getElementById('close-modal').addEventListener('click', closeGame);
 document.getElementById('play-again-btn').addEventListener('click', () => {
     startGame(currentGame);
 });
 document.getElementById('change-game-btn').addEventListener('click', closeGame);
 
-// Ranking Tabs
 document.querySelectorAll('.ranking-tab').forEach(tab => {
     tab.addEventListener('click', (e) => {
         document.querySelectorAll('.ranking-tab').forEach(t => t.classList.remove('active'));
@@ -1711,7 +1725,6 @@ document.querySelectorAll('.ranking-tab').forEach(tab => {
     });
 });
 
-// Profile Link
 document.querySelectorAll('[href="#profile"]').forEach(link => {
     link.addEventListener('click', (e) => {
         e.preventDefault();
@@ -1724,7 +1737,6 @@ document.querySelectorAll('[href="#profile"]').forEach(link => {
     });
 });
 
-// Back to Top
 const backToTop = document.getElementById('back-to-top');
 window.addEventListener('scroll', () => {
     if (window.scrollY > 300) {
