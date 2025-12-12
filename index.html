@@ -6,16 +6,21 @@
     <meta name="description" content="Serviços profissionais de TI, Programação e Desenvolvimento. Manutenção, suporte técnico, desenvolvimento de software e mais.">
     <title>Serviços de TI - Pablo Tasuyuki</title>
 
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
 
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white font-['Inter']">
 
+    <!-- Header/Navigation -->
     <header class="fixed w-full top-0 z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-700/50 shadow-lg">
         <nav class="container mx-auto px-4 py-4">
             <div class="flex items-center justify-between">
@@ -35,48 +40,39 @@
                     <a href="#sobre" class="text-slate-300 hover:text-cyan-400 transition-colors duration-300">Sobre</a>
                     <a href="#servicos-externos" class="text-slate-300 hover:text-cyan-400 transition-colors duration-300">Serviços Externos</a>
                     <a href="#servicos-internos" class="text-slate-300 hover:text-cyan-400 transition-colors duration-300">Serviços Internos</a>
-                    <a href="games.html" class="text-slate-300 hover:text-pink-400 transition-colors duration-300 font-semibold flex items-center gap-1">
-                        <i class="fas fa-gamepad"></i>Games
-                    </a>
                     <a href="#contato" class="text-slate-300 hover:text-cyan-400 transition-colors duration-300">Contato</a>
                     <a href="#avaliacoes" class="text-slate-300 hover:text-cyan-400 transition-colors duration-300">Avaliações</a>
                 </div>
 
                 <div class="flex items-center space-x-3">
-                    
-                    <div id="auth-area" class="hidden md:block relative">
-                        <button id="user-menu-btn" 
-                                class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-lg flex items-center space-x-2 transition-all duration-300 shadow-sm">
-                            <i class="fab fa-google"></i><span id="user-display-name">Login</span>
+                    <div id="auth-area" class="hidden md:flex items-center space-x-3">
+                        <button id="login-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-lg flex items-center space-x-2 transition-all duration-300 shadow-sm">
+                            <i class="fab fa-google"></i>
+                            <span>Login</span>
                         </button>
-                        <div id="user-dropdown" class="absolute right-0 mt-2 w-48 bg-slate-800 border border-slate-700 rounded-lg shadow-xl py-1 hidden z-50">
-                            <a id="logout-btn" href="#" class="block px-4 py-2 text-sm text-red-400 hover:bg-slate-700 transition-colors"><i class="fas fa-sign-out-alt mr-2"></i>Sair</a>
-                            <a id="switch-login-btn" href="#" class="block px-4 py-2 text-sm text-cyan-400 hover:bg-slate-700 transition-colors"><i class="fas fa-exchange-alt mr-2"></i>Trocar Login</a>
-                        </div>
                     </div>
 
                     <a id="whatsapp-top" href="https://api.whatsapp.com/send?phone=5551997395967&text=Olá!%20Tenho%20interesse%20nos%20seus%20serviços%20de%20TI." 
                        class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-105">
                         <i class="fab fa-whatsapp text-xl"></i>
-                        <span class="hidden sm:inline font-semibold">Entrar em Contato</span>
+                        <span class="hidden sm:inline font-semibold">51 9 9739-5967</span>
                     </a>
-                    
+
                     <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-cyan-400">
                         <i class="fas fa-bars text-2xl"></i>
                     </button>
-                    </div>
+                </div>
             </div>
 
+            <!-- Mobile Menu -->
             <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 space-y-3">
                 <a href="#sobre" class="block text-slate-300 hover:text-cyan-400 transition-colors duration-300">Sobre</a>
                 <a href="#servicos-externos" class="block text-slate-300 hover:text-cyan-400 transition-colors duration-300">Serviços Externos</a>
                 <a href="#servicos-internos" class="block text-slate-300 hover:text-cyan-400 transition-colors duration-300">Serviços Internos</a>
-                <a href="games.html" class="block text-slate-300 hover:text-pink-400 transition-colors duration-300">Mini-Jogos 🎮</a>
                 <a href="#contato" class="block text-slate-300 hover:text-cyan-400 transition-colors duration-300">Contato</a>
                 <a href="#avaliacoes" class="block text-slate-300 hover:text-cyan-400 transition-colors duration-300">Avaliações</a>
-                
-                <div class="pt-2 border-t border-slate-700/50" id="user-actions">
-                    <button id="login-action-btn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg flex items-center justify-center space-x-2">
+                <div class="pt-2">
+                    <button id="login-btn-mobile" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg flex items-center justify-center space-x-2">
                         <i class="fab fa-google"></i>
                         <span>Login</span>
                     </button>
@@ -85,6 +81,7 @@
         </nav>
     </header>
 
+    <!-- Hero Section -->
     <section class="pt-32 pb-20 px-4">
         <div class="container mx-auto text-center">
             <div class="inline-block mb-6 animate-float">
@@ -109,6 +106,7 @@
         </div>
     </section>
 
+    <!-- Sobre Section -->
     <section id="sobre" class="py-20 px-4 bg-slate-800/50">
         <div class="container mx-auto max-w-4xl">
             <div class="text-center mb-12">
@@ -146,6 +144,7 @@
         </div>
     </section>
 
+    <!-- Serviços Externos -->
     <section id="servicos-externos" class="py-20 px-4">
         <div class="container mx-auto">
             <div class="text-center mb-16">
@@ -159,6 +158,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Acesso Remoto -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -181,6 +181,7 @@
                     </button>
                 </div>
 
+                <!-- Atendimento Técnico Externo -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -203,6 +204,7 @@
                     </button>
                 </div>
 
+                <!-- Acesso Remoto para Servidor -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -225,6 +227,7 @@
                     </button>
                 </div>
 
+                <!-- Solicitação Específica -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-teal-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -246,6 +249,7 @@
                     </button>
                 </div>
 
+                <!-- Busca/Entrega -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -266,6 +270,7 @@
                     </button>
                 </div>
 
+                <!-- Busca/Entrega/Instalação -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -286,6 +291,7 @@
                     </button>
                 </div>
 
+                <!-- Instalação de Apps/Jogos Externo -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -307,6 +313,7 @@
                     </button>
                 </div>
 
+                <!-- Backup em Nuvem -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-sky-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -328,6 +335,7 @@
                     </button>
                 </div>
 
+                <!-- Serviços de Rede -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -349,6 +357,7 @@
                     </button>
                 </div>
 
+                <!-- Pacotes Conjuntos Externo -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -370,6 +379,7 @@
                     </button>
                 </div>
 
+                <!-- Ativação Office 365 -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center shadow-lg">
@@ -391,6 +401,7 @@
                     </button>
                 </div>
 
+                <!-- Ativação Windows Externo -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-sky-600 to-blue-700 rounded-lg flex items-center justify-center shadow-lg">
@@ -412,6 +423,7 @@
                     </button>
                 </div>
 
+                <!-- Antivírus Endpoint -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -436,6 +448,7 @@
         </div>
     </section>
 
+    <!-- Serviços Internos -->
     <section id="servicos-internos" class="py-20 px-4 bg-slate-800/50">
         <div class="container mx-auto">
             <div class="text-center mb-16">
@@ -449,6 +462,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Backup de Dados -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -469,6 +483,7 @@
                     </button>
                 </div>
 
+                <!-- Formatação -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -489,6 +504,7 @@
                     </button>
                 </div>
 
+                <!-- Formatação com Backup -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -510,6 +526,7 @@
                     </button>
                 </div>
 
+                <!-- Formatação com Backup >300GB -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-pink-500 to-rose-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -531,6 +548,7 @@
                     </button>
                 </div>
 
+                <!-- Formatação de Macbook -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-slate-500 to-slate-700 rounded-lg flex items-center justify-center shadow-lg">
@@ -552,6 +570,7 @@
                     </button>
                 </div>
 
+                <!-- Instalação de Aplicativos Básicos -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -572,6 +591,7 @@
                     </button>
                 </div>
 
+                <!-- Instalação de Componentes -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -592,6 +612,7 @@
                     </button>
                 </div>
 
+                <!-- Manutenção Preventiva Desktop -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -612,6 +633,7 @@
                     </button>
                 </div>
 
+                <!-- Manutenção Preventiva Notebook -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -632,6 +654,7 @@
                     </button>
                 </div>
 
+                <!-- Recuperação de Dados 120GB-320GB -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -653,6 +676,7 @@
                     </button>
                 </div>
 
+                <!-- Recuperação de Dados 500GB -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-rose-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -674,6 +698,7 @@
                     </button>
                 </div>
 
+                <!-- Recuperação de Dados 1TB -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-rose-500 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -695,6 +720,7 @@
                     </button>
                 </div>
 
+                <!-- Instalação de Apps/Jogos Interno -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-sky-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -716,6 +742,7 @@
                     </button>
                 </div>
 
+                <!-- Ativação Windows Interno -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center shadow-lg">
@@ -737,6 +764,7 @@
                     </button>
                 </div>
 
+                <!-- Ativação Office 365 Interno -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-lg flex items-center justify-center shadow-lg">
@@ -758,6 +786,7 @@
                     </button>
                 </div>
 
+                <!-- Pacotes Conjuntos Interno -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-fuchsia-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -779,6 +808,7 @@
                     </button>
                 </div>
 
+                <!-- Clonagem de Sistema -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -799,6 +829,7 @@
                     </button>
                 </div>
 
+                <!-- Diagnóstico -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -820,6 +851,7 @@
                     </button>
                 </div>
 
+                <!-- Diagnóstico em HD -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -840,6 +872,7 @@
                     </button>
                 </div>
 
+                <!-- Montagem Desktop Gamer -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -861,6 +894,7 @@
                     </button>
                 </div>
 
+                <!-- Quebra de Senha Windows -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -882,6 +916,7 @@
                     </button>
                 </div>
 
+                <!-- Quebra de Senha Windows Server -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -903,6 +938,7 @@
                     </button>
                 </div>
 
+                <!-- Troca Bateria BIOS -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-lime-500 to-green-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -924,6 +960,7 @@
                     </button>
                 </div>
 
+                <!-- Troca Microfone/Webcam -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -945,6 +982,7 @@
                     </button>
                 </div>
 
+                <!-- VPN até 10 Usuários -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -966,6 +1004,7 @@
                     </button>
                 </div>
 
+                <!-- Kaspersky -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -986,6 +1025,7 @@
                     </button>
                 </div>
 
+                <!-- Instalação Windows Server -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -1007,6 +1047,7 @@
                     </button>
                 </div>
 
+                <!-- Desenvolvimento de Sistema -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -1028,6 +1069,7 @@
                     </button>
                 </div>
 
+                <!-- Desenvolvimento de App -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -1049,6 +1091,7 @@
                     </button>
                 </div>
 
+                <!-- Desenvolvimento de Game -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-pink-500 to-red-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -1070,6 +1113,7 @@
                     </button>
                 </div>
 
+                <!-- Criação de Site -->
                 <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
                     <div class="flex items-start justify-between mb-4">
                         <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -1095,40 +1139,7 @@
         </div>
     </section>
 
-    <section id="mini-jogos-destaque" class="py-20 bg-gradient-to-br from-purple-900 to-pink-900">
-        <div class="container mx-auto px-4 text-center">
-            <h2 class="text-4xl font-bold mb-6 text-white">
-                🎮 Relaxe com Nossos Mini-Jogos!
-            </h2>
-            <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-                Curta uma pausa com jogos clássicos! Tetris, Space Shooter, Snake e muito mais. 
-                Faça login e compete no ranking global!
-            </p>
-            
-            <div class="grid md:grid-cols-3 gap-6 mb-8 max-w-4xl mx-auto">
-                <div class="bg-white/10 backdrop-blur-md rounded-xl p-6">
-                    <div class="text-5xl mb-4">🧱</div>
-                    <h3 class="text-xl font-bold mb-2 text-purple-200">Tetris</h3>
-                    <p class="text-gray-300">Clássico jogo de blocos</p>
-                </div>
-                <div class="bg-white/10 backdrop-blur-md rounded-xl p-6">
-                    <div class="text-5xl mb-4">🚀</div>
-                    <h3 class="text-xl font-bold mb-2 text-purple-200">Space Shooter</h3>
-                    <p class="text-gray-300">Destrua asteroides!</p>
-                </div>
-                <div class="bg-white/10 backdrop-blur-md rounded-xl p-6">
-                    <div class="text-5xl mb-4">🐍</div>
-                    <h3 class="text-xl font-bold mb-2 text-purple-200">Snake Game</h3>
-                    <p class="text-gray-300">Coma frutas e cresça</p>
-                </div>
-            </div>
-            
-            <a href="games.html" class="inline-block bg-gradient-to-r from-purple-600 to-pink-600 px-12 py-4 rounded-full text-xl font-bold text-white hover:shadow-2xl hover:shadow-purple-500/50 transition-all">
-                <i class="fas fa-play mr-2"></i>Jogar Agora!
-            </a>
-        </div>
-    </section>
-
+    <!-- Contato Section -->
     <section id="contato" class="py-20 px-4">
         <div class="container mx-auto max-w-4xl">
             <div class="text-center mb-12">
@@ -1142,6 +1153,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- WhatsApp -->
                 <a id="whatsapp-card" href="https://api.whatsapp.com/send?phone=5551997395967&text=Olá!%20Tenho%20interesse%20nos%20seus%20serviços%20de%20TI." 
                    class="bg-slate-900/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50 hover:border-green-500/50 transition-all duration-300 shadow-lg hover:shadow-green-500/20 text-center group">
                     <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -1152,6 +1164,7 @@
                     <p class="text-green-400 font-semibold">51 9 9739-5967</p>
                 </a>
 
+                <!-- Instagram -->
                 <a href="https://www.instagram.com/pablo_tasuyuki/" target="_blank"
                    class="bg-slate-900/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50 hover:border-pink-500/50 transition-all duration-300 shadow-lg hover:shadow-pink-500/20 text-center group">
                     <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -1162,6 +1175,7 @@
                     <p class="text-pink-400 font-semibold">@pablo_tasuyuki</p>
                 </a>
 
+                <!-- LinkedIn -->
                 <a href="https://www.linkedin.com/in/tasuyuki-pablo-a1360b3a0/" target="_blank"
                    class="bg-slate-900/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 shadow-lg hover:shadow-blue-500/20 text-center group">
                     <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
@@ -1175,6 +1189,7 @@
         </div>
     </section>
 
+    <!-- Avaliações Section -->
     <section id="avaliacoes" class="py-20 px-4 bg-slate-800/40">
         <div class="container mx-auto max-w-4xl">
             <div class="text-center mb-8">
@@ -1194,7 +1209,7 @@
                         <div id="user-info" class="text-right text-slate-400">
                             <div id="user-name">Você não está conectado</div>
                             <div id="user-actions" class="mt-2">
-                                <button id="login-action-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-lg">Entrar com Google</button>
+                                <button id="login-action" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-lg">Entrar com Google</button>
                             </div>
                         </div>
                     </div>
@@ -1221,9 +1236,11 @@
         </div>
     </section>
 
+    <!-- Footer -->
     <footer class="bg-slate-900/80 backdrop-blur-sm border-t border-slate-700/50 py-12 px-4">
         <div class="container mx-auto">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <!-- Sobre -->
                 <div>
                     <h3 class="text-xl font-bold mb-4 text-cyan-400">Pablo Tasuyuki</h3>
                     <p class="text-slate-400 text-sm leading-relaxed">
@@ -1232,18 +1249,19 @@
                     </p>
                 </div>
 
+                <!-- Links Rápidos -->
                 <div>
                     <h3 class="text-xl font-bold mb-4 text-cyan-400">Links Rápidos</h3>
                     <ul class="space-y-2">
                         <li><a href="#sobre" class="text-slate-400 hover:text-cyan-400 transition-colors duration-300">Sobre</a></li>
                         <li><a href="#servicos-externos" class="text-slate-400 hover:text-cyan-400 transition-colors duration-300">Serviços Externos</a></li>
                         <li><a href="#servicos-internos" class="text-slate-400 hover:text-cyan-400 transition-colors duration-300">Serviços Internos</a></li>
-                        <li><a href="games.html" class="text-slate-400 hover:text-pink-400 transition-colors duration-300">Mini-Jogos 🎮</a></li>
                         <li><a href="#contato" class="text-slate-400 hover:text-cyan-400 transition-colors duration-300">Contato</a></li>
                         <li><a href="#avaliacoes" class="text-slate-400 hover:text-cyan-400 transition-colors duration-300">Avaliações</a></li>
                     </ul>
                 </div>
 
+                <!-- Contato -->
                 <div>
                     <h3 class="text-xl font-bold mb-4 text-cyan-400">Contato</h3>
                     <div class="space-y-3">
@@ -1274,17 +1292,19 @@
         </div>
     </footer>
 
+    <!-- Floating WhatsApp Button -->
     <a id="floating-whatsapp" href="https://api.whatsapp.com/send?phone=5551997395967&text=Olá!%20Tenho%20interesse%20nos%20seus%20serviços%20de%20TI."
        class="fixed bottom-6 right-6 w-16 h-16 bg-green-600 hover:bg-green-500 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300 z-50 animate-bounce-slow">
         <i class="fab fa-whatsapp text-white text-3xl"></i>
     </a>
 
+    <!-- Firebase SDKs (compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check-compat.js"></script>
 
+    <!-- Custom JavaScript -->
+    <!-- Substitua js/script.js pelo arquivo completo atualizado (contendo seu firebaseConfig) -->
     <script src="script.js"></script>
-
 </body>
 </html>
