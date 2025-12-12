@@ -72,6 +72,28 @@ window.mostrarNotificacao = mostrarNotificacao;
         firebaseAuth = firebase.auth();
         firebaseDB = firebase.firestore();
 
+        // =====================================================
+        // FIREBASE APP CHECK
+        // =====================================================
+        if (typeof firebase.appCheck !== 'undefined') {
+            const appCheck = firebase.appCheck();
+            const SITE_KEY = '6LfFaSksAAAAAB6hnM3dC7hmv8mj5XFJVQZNJvNS'; // Sua Chave de Site Pública
+
+            // Configura o modo de depuração para ambiente local (localhost)
+            if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+                window.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+                console.warn("APP CHECK DEBUG MODE ATIVO.");
+            }
+            
+            appCheck.activate(
+                SITE_KEY,
+                true // isTokenAutoRefreshEnabled
+            );
+        }
+        // =====================================================
+
+
+        // O onAuthStateChanged é mantido para UI dinâmica, mas o reload garante o estado total.
         firebaseAuth.onAuthStateChanged(user => {
             currentUser = user;
             updateAuthUI(user);
@@ -95,7 +117,7 @@ window.mostrarNotificacao = mostrarNotificacao;
 })();
 
 /* ===========================
-   MOBILE MENU
+   [RESTO DO CÓDIGO JS MANTIDO INALTERADO]
    =========================== */
 function initMobileMenu() {
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -119,9 +141,6 @@ function initMobileMenu() {
     });
 }
 
-/* ===========================
-   SMOOTH SCROLL
-   =========================== */
 function initSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -138,9 +157,6 @@ function initSmoothScroll() {
     });
 }
 
-/* ===========================
-   WHATSAPP: solicitar serviço
-   =========================== */
 function abrirWhatsAppMensagem(serviceName) {
     const mensagem = `Olá! Tenho interesse no serviço: ${serviceName}`;
     const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_PHONE}&text=${encodeURIComponent(mensagem)}`;
@@ -175,9 +191,6 @@ function migrateSolicitarServicoHandlers() {
     });
 }
 
-/* ===========================
-   HEADER EFFECT
-   =========================== */
 function initHeaderEffect() {
     const header = document.querySelector('header');
     if (!header) return;
@@ -187,9 +200,6 @@ function initHeaderEffect() {
     });
 }
 
-/* ===========================
-   CARD OBSERVER
-   =========================== */
 function initCardObserver() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -202,9 +212,6 @@ function initCardObserver() {
     document.querySelectorAll('.service-card').forEach(card => observer.observe(card));
 }
 
-/* ===========================
-   LAZY IMAGES
-   =========================== */
 function initLazyImages() {
     if (!('IntersectionObserver' in window)) return;
     const imgObserver = new IntersectionObserver((entries) => {
@@ -220,9 +227,6 @@ function initLazyImages() {
     document.querySelectorAll('img[data-src]').forEach(img => imgObserver.observe(img));
 }
 
-/* ===========================
-   BACK TO TOP
-   =========================== */
 function criarBotaoVoltarTopo() {
     if (document.getElementById('back-to-top')) return;
     const botao = document.createElement('button');
@@ -238,9 +242,6 @@ function criarBotaoVoltarTopo() {
     });
 }
 
-/* ===========================
-   BUSCA
-   =========================== */
 function criarBarraBusca() {
     const hero = document.querySelector('section.pt-32') || document.querySelector('section');
     if (!hero) return;
@@ -268,9 +269,6 @@ function criarBarraBusca() {
     });
 }
 
-/* ===========================
-   LOGIN / AUTH UI (Novo Dropdown)
-   =========================== */
 const userMenuBtn = document.getElementById('user-menu-btn');
 const userDropdown = document.getElementById('user-dropdown');
 const userDisplayNameSpan = document.getElementById('user-display-name');
@@ -314,7 +312,6 @@ function startGoogleSignIn(forceReauth = false) {
         console.log('[signin] signInWithPopup success', result.user && result.user.uid);
         mostrarNotificacao('Logado com sucesso!', 'success');
         
-        // NOVO: Recarrega a página após login bem-sucedido
         window.location.reload(); 
         
       })
@@ -322,7 +319,6 @@ function startGoogleSignIn(forceReauth = false) {
         console.error('[signin] signInWithPopup erro:', err);
         const fallback = ['auth/popup-blocked', 'auth/popup-closed-by-user', 'auth/cancelled-popup-request'];
         
-        // CORREÇÃO: Reverte o estado de loading se o popup for fechado ou cancelado
         setAuthButtonsLoading(false); 
         
         if (err && err.code && fallback.includes(err.code)) {
@@ -337,7 +333,7 @@ function startGoogleSignIn(forceReauth = false) {
         } else {
           mostrarNotificacao('Erro ao entrar com Google (veja console).', 'error');
         }
-      }); // .finally removido, pois setAuthButtonsLoading(false) está no catch
+      });
 }
 
 function toggleUserDropdown() {
@@ -387,7 +383,6 @@ function updateAuthUI(user) {
             logoutActionBtn.id = 'logout-action';
             logoutActionBtn.className = 'bg-red-600 hover:bg-red-500 text-white px-3 py-1 rounded-lg transition-colors';
             logoutActionBtn.innerHTML = 'Sair';
-            // MODIFICADO: Logout com recarregamento
             logoutActionBtn.addEventListener('click', () => {
                 firebaseAuth.signOut().then(() => {
                     window.location.reload(); 
@@ -426,9 +421,6 @@ function updateAuthUI(user) {
 }
 
 
-/* ===========================
-   REVIEWS: UI e Firestore (com Paginação)
-   =========================== */
 function renderStarsNumeric(container, selected = 10) {
     if (!container) return;
     container.innerHTML = '';
@@ -451,7 +443,7 @@ function renderStarsNumeric(container, selected = 10) {
 
 async function submitReview() {
     if (!firebaseAuth || !firebaseDB) {
-        mostrarNotificacao('Firebase SDK não carregado.', 'error');
+        mostrarNotificacao('Firebase SDK não configurado.', 'error');
         return;
     }
     const user = firebaseAuth.currentUser;
@@ -663,6 +655,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Trocar Login já chama startGoogleSignIn, que já tem o reload.
     if (switchLoginBtn) switchLoginBtn.addEventListener('click', (e) => { e.preventDefault(); closeUserDropdown(); startGoogleSignIn(true); });
+    // Corrigido: Botão Login Mobile (que não é usado no layout atual mas mantido)
     if (loginBtnMobile) loginBtnMobile.addEventListener('click', startGoogleSignIn);
 
     // start fetching reviews (paginated)
