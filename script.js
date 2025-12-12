@@ -72,27 +72,7 @@ window.mostrarNotificacao = mostrarNotificacao;
         firebaseAuth = firebase.auth();
         firebaseDB = firebase.firestore();
 
-        // =====================================================
-        // FIREBASE APP CHECK
-        // =====================================================
-        if (typeof firebase.appCheck !== 'undefined') {
-            const appCheck = firebase.appCheck();
-            const SITE_KEY = '6LfFaSksAAAAAB6hnM3dC7hmv8mj5XFJVQZNJvNS'; // Sua Chave de Site Pública
-
-            // Configura o modo de depuração para ambiente local (localhost)
-            if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-                window.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
-                console.warn("APP CHECK DEBUG MODE ATIVO.");
-            }
-            
-            appCheck.activate(
-                SITE_KEY,
-                true // isTokenAutoRefreshEnabled
-            );
-        }
-        // =====================================================
-
-
+        
         // O onAuthStateChanged é mantido para UI dinâmica, mas o reload garante o estado total.
         firebaseAuth.onAuthStateChanged(user => {
             currentUser = user;
