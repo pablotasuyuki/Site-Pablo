@@ -3,10 +3,9 @@
  * GAMES SCRIPT JS - Mini-Jogos Pablo Tasuyuki
  * =====================================================
  * * Funcionalidades:
- * - 6 Mini-jogos clássicos
- * - NOVO: Otamashis (Clicker/RPG PVE) com LOJA e UPGRADE DE ARMAS
- * - Sistema de autenticação Google (Firebase)
- * - Progressão de Nível, XP e Atributos
+ * - Sistema de Nível, XP, Atributos e Loja (Otamashis PVE)
+ * - Dificuldade ajustada (10% por estágio) e Dano inicial melhorado
+ * - Proteção reCAPTCHA v3 (App Check)
  */
 
 // =====================================================
@@ -25,6 +24,27 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
+const rtdb = firebase.database(); // Realtime Database para futuro duelo
+
+// =====================================================
+// FIREBASE APP CHECK
+// =====================================================
+if (typeof firebase.appCheck !== 'undefined' && typeof firebase.appCheck.ReCaptchaV3Provider !== 'undefined') {
+    const appCheck = firebase.appCheck();
+    const SITE_KEY = '6LfFaSksAAAAAB6hnM3dC7hmv8mj5XFJVQZNJvNS'; // Sua Chave de Site Pública
+
+    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+        window.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+        console.warn("APP CHECK DEBUG MODE ATIVO.");
+    }
+    
+    appCheck.activate(
+        SITE_KEY,
+        true // isTokenAutoRefreshEnabled
+    );
+}
+// =====================================================
+
 
 // =====================================================
 // GLOBAL VARIABLES
@@ -36,6 +56,7 @@ let gameLoop = null;
 let gameState = {}; 
 let otamashisState = {}; 
 let otamashisInterval = null; 
+let currentDuelId = null; 
 
 // VARIÁVEIS DE PROGRESSÃO
 let playStartTime = 0;
@@ -55,7 +76,7 @@ const ATTRIBUTE_NAMES = {
 };
 
 const INITIAL_WEAPONS = {
-    punho: { name: 'Punhos (Base)', icon: '👊', atk: 10, cost: 0, multiplier: 1.0, upgradeCost: 100 },
+    punho: { name: 'Punhos (Base)', icon: '👊', atk: 10, cost: 0, multiplier: 1.0, upgradeCost: 100 }, 
     katana: { name: 'Katana', icon: '🔪', atk: 50, cost: 500, multiplier: 1.2, upgradeCost: 250 },
     pistola: { name: 'Pistola', icon: '🔫', atk: 60, cost: 600, multiplier: 1.1, upgradeCost: 300 },
     espada: { name: 'Espada Longa', icon: '⚔️', atk: 70, cost: 700, multiplier: 1.3, upgradeCost: 350 },
@@ -74,7 +95,7 @@ const GAMES_CONFIG = {
     'tetris': { icon: '🧱', title: 'Tetris', instructions: 'Use as setas ← → para mover, ↑ para rotacionar e ↓ para descer rápido. Complete linhas para pontuar!', canvasWidth: 300, canvasHeight: 600 },
     'space-shooter': { icon: '🚀', title: 'Space Shooter', instructions: 'Use as setas ← → para mover a nave e ESPAÇO para atirar. Destrua asteroides e inimigos!', canvasWidth: 600, canvasHeight: 600 },
     'snake': { icon: '🐍', title: 'Snake Game', instructions: 'Use as setas para controlar a cobra. Coma frutas para crescer. Não bata nas paredes ou em si mesmo!', canvasWidth: 500, canvasHeight: 500 },
-    'click-challenge': { icon: '🎯', title: 'Click Challenge', instructions: 'Clique nos alvos que aparecem na tela o mais rápido possível! Você tem 30 segundos!', canvasWidth: 600, canvasHeight: 600 },
+    'click-challenge': { icon: '🎯', title: 'Click Challenge', instructions: 'Teste seus reflexos! Clique nos alvos que aparecem na tela o mais rápido possível! Você tem 30 segundos!', canvasWidth: 600, canvasHeight: 600 },
     'pong': { icon: '🏓', title: 'Pong Classic', instructions: 'Use as setas ↑ ↓ ou mouse para mover sua raquete. Não deixe a bola passar!', canvasWidth: 600, canvasHeight: 400 },
     'memory': { icon: '🎨', title: 'Memory Game', instructions: 'Clique nas cartas para virá-las. Encontre todos os pares correspondentes!', canvasWidth: 600, canvasHeight: 600 },
     'otamashis': { 
@@ -88,7 +109,7 @@ const GAMES_CONFIG = {
 };
 
 // =====================================================
-// UTILITY FUNCTIONS
+// UTILIDADES E CÁLCULO DE NÍVEL
 // =====================================================
 
 function showNotification(message, type = 'info') {
@@ -603,9 +624,8 @@ function initOtamashis() {
         const equippedWeapon = INITIAL_WEAPONS[equippedWeaponKey];
         const weaponLevel = inventory[equippedWeaponKey]?.level || 1;
 
-        // CALCULA DANO TOTAL: Dano Base (10) + Atributo (Força * 2) + Arma (ATK * Multiplicador * Nível)
         const weaponAtkBonus = (equippedWeapon.atk * equippedWeapon.multiplier * weaponLevel);
-        const totalPlayerDamage = Math.round(10 + (force * 2) + weaponAtkBonus);
+        const totalPlayerDamage = Math.round(10 + (force * 2) + weaponAtkBonus); // Dano Base 10
         
         otamashisState = {
             playerDamage: totalPlayerDamage,
@@ -619,18 +639,17 @@ function initOtamashis() {
             monsterGoldValue: 5,
             monsterIcon: '👹',
             monsterName: 'Slime de Lama',
-            inventory: inventory, // Para uso na loja
-            rpgProfile: profile // Para facilitar acesso
+            inventory: inventory, 
+            rpgProfile: profile,
+            view: 'battle'
         };
 
-        // CORREÇÃO DA CURVA DE DIFICULDADE (1.1 - 10% por estágio)
-        otamashisState.monsterMaxHealth = Math.round(100 * Math.pow(1.1, otamashisState.currentStage - 1)); 
+        otamashisState.monsterMaxHealth = Math.round(100 * Math.pow(1.1, otamashisState.currentStage - 1)); // Dificuldade 1.1
         otamashisState.monsterHealth = otamashisState.monsterMaxHealth;
         
-        // Sorteia o primeiro monstro do estágio atual
         spawnNewMonster(false); 
         
-        renderOtamashisUI('battle'); // Inicia na tela de Batalha
+        renderOtamashisUI('battle');
         
         document.getElementById('game-container').removeEventListener('click', handleMonsterClick);
         document.getElementById('game-container').addEventListener('click', handleMonsterClick);
@@ -646,36 +665,34 @@ function spawnNewMonster(advanceStageLogic = true) {
     }
     
     const stage = otamashisState.currentStage;
-    const tierIndex = Math.min(Math.floor((stage - 1) / 10), MONSTER_TIERS.length - 1); // Muda de Tier a cada 10 estágios
+    const tierIndex = Math.min(Math.floor((stage - 1) / 10), MONSTER_TIERS.length - 1); 
     const currentTier = MONSTER_TIERS[tierIndex];
 
     const newMonsterName = currentTier.monsters[Math.floor(Math.random() * currentTier.monsters.length)];
     
-    // Calcula vida do monstro com base no estágio (Fator 1.1)
     const baseHealth = 100;
     const difficultyFactor = 1.1; 
     otamashisState.monsterMaxHealth = Math.round(baseHealth * Math.pow(difficultyFactor, stage - 1));
     otamashisState.monsterHealth = otamashisState.monsterMaxHealth;
     
-    // Ajusta XP e Gold
     otamashisState.monsterXPValue = Math.round(10 + stage * 5);
     otamashisState.monsterGoldValue = Math.round(5 + stage * 2);
     
     otamashisState.monsterIcon = currentTier.icon;
     otamashisState.monsterName = newMonsterName;
-    otamashisState.currentTier = currentTier; // Salva o Tier atual
+    otamashisState.currentTier = currentTier; 
 }
 
 function updateOtamashisLoop() {
     const monsterEl = document.getElementById('monster-area');
-    if (monsterEl) {
+    if (monsterEl && otamashisState.view === 'battle') {
         const healthPct = otamashisState.monsterHealth / otamashisState.monsterMaxHealth;
         monsterEl.style.boxShadow = `0 0 20px 5px rgba(239, 68, 68, ${1-healthPct})`;
     }
 }
 
 async function handleMonsterClick(e) {
-    if (!e.target.closest('#monster-area')) return;
+    if (otamashisState.view !== 'battle' || !e.target.closest('#monster-area')) return;
     if (otamashisState.monsterHealth <= 0) return;
 
     otamashisState.monsterHealth -= otamashisState.playerDamage;
@@ -729,7 +746,7 @@ async function saveRPGState(gold, xpGained, currentStage) {
     
     await userRef.update({
         rpgGold: gold,
-        rpgStage: currentStage + 1, // Salva o próximo estágio
+        rpgStage: currentStage + 1,
         totalXP: newXP,
         level: newLevelData.level,
         attributePoints: attributePoints
@@ -739,7 +756,7 @@ async function saveRPGState(gold, xpGained, currentStage) {
 }
 
 function advanceStage() {
-    spawnNewMonster(); // Avança e sorteia novo monstro
+    spawnNewMonster(); 
     renderOtamashisUI('battle');
 }
 
@@ -765,7 +782,7 @@ function handleShopAction(weaponKey, action) {
         }
         userInv[weaponKey] = { level: 1 };
         otamashisState.playerGold -= item.cost;
-        otamashisState.inventory.equipped = weaponKey; // Equipa ao comprar
+        otamashisState.inventory.equipped = weaponKey; 
         showNotification(`${item.icon} ${item.name} comprada e equipada!`, 'success');
     } else if (action === 'upgrade') {
         const currentLevel = itemData.level;
@@ -783,14 +800,12 @@ function handleShopAction(weaponKey, action) {
         showNotification(`${item.icon} ${item.name} equipada!`, 'success');
     }
     
-    // Atualiza Gold e Inventário no Firebase
     db.collection('user-profiles').doc(currentUser.uid).update({
         rpgGold: otamashisState.playerGold,
         inventory: otamashisState.inventory
     }).then(() => {
-        // Recarrega o estado do Otamashis (para atualizar Dano)
         initOtamashis(); 
-        renderOtamashisUI('shop'); // Volta para a loja
+        renderOtamashisUI('shop'); 
     }).catch(err => {
         console.error('Erro ao salvar inventário:', err);
         showNotification('Erro ao salvar item no banco de dados.', 'error');
@@ -805,21 +820,23 @@ function renderShopUI() {
     const userGold = otamashisState.playerGold;
     const equippedKey = userInv.equipped;
 
-    let shopHtml = `<div class="p-4 w-full h-full">
-        <h3 class="text-3xl font-bold text-pink-400 mb-6 text-center">
-            <i class="fas fa-shopping-bag mr-2"></i> Arsenal Místico
-        </h3>
+    let shopHtml = `<div class="p-4 w-full h-full flex flex-col">
+        <div class="flex justify-center items-center mb-6">
+            <h3 class="text-3xl font-bold text-pink-400">
+                <i class="fas fa-shopping-bag mr-2"></i> Arsenal Místico
+            </h3>
+        </div>
         <p class="text-xl text-yellow-400 font-bold mb-4 text-center">Seu Gold: ${formatNumber(userGold)} <i class="fas fa-coins"></i></p>
         
-        <div class="grid md:grid-cols-2 gap-4 max-h-[60vh] overflow-y-auto p-2">`;
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4 overflow-y-auto p-2 flex-grow">`;
         
     Object.keys(INITIAL_WEAPONS).forEach(key => {
         const item = INITIAL_WEAPONS[key];
         const isOwned = !!userInv[key];
         const isEquipped = equippedKey === key;
         const currentLevel = isOwned ? userInv[key].level : 0;
-        const nextUpgradeCost = item.upgradeCost * currentLevel;
-        
+        const nextUpgradeCost = item.upgradeCost * (currentLevel || 1); 
+
         const cardClass = isEquipped ? 'border-4 border-green-500 shadow-xl' : 'border-2 border-slate-700/50';
 
         let buttonAction = '';
@@ -852,7 +869,7 @@ function renderShopUI() {
                     <span class="text-xs text-white bg-purple-900/50 px-2 py-1 rounded-full">${isOwned ? `Lv. ${currentLevel}` : 'Novo'}</span>
                 </div>
                 <h4 class="font-bold text-lg">${item.name}</h4>
-                <p class="text-sm text-gray-400">Dano (Base + Bônus): <span class="text-red-400">${totalAtk} ATK</span></p>
+                <p class="text-sm text-gray-400">Dano Atual: <span class="text-red-400">${totalAtk} ATK</span></p>
                 ${buttonAction}
             </div>
         `;
@@ -860,18 +877,18 @@ function renderShopUI() {
     
     shopHtml += `</div>`;
     
-    // Adicionar botão de retorno
-    shopHtml += `<div class="text-center mt-6"><button onclick="renderOtamashisUI('battle')" class="bg-indigo-600 hover:bg-indigo-500 py-2 px-6 rounded-full font-bold"><i class="fas fa-arrow-left mr-2"></i> Voltar à Batalha</button></div>`;
+    shopHtml += `<div class="text-center mt-6 flex-shrink-0"><button onclick="renderOtamashisUI('battle')" class="bg-indigo-600 hover:bg-indigo-500 py-2 px-6 rounded-full font-bold"><i class="fas fa-arrow-left mr-2"></i> Voltar à Batalha</button></div></div>`;
 
     container.innerHTML = shopHtml;
+    otamashisState.view = 'shop';
 }
 
 
 function renderOtamashisUI(mode = 'battle') {
+    otamashisState.view = mode;
     const container = document.getElementById('game-container');
     if (!container) return;
     
-    // Se for modo loja, renderiza a loja
     if (mode === 'shop') {
         renderShopUI();
         return;
@@ -882,11 +899,16 @@ function renderOtamashisUI(mode = 'battle') {
     const monsterIsDead = otamashisState.monsterHealth === 0;
     
     const currentTier = otamashisState.currentTier || MONSTER_TIERS[0];
+    const equippedWeaponKey = otamashisState.inventory?.equipped || 'punho';
+    const equippedWeapon = INITIAL_WEAPONS[equippedWeaponKey];
 
     container.innerHTML = `
         <style>
             @keyframes damage-popup { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-50px) scale(1.5); } }
             .animate-damage-popup { animation: damage-popup 0.8s ease-out forwards; pointer-events: none; }
+            .bg-forest { background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://via.placeholder.com/800x600?text=Forest+Sombria'); background-size: cover; }
+            .bg-dungeon { background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://via.placeholder.com/800x600?text=Masmorra'); background-size: cover; }
+            .bg-ice { background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://via.placeholder.com/800x600?text=Caverna+Gelo'); background-size: cover; }
         </style>
         
         <div class="otamashis-wrapper relative w-full h-full p-4 flex flex-col items-center justify-between ${currentTier.background}">
@@ -912,6 +934,7 @@ function renderOtamashisUI(mode = 'battle') {
             <div class="text-center mt-4">
                 <p class="text-3xl font-bold text-red-400">${formatNumber(otamashisState.monsterHealth)} / ${formatNumber(otamashisState.monsterMaxHealth)}</p>
                 <p class="text-sm text-gray-400">Dano por Clique: <span class="text-green-400">${otamashisState.playerDamage}</span></p>
+                <p class="text-sm text-gray-400 mt-1">Arma Equipada: ${equippedWeapon.icon} ${equippedWeapon.name} (Lv. ${otamashisState.inventory[equippedWeaponKey].level})</p>
             </div>
 
             <div class="w-full flex justify-around p-3 bg-slate-800/80 rounded-xl border border-purple-500/30 shadow-lg mt-auto">
@@ -925,10 +948,6 @@ function renderOtamashisUI(mode = 'battle') {
 }
 
 
-// =====================================================
-// [OUTROS JOGOS CANVAS ABAIXO]
-// ...
-// =====================================================
 function initTetris() {
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
@@ -1942,12 +1961,6 @@ window.addEventListener('scroll', () => {
 backToTop.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 });
-
-// =====================================================
-// [OUTROS JOGOS CANVAS]
-// ... (Código dos outros 6 jogos está omitido aqui para brevidade, mas está presente no arquivo completo)
-// =====================================================
-
 
 // =====================================================
 // INITIALIZATION
