@@ -43,24 +43,6 @@ if (typeof firebase.appCheck !== 'undefined' && typeof firebase.appCheck.ReCaptc
         true // isTokenAutoRefreshEnabled
     );
 }
-// games-script.js - Bloco de inicialização do App Check (Próximo à linha 70)
-
-if (typeof firebase.appCheck !== 'undefined' && typeof firebase.appCheck.ReCaptchaV3Provider !== 'undefined') {
-    const appCheck = firebase.appCheck();
-    const SITE_KEY = '6LfFaSksAAAAAB6hnM3dC7hmv8mj5XFJVQZNJvNS'; 
-
-    if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
-        // --- NOVO TOKEN INSERIDO AQUI ---
-        localStorage.setItem("firebase-app-check-debug-token", "5c14d441-df3c-44ff-aa55-eda56ffeed43"); 
-        window.FIREBASE_APPCHECK_DEBUG_TOKEN = true; // Mantém a compatibilidade para debug
-        console.warn("APP CHECK DEBUG MODE ATIVO.");
-    }
-    
-    appCheck.activate(
-        SITE_KEY,
-        true 
-    );
-}
 // =====================================================
 
 
