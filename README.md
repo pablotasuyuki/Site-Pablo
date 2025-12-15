@@ -1,397 +1,417 @@
-# 🐉 Site de Serviços de TI - Pablo Tasuyuki
+# 🤖 AI Hub - Central de Inteligências Artificiais
 
-Site profissional para divulgação de serviços de TI, Programação e Desenvolvimento, com design moderno, interativo e responsivo.
-
----
+![AI Hub](https://img.shields.io/badge/AI-Hub-00d4ff?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Online-10b981?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-8b5cf6?style=for-the-badge)
 
 ## 📋 Índice
 
-- [Visão Geral](#-visão-geral)
-- [Funcionalidades Implementadas](#-funcionalidades-implementadas)
-- [Estrutura do Projeto](#-estrutura-do-projeto)
-- [Serviços Oferecidos](#-serviços-oferecidos)
-- [Tecnologias Utilizadas](#-tecnologias-utilizadas)
-- [Como Usar](#-como-usar)
-- [Recursos e Características](#-recursos-e-características)
-- [Integrações](#-integrações)
-- [Próximos Passos Recomendados](#-próximos-passos-recomendados)
+- [Sobre o Projeto](#sobre-o-projeto)
+- [Recursos Implementados](#recursos-implementados)
+- [IAs Disponíveis](#ias-disponíveis)
+- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Estrutura do Projeto](#estrutura-do-projeto)
+- [Como Usar](#como-usar)
+- [Funcionalidades Detalhadas](#funcionalidades-detalhadas)
+- [Próximos Passos](#próximos-passos)
+- [Contribuindo](#contribuindo)
 
 ---
 
-## 🎯 Visão Geral
+## 🎯 Sobre o Projeto
 
-Site completo e funcional desenvolvido para **Pablo Tasuyuki**, profissional de TI especializado em programação, desenvolvimento e suporte técnico. O site apresenta uma tabela completa de serviços e valores, com integração direta ao WhatsApp para solicitação de orçamentos.
+**AI Hub** é uma plataforma web moderna e futurista que centraliza o acesso a múltiplas inteligências artificiais em uma única interface. O projeto foi desenvolvido com foco em design tecnológico, experiência do usuário e funcionalidade prática.
 
-**Contato:**
-- 📱 WhatsApp: [51 9 9562-5408](https://api.whatsapp.com/send?phone=5551995625408)
-- 📸 Instagram: [@pablo_tasuyuki](https://www.instagram.com/pablo_tasuyuki/)
-- 💼 LinkedIn: [Tasuyuki Pablo](https://www.linkedin.com/in/tasuyuki-pablo-a1360b3a0/)
+### 🌟 Objetivos
+
+- ✅ Fornecer acesso unificado a várias IAs populares
+- ✅ Oferecer interface moderna e intuitiva
+- ✅ Permitir comparação entre diferentes modelos de IA
+- ✅ Facilitar a escolha da IA certa para cada tarefa
+- ✅ Manter histórico local de conversas
 
 ---
 
-## ✅ Funcionalidades Implementadas
+## ✨ Recursos Implementados
 
-### 1. **Design e Layout**
-- ✅ Design moderno com tema dragão asiático
-- ✅ Paleta de cores profissional (gradientes cyan, blue, purple, pink)
-- ✅ Layout responsivo (mobile-first)
-- ✅ Animações suaves e transições elegantes
-- ✅ Efeitos hover em cards e botões
-- ✅ Ícones FontAwesome para visual profissional
+### 🎨 Interface e Design
 
-### 2. **Navegação**
-- ✅ Header fixo com menu de navegação
-- ✅ Menu mobile responsivo (hambúrguer)
-- ✅ Smooth scroll para navegação entre seções
-- ✅ Botão "Voltar ao topo" (aparece ao rolar)
-- ✅ Links diretos para redes sociais
+- ✅ **Design Futurista**: Layout tecnológico com efeitos visuais avançados
+- ✅ **Gradientes Animados**: Orbs de luz flutuantes e grid animado de fundo
+- ✅ **Tema Escuro**: Paleta de cores otimizada para leitura prolongada
+- ✅ **Animações Suaves**: Transições e animações em todos os elementos
+- ✅ **Responsivo**: Funciona perfeitamente em desktop, tablet e mobile
+- ✅ **Ícones Font Awesome**: Biblioteca completa de ícones
 
-### 3. **Seções do Site**
-- ✅ **Hero Section**: Apresentação com call-to-action
-- ✅ **Sobre**: Biografia e apresentação profissional
-- ✅ **Serviços Externos**: 13 serviços listados com preços
-- ✅ **Serviços Internos**: 27 serviços listados com preços
-- ✅ **Contato**: Cards interativos para WhatsApp, Instagram e LinkedIn
-- ✅ **Footer**: Informações completas e links úteis
+### 💬 Sistema de Chat
 
-### 4. **Interatividade**
-- ✅ Botões "Solicitar Serviço" em cada card
-- ✅ Integração com WhatsApp API (mensagem pré-preenchida)
-- ✅ Barra de busca para filtrar serviços
-- ✅ Animações de entrada para cards (Intersection Observer)
-- ✅ Sistema de notificações (feedback visual)
-- ✅ Botão flutuante do WhatsApp (canto inferior direito)
+- ✅ **Interface de Chat Moderna**: Design limpo e intuitivo
+- ✅ **Seleção de IA**: Escolha entre 8 IAs diferentes
+- ✅ **Mensagens em Tempo Real**: Sistema de mensagens com timestamps
+- ✅ **Auto-resize de Textarea**: Campo de entrada adapta-se ao conteúdo
+- ✅ **Atalhos de Teclado**: Enter para enviar, Shift+Enter para nova linha
+- ✅ **Indicadores Visuais**: Status de conexão e typing indicators
 
-### 5. **Performance e Otimização**
-- ✅ Lazy loading de imagens
-- ✅ Animações otimizadas com GPU
-- ✅ Código otimizado para SEO
-- ✅ Redução de motion para acessibilidade
-- ✅ Alto contraste para melhor legibilidade
+### 💾 Gerenciamento de Dados
+
+- ✅ **LocalStorage**: Histórico salvo localmente no navegador
+- ✅ **Exportação de Chat**: Download de conversas em formato .txt
+- ✅ **Limpeza de Chat**: Opção para limpar conversas
+- ✅ **Persistência**: Dados mantidos entre sessões
+
+### 🔔 Notificações
+
+- ✅ **Sistema de Notificações**: Feedback visual para ações
+- ✅ **Tipos Variados**: Success, Error, Warning, Info
+- ✅ **Auto-dismiss**: Desaparecem automaticamente após 3 segundos
+- ✅ **Animações**: Entrada e saída suaves
+
+---
+
+## 🤖 IAs Disponíveis
+
+### 1. **ChatGPT** (OpenAI)
+- 🔗 Link: [chat.openai.com](https://chat.openai.com/)
+- 💡 Especialidades: Conversação Natural, Programação, Escrita Criativa
+- 🎯 Melhor Para: Tarefas gerais, código, redação
+
+### 2. **Gemini** (Google)
+- 🔗 Link: [gemini.google.com](https://gemini.google.com/)
+- 💡 Especialidades: Multimodal, Análise de Dados, Pesquisa Web
+- 🎯 Melhor Para: Pesquisa, análise complexa, raciocínio
+
+### 3. **Genspark**
+- 🔗 Link: [genspark.ai](https://www.genspark.ai/)
+- 💡 Especialidades: Brainstorming, Criatividade, Ideação
+- 🎯 Melhor Para: Ideias inovadoras, criatividade
+
+### 4. **Manus**
+- 🔗 Link: [manus.app](https://www.manus.app/)
+- 💡 Especialidades: Automação, Produtividade, Tarefas
+- 🎯 Melhor Para: Automação, eficiência, workflows
+
+### 5. **Claude** (Anthropic)
+- 🔗 Link: [claude.ai](https://claude.ai/)
+- 💡 Especialidades: Análise Profunda, Escrita Técnica
+- 🎯 Melhor Para: Documentação, análise detalhada
+
+### 6. **Copilot** (Microsoft)
+- 🔗 Link: [copilot.microsoft.com](https://copilot.microsoft.com/)
+- 💡 Especialidades: Microsoft 365, Produtividade
+- 🎯 Melhor Para: Integração Office, colaboração
+
+### 7. **Perplexity**
+- 🔗 Link: [perplexity.ai](https://www.perplexity.ai/)
+- 💡 Especialidades: Busca Avançada, Citações, Fontes Verificadas
+- 🎯 Melhor Para: Pesquisa com fontes, fact-checking
+
+### 8. **DeepSeek**
+- 🔗 Link: [deepseek.com](https://www.deepseek.com/)
+- 💡 Especialidades: Código Avançado, Ciência, Matemática
+- 🎯 Melhor Para: Programação complexa, análise científica
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+### Frontend
+- **HTML5**: Estrutura semântica e moderna
+- **CSS3**: Estilização avançada com variáveis CSS
+- **JavaScript (ES6+)**: Lógica interativa e manipulação do DOM
+
+### Bibliotecas e Recursos
+- **Font Awesome 6.4.0**: Ícones vetoriais
+- **Google Fonts**: 
+  - Orbitron (títulos e display)
+  - Rajdhani (corpo de texto)
+
+### Técnicas e Padrões
+- **CSS Grid & Flexbox**: Layout responsivo
+- **CSS Variables**: Tema customizável
+- **LocalStorage API**: Persistência de dados
+- **Intersection Observer**: Animações on-scroll
+- **Responsive Design**: Mobile-first approach
 
 ---
 
 ## 📁 Estrutura do Projeto
 
 ```
-projeto/
+ai-hub/
+│
 ├── index.html              # Página principal
+├── README.md              # Documentação do projeto
+│
 ├── css/
-│   └── style.css          # Estilos customizados e animações
-├── js/
-│   └── script.js          # JavaScript para interatividade
-└── README.md              # Este arquivo
+│   └── style.css          # Estilos principais (21KB)
+│                          # - Design futurista
+│                          # - Animações e efeitos
+│                          # - Responsividade
+│                          # - Temas e cores
+│
+└── js/
+    └── main.js            # JavaScript principal (20KB)
+                           # - Configuração de IAs
+                           # - Sistema de chat
+                           # - Gerenciamento de estado
+                           # - Utilitários e helpers
 ```
-
-### Arquivos Principais
-
-#### `index.html`
-- Estrutura HTML5 semântica
-- Integração com Tailwind CSS (CDN)
-- Integração com FontAwesome (ícones)
-- Google Fonts (Inter e Poppins)
-- 40+ cards de serviços
-- Meta tags para SEO
-
-#### `css/style.css`
-- Animações customizadas (fadeIn, float, bounce, shimmer)
-- Efeitos hover para cards e botões
-- Estilos para scrollbar personalizada
-- Media queries para responsividade
-- Estados de loading, success e error
-- Tooltips e skeleton loading
-
-#### `js/script.js`
-- Menu mobile interativo
-- Smooth scroll
-- Função `solicitarServico()` para WhatsApp
-- Observadores de interseção para animações
-- Sistema de notificações
-- Barra de busca de serviços
-- Analytics e rastreamento
-- Easter eggs 🎮
-
----
-
-## 💼 Serviços Oferecidos
-
-### **Serviços Externos** (13 serviços)
-
-1. **Acesso Remoto** (1h) - R$ 60,00 + R$ 40,00 adicional
-2. **Atendimento Técnico Externo** (1h) - R$ 100,00 + R$ 60,00 adicional
-3. **Acesso Remoto para Servidor** (1h) - R$ 120,00 + R$ 80,00 adicional
-4. **Solicitação Específica** - Mediante Avaliação
-5. **Busca/Entrega** - R$ 30,00
-6. **Busca/Entrega/Instalação Física** - R$ 80,00
-7. **Instalação de Apps/Jogos** - R$ 80,00 + R$ 30,00 adicional
-8. **Backup em Nuvem** - Mediante Avaliação
-9. **Serviços de Rede** - Mediante Avaliação
-10. **Pacotes Conjuntos** - Mediante Avaliação
-11. **Ativação Office 365** - R$ 70,00
-12. **Ativação Windows** - R$ 70,00
-13. **Antivírus Endpoint** - Mediante Avaliação
-
-### **Serviços Internos** (27 serviços)
-
-1. **Backup de Dados** - R$ 70,00
-2. **Formatação** - R$ 100,00
-3. **Formatação com Backup** - R$ 150,00
-4. **Formatação + Backup >300GB** - R$ 200,00
-5. **Formatação em MacBook** - R$ 250,00
-6. **Instalação de Aplicativos Básicos** - R$ 500,00
-7. **Instalação de Componentes** - R$ 80,00
-8. **Manutenção Preventiva Desktop** - R$ 120,00
-9. **Manutenção Preventiva Notebook** - R$ 160,00
-10. **Recuperação de Dados 120-320GB** - R$ 250,00
-11. **Recuperação de Dados 500GB** - R$ 350,00
-12. **Recuperação de Dados 1TB** - R$ 450,00
-13. **Instalação de Apps/Jogos** - R$ 70,00 + R$ 35,00 adicional
-14. **Ativação Windows** - R$ 70,00
-15. **Ativação Office 365** - R$ 100,00
-16. **Pacotes Conjuntos** - Mediante Avaliação
-17. **Clonagem de Sistema** - R$ 150,00
-18. **Diagnóstico** - Mediante Avaliação
-19. **Diagnóstico em HD** - R$ 100,00
-20. **Montagem Desktop Gamer** - Mediante Avaliação
-21. **Quebra de Senha Windows** - R$ 120,00
-22. **Quebra de Senha Windows Server** - Mediante Avaliação
-23. **Troca Bateria BIOS** - R$ 120,00 (+ peça)
-24. **Troca Microfone/Webcam** - R$ 150,00 (+ peça)
-25. **VPN até 10 Usuários** - R$ 350,00
-26. **Kaspersky Antivírus** - R$ 69,00
-27. **Instalação Windows Server** - R$ 350,00
-28. **Desenvolvimento de Sistema** - Mediante Avaliação
-29. **Desenvolvimento de App** - Mediante Avaliação
-30. **Desenvolvimento de Game** - Mediante Avaliação
-31. **Criação de Site** - Mediante Avaliação
-
----
-
-## 🛠️ Tecnologias Utilizadas
-
-### **Frontend**
-- **HTML5**: Estrutura semântica
-- **CSS3**: Estilos e animações
-- **JavaScript (ES6+)**: Interatividade
-
-### **Frameworks e Bibliotecas**
-- **Tailwind CSS** (v3.x via CDN): Framework CSS utilitário
-- **FontAwesome** (v6.4.0): Ícones profissionais
-- **Google Fonts**: Inter e Poppins
-
-### **APIs e Integrações**
-- **WhatsApp Business API**: Integração direta para contato
-- **Instagram**: Link direto para perfil
-- **LinkedIn**: Link direto para perfil profissional
-
-### **Recursos Web Modernos**
-- **Intersection Observer API**: Animações ao rolar
-- **Local Storage**: Preferências do usuário
-- **CSS Grid & Flexbox**: Layout responsivo
-- **CSS Custom Properties**: Variáveis CSS
-- **Media Queries**: Design responsivo
 
 ---
 
 ## 🚀 Como Usar
 
-### **1. Visualizar o Site Localmente**
+### 1. Acessar o Site
+Abra o arquivo `index.html` em seu navegador ou acesse via servidor web.
 
-Simplesmente abra o arquivo `index.html` em um navegador moderno:
+### 2. Selecionar uma IA
+- Navegue pelos cards de IA disponíveis
+- Leia as descrições e recursos de cada uma
+- Clique no botão **"Acessar"** da IA desejada
 
-```bash
-# No terminal (Linux/Mac)
-open index.html
+### 3. Conversar
+- O chat será aberto automaticamente
+- Digite sua mensagem no campo de texto
+- Pressione **Enter** para enviar ou clique no ícone de envio
+- Use **Shift+Enter** para quebra de linha
 
-# Ou no Windows
-start index.html
-```
+### 4. Gerenciar Conversas
+- **Limpar Chat**: Remove mensagens da conversa atual
+- **Exportar Chat**: Baixa conversa em formato .txt
+- **Fechar Chat**: Fecha a interface de chat
 
-### **2. Hospedar o Site**
-
-O site é totalmente estático e pode ser hospedado em qualquer serviço:
-
-- **GitHub Pages** (gratuito)
-- **Netlify** (gratuito)
-- **Vercel** (gratuito)
-- **AWS S3 + CloudFront**
-- **Firebase Hosting**
-
-### **3. Personalizar**
-
-Para personalizar o site, edite:
-
-1. **Informações de contato**: Altere os números de telefone e links no `index.html`
-2. **Serviços e preços**: Modifique os cards na seção de serviços
-3. **Cores**: Ajuste as classes Tailwind ou adicione CSS customizado
-4. **Conteúdo**: Edite textos na seção "Sobre" e outras descrições
+### 5. Acessar IA Oficial
+- Clique no link "Acessar [Nome da IA] Diretamente"
+- Será redirecionado para a plataforma oficial
 
 ---
 
-## 🎨 Recursos e Características
+## 🎯 Funcionalidades Detalhadas
 
-### **Design**
-- 🎨 Paleta de cores moderna com gradientes
-- 🐉 Tema inspirado em dragão asiático
-- 💫 Animações suaves e não intrusivas
-- 📱 100% responsivo (mobile, tablet, desktop)
-- ♿ Acessível (WCAG 2.1)
-
-### **Funcionalidades**
-- 🔍 Busca de serviços em tempo real
-- 📞 Integração direta com WhatsApp
-- 🔔 Sistema de notificações
-- 👆 Cards interativos com hover effects
-- 🎯 Navegação suave entre seções
-- 📊 Contador de serviços (console)
-
-### **Performance**
-- ⚡ Carregamento rápido
-- 🖼️ Lazy loading de imagens
-- 🚀 Otimizado para SEO
-- 📦 Bundle pequeno (sem dependências pesadas)
-- 💻 GPU acceleration para animações
-
-### **UX/UI**
-- 🎯 Call-to-actions claros
-- 💬 Mensagens pré-preenchidas no WhatsApp
-- 🎨 Visual consistente
-- 📝 Informações organizadas
-- 🔄 Feedback visual para ações
-
----
-
-## 🔗 Integrações
-
-### **WhatsApp Business API**
-
-Cada botão "Solicitar Serviço" abre o WhatsApp com mensagem pré-preenchida:
+### Sistema de Seleção de IA
 
 ```javascript
-https://api.whatsapp.com/send?phone=5551995625408&text=Olá!%20Tenho%20interesse%20no%20serviço:%20[NOME_DO_SERVIÇO]
+// Cada IA tem uma configuração completa
+{
+    name: 'ChatGPT',
+    fullName: 'ChatGPT (OpenAI)',
+    url: 'https://chat.openai.com/',
+    icon: 'fas fa-comments',
+    gradient: 'linear-gradient(...)',
+    description: '...',
+    features: [...],
+    status: 'online'
+}
 ```
 
-### **Redes Sociais**
+### Interface de Chat
 
-- **Instagram**: `https://www.instagram.com/pablo_tasuyuki/`
-- **LinkedIn**: `https://www.linkedin.com/in/tasuyuki-pablo-a1360b3a0/`
+**Recursos:**
+- Avatares personalizados para cada IA
+- Timestamps em todas as mensagens
+- Scroll automático para última mensagem
+- Indicador de status da IA
+- Mensagens do sistema para feedback
 
----
+**Tipos de Mensagens:**
+1. **Usuário**: Suas mensagens (fundo azul)
+2. **IA**: Respostas da IA (fundo cinza)
+3. **Sistema**: Notificações e informações
+4. **Info Card**: Detalhes sobre a IA selecionada
 
-## 📈 Próximos Passos Recomendados
+### Histórico e Persistência
 
-### **Funcionalidades Futuras**
+```javascript
+// Estrutura de dados do histórico
+{
+    ai: 'chatgpt',
+    type: 'user',
+    text: 'Mensagem...',
+    timestamp: '2024-01-15T10:30:00.000Z'
+}
+```
 
-1. **SEO Avançado**
-   - [ ] Adicionar meta tags Open Graph
-   - [ ] Implementar Schema.org markup
-   - [ ] Criar sitemap.xml
-   - [ ] Adicionar robots.txt
+### Notificações
 
-2. **Analytics**
-   - [ ] Integrar Google Analytics 4
-   - [ ] Configurar eventos personalizados
-   - [ ] Rastreamento de conversões
-   - [ ] Heatmaps (Hotjar/Clarity)
-
-3. **Marketing**
-   - [ ] Implementar pixel do Facebook
-   - [ ] Adicionar Google Tag Manager
-   - [ ] Criar landing pages específicas
-   - [ ] A/B testing de CTAs
-
-4. **Funcionalidades**
-   - [ ] Formulário de contato com validação
-   - [ ] Sistema de agendamento online
-   - [ ] Chat ao vivo (Tawk.to, Zendesk)
-   - [ ] Depoimentos de clientes
-   - [ ] Galeria de projetos/portfolio
-
-5. **PWA (Progressive Web App)**
-   - [ ] Criar manifest.json
-   - [ ] Implementar Service Worker
-   - [ ] Adicionar suporte offline
-   - [ ] Ícones para instalação
-
-6. **Performance**
-   - [ ] Minificar CSS e JS
-   - [ ] Otimizar imagens (WebP)
-   - [ ] Implementar CDN
-   - [ ] Cache de recursos
-
-7. **Segurança**
-   - [ ] HTTPS obrigatório
-   - [ ] Content Security Policy
-   - [ ] Proteção contra XSS
-   - [ ] Rate limiting
-
-8. **Multilíngua**
-   - [ ] Suporte para inglês
-   - [ ] Suporte para espanhol
-   - [ ] Alternância de idiomas
+**Tipos Disponíveis:**
+- ✅ **Success**: Verde (#10b981)
+- ❌ **Error**: Vermelho (#ef4444)
+- ⚠️ **Warning**: Laranja (#f59e0b)
+- ℹ️ **Info**: Ciano (#00d4ff)
 
 ---
 
-## 📝 Notas Técnicas
+## 📱 Responsividade
 
-### **Compatibilidade**
+### Breakpoints
 
-✅ **Navegadores Suportados:**
-- Chrome 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
-- Opera 76+
+```css
+/* Tablet e dispositivos menores */
+@media (max-width: 768px) {
+    - Grid de 1 coluna para cards
+    - Fonte reduzida
+    - Navegação simplificada
+}
 
-✅ **Dispositivos:**
-- Desktop (1920px+)
-- Laptop (1366px - 1920px)
-- Tablet (768px - 1366px)
-- Mobile (320px - 768px)
-
-### **Dependências Externas (CDN)**
-
-1. **Tailwind CSS**: `https://cdn.tailwindcss.com`
-2. **FontAwesome**: `https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css`
-3. **Google Fonts**: `https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap`
+/* Smartphones */
+@media (max-width: 480px) {
+    - Layout otimizado
+    - Elementos compactos
+    - Touch-friendly
+}
+```
 
 ---
 
-## 🤝 Suporte e Contato
+## 🎨 Paleta de Cores
 
-**Para dúvidas ou suporte técnico, entre em contato:**
+### Cores Primárias
+- **Primary**: `#00d4ff` (Ciano tecnológico)
+- **Secondary**: `#8b5cf6` (Roxo vibrante)
+- **Accent**: `#f59e0b` (Laranja energia)
 
-- 📱 **WhatsApp**: [51 9 9562-5408](https://api.whatsapp.com/send?phone=5551995625408)
-- 📧 **Instagram**: [@pablo_tasuyuki](https://www.instagram.com/pablo_tasuyuki/)
-- 💼 **LinkedIn**: [Tasuyuki Pablo](https://www.linkedin.com/in/tasuyuki-pablo-a1360b3a0/)
+### Backgrounds
+- **Primary**: `#0a0e27` (Azul escuro profundo)
+- **Secondary**: `#111827` (Cinza escuro)
+- **Tertiary**: `#1f2937` (Cinza médio)
+
+### Gradientes
+```css
+--gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+--gradient-cyan: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+--gradient-purple: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+--gradient-orange: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+```
+
+---
+
+## 🔮 Próximos Passos
+
+### Funcionalidades Planejadas
+
+#### 🎯 Curto Prazo
+- [ ] **Modo Comparação**: Conversar com 2 IAs simultaneamente
+- [ ] **Temas Personalizados**: Modo claro e temas customizáveis
+- [ ] **Favoritos**: Marcar IAs favoritas
+- [ ] **Pesquisa**: Buscar em histórico de conversas
+
+#### 🚀 Médio Prazo
+- [ ] **API Integration**: Integração real com APIs das IAs
+- [ ] **Autenticação**: Sistema de login e perfis de usuário
+- [ ] **Cloud Sync**: Sincronização de histórico na nuvem
+- [ ] **Plugins**: Sistema de extensões e plugins
+
+#### 💡 Longo Prazo
+- [ ] **AI Recommendations**: IA sugere qual modelo usar
+- [ ] **Multi-language**: Suporte a múltiplos idiomas
+- [ ] **Voice Input**: Entrada por voz
+- [ ] **Collaboration**: Chat em grupo com múltiplas IAs
+
+### Melhorias Técnicas
+- [ ] Service Worker para funcionamento offline
+- [ ] Progressive Web App (PWA)
+- [ ] Otimização de performance
+- [ ] Testes automatizados
+- [ ] Documentação de API
+
+---
+
+## 🌐 URIs e Endpoints
+
+### Páginas Disponíveis
+
+| URI | Descrição |
+|-----|-----------|
+| `/` ou `/index.html` | Página principal |
+| `#home` | Seção Hero/Início |
+| `#features` | Seção de Recursos |
+| `#about` | Seção Sobre |
+
+### Links Externos (IAs)
+
+Todos os links para plataformas oficiais das IAs estão configurados com:
+- `target="_blank"` (abre em nova aba)
+- `rel="noopener noreferrer"` (segurança)
+
+---
+
+## 🔒 Privacidade e Segurança
+
+### Dados Locais
+- ✅ **Tudo no navegador**: Nenhum dado enviado para servidores externos
+- ✅ **LocalStorage**: Histórico salvo apenas no seu dispositivo
+- ✅ **Sem cookies**: Não utilizamos cookies de rastreamento
+- ✅ **Sem analytics**: Nenhum dado de uso é coletado
+
+### Segurança
+- ✅ **XSS Protection**: Escape de HTML em mensagens
+- ✅ **Links Seguros**: rel="noopener noreferrer" em links externos
+- ✅ **Sem injeção**: Sanitização de inputs do usuário
+
+---
+
+## 🤝 Contribuindo
+
+### Como Contribuir
+
+1. **Fork** o projeto
+2. Crie uma **branch** para sua feature (`git checkout -b feature/AmazingFeature`)
+3. **Commit** suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. **Push** para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um **Pull Request**
+
+### Diretrizes
+- Mantenha o código limpo e comentado
+- Siga os padrões de estilo existentes
+- Teste em múltiplos navegadores
+- Atualize a documentação
 
 ---
 
 ## 📄 Licença
 
-© 2024 Pablo Tasuyuki - Serviços de TI. Todos os direitos reservados.
+Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
 
 ---
 
-## 🎉 Agradecimentos
+## 👏 Agradecimentos
 
-Site desenvolvido com 💙 utilizando as melhores práticas de desenvolvimento web moderno.
-
-**Tecnologias e ferramentas que tornaram este projeto possível:**
-- Tailwind CSS
-- FontAwesome
-- Google Fonts
-- WhatsApp Business API
+- **OpenAI** - ChatGPT
+- **Google** - Gemini
+- **Anthropic** - Claude
+- **Microsoft** - Copilot
+- **Font Awesome** - Ícones
+- **Google Fonts** - Tipografia
 
 ---
 
-**Versão**: 1.0.0  
-**Última Atualização**: Dezembro 2024  
-**Status**: ✅ Completo e Funcional
+## 📞 Contato
+
+Para dúvidas, sugestões ou feedback:
+- 📧 Email: contato@aihub.com
+- 🐦 Twitter: @aihub
+- 💬 Discord: AI Hub Community
+
+---
+
+## 📊 Status do Projeto
+
+```
+✅ MVP Completo
+✅ Design Implementado
+✅ Funcionalidades Básicas
+✅ Responsivo
+✅ Documentação
+⏳ Integrações de API (Futuro)
+⏳ Backend (Futuro)
+```
 
 ---
 
 <div align="center">
-  <p>🐉 <strong>Desenvolvido com excelência para Pablo Tasuyuki</strong> 🐉</p>
-  <p>Site profissional para serviços de TI</p>
+
+### 🌟 Feito com ❤️ para a comunidade de IA
+
+**[⬆ Voltar ao topo](#-ai-hub---central-de-inteligências-artificiais)**
+
 </div>

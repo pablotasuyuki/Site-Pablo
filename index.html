@@ -1,1294 +1,383 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="description" content="Serviços profissionais de TI, Programação e Desenvolvimento. Manutenção, suporte técnico, desenvolvimento de software e mais.">
-    <title>Serviços de TI - Pablo Tasuyuki</title>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Hub - Central de Inteligências Artificiais</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white font-['Inter']">
+<body>
+    <!-- Background Effects -->
+    <div class="bg-effects">
+        <div class="grid-overlay"></div>
+        <div class="glow-orb glow-orb-1"></div>
+        <div class="glow-orb glow-orb-2"></div>
+        <div class="glow-orb glow-orb-3"></div>
+    </div>
 
-    <header class="fixed w-full top-0 z-50 bg-slate-900/95 backdrop-blur-sm border-b border-slate-700/50 shadow-lg">
-        <nav class="container mx-auto px-4 py-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-3">
-                    <div class="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
-                        <i class="fas fa-dragon text-white text-2xl"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-bold font-['Poppins'] bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                            Pablo Tasuyuki
-                        </h1>
-                        <p class="text-xs text-slate-400">Serviços de TI & Desenvolvimento</p>
-                    </div>
-                </div>
-
-                <div class="hidden md:flex items-center space-x-6">
-                    <a href="#sobre" class="text-slate-300 hover:text-cyan-400 transition-colors duration-300">Sobre</a>
-                    <a href="#servicos-externos" class="text-slate-300 hover:text-cyan-400 transition-colors duration-300">Serviços Externos</a>
-                    <a href="#servicos-internos" class="text-slate-300 hover:text-cyan-400 transition-colors duration-300">Serviços Internos</a>
-                    <a href="games.html" class="text-slate-300 hover:text-pink-400 transition-colors duration-300 font-semibold flex items-center gap-1">
-                        <i class="fas fa-gamepad"></i>Games
-                    </a>
-                    <a href="#contato" class="text-slate-300 hover:text-cyan-400 transition-colors duration-300">Contato</a>
-                    <a href="#avaliacoes" class="text-slate-300 hover:text-cyan-400 transition-colors duration-300">Avaliações</a>
-                </div>
-
-                <div class="flex items-center space-x-3">
-                    <a href="[URL_DO_SEU_SITE_DE_IA]" target="_blank"
-                       class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-300 shadow-lg hover:scale-105 hidden sm:flex">
-                        <i class="fas fa-brain"></i>
-                        <span class="font-semibold hidden lg:inline">IAs</span>
-                    </a>
-                                        
-                    <div id="auth-area" class="hidden md:block relative">
-                        <button id="user-menu-btn" 
-                                class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-lg flex items-center space-x-2 transition-all duration-300 shadow-sm">
-                            <i class="fab fa-google"></i><span id="user-display-name">Login</span>
-                        </button>
-                        <div id="user-dropdown" class="absolute right-0 mt-2 w-48 bg-slate-800 border border-slate-700 rounded-lg shadow-xl py-1 hidden z-50">
-                            <a id="logout-btn" href="#" class="block px-4 py-2 text-sm text-red-400 hover:bg-slate-700 transition-colors"><i class="fas fa-sign-out-alt mr-2"></i>Sair</a>
-                            <a id="switch-login-btn" href="#" class="block px-4 py-2 text-sm text-cyan-400 hover:bg-slate-700 transition-colors"><i class="fas fa-exchange-alt mr-2"></i>Trocar Login</a>
-                        </div>
-                    </div>
-
-                    <a id="whatsapp-top" href="https://api.whatsapp.com/send?phone=5551997395967&text=Olá!%20Tenho%20interesse%20nos%20seus%20serviços%20de%20TI." 
-                       class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-all duration-300 shadow-lg hover:shadow-green-500/50 hover:scale-105">
-                        <i class="fab fa-whatsapp text-xl"></i>
-                        <span class="hidden sm:inline font-semibold">Entrar em Contato</span>
-                    </a>
-                    
-                    <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-cyan-400">
-                        <i class="fas fa-bars text-2xl"></i>
-                    </button>
-                    </div>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <span>AI HUB</span>
             </div>
-
-            <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 space-y-3">
-                <a href="#sobre" class="block text-slate-300 hover:text-cyan-400 transition-colors duration-300">Sobre</a>
-                <a href="#servicos-externos" class="block text-slate-300 hover:text-cyan-400 transition-colors duration-300">Serviços Externos</a>
-                <a href="#servicos-internos" class="block text-slate-300 hover:text-cyan-400 transition-colors duration-300">Serviços Internos</a>
-                <a href="games.html" class="block text-slate-300 hover:text-pink-400 transition-colors duration-300">Mini-Jogos 🎮</a>
-                <a href="#contato" class="block text-slate-300 hover:text-cyan-400 transition-colors duration-300">Contato</a>
-                <a href="#avaliacoes" class="block text-slate-300 hover:text-cyan-400 transition-colors duration-300">Avaliações</a>
-                
-                <div class="pt-2 border-t border-slate-700/50" id="user-actions">
-                    <button id="login-action-btn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg flex items-center justify-center space-x-2">
-                        <i class="fab fa-google"></i>
-                        <span>Login</span>
-                    </button>
-                </div>
-            </div>
-        </nav>
+            <nav class="nav">
+                <a href="#home" class="nav-link active">
+                    <i class="fas fa-home"></i> Início
+                </a>
+                <a href="#features" class="nav-link">
+                    <i class="fas fa-star"></i> Recursos
+                </a>
+                <a href="#about" class="nav-link">
+                    <i class="fas fa-info-circle"></i> Sobre
+                </a>
+            </nav>
+        </div>
     </header>
 
-    <section class="pt-32 pb-20 px-4">
-        <div class="container mx-auto text-center">
-            <div class="inline-block mb-6 animate-float">
-                <div class="w-24 h-24 bg-gradient-to-br from-cyan-500 via-blue-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl">
-                    <i class="fas fa-dragon text-white text-5xl"></i>
-                </div>
-            </div>
-            <h1 class="text-5xl md:text-7xl font-bold font-['Poppins'] mb-6 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent animate-fade-in">
-                Tabela de Serviços e Valores
-            </h1>
-            <p class="text-xl md:text-2xl text-slate-300 mb-8 max-w-3xl mx-auto animate-fade-in-delay">
-                Soluções completas em TI, Programação e Desenvolvimento com qualidade profissional
-            </p>
-            <div class="flex flex-wrap justify-center gap-4 animate-fade-in-delay-2">
-                <a href="#servicos-externos" class="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-cyan-500/50 hover:scale-105">
-                    Ver Serviços Externos
-                </a>
-                <a href="#servicos-internos" class="bg-slate-700 hover:bg-slate-600 text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg hover:shadow-slate-500/50 hover:scale-105">
-                    Ver Serviços Internos
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <section id="sobre" class="py-20 px-4 bg-slate-800/50">
-        <div class="container mx-auto max-w-4xl">
-            <div class="text-center mb-12">
-                <h2 class="text-4xl md:text-5xl font-bold font-['Poppins'] mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                    Sobre Mim
-                </h2>
-                <div class="w-24 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 mx-auto rounded-full"></div>
-            </div>
-
-            <div class="bg-slate-900/50 backdrop-blur-sm rounded-2xl p-8 md:p-12 shadow-2xl border border-slate-700/50">
-                <div class="flex flex-col md:flex-row items-center gap-8">
-                    <div class="w-32 h-32 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full flex items-center justify-center shadow-2xl">
-                        <i class="fas fa-user-tie text-white text-5xl"></i>
-                    </div>
-                    <div class="flex-1 text-center md:text-left">
-                        <h3 class="text-2xl font-bold mb-4 text-cyan-400">Pablo Tasuyuki</h3>
-                        <p class="text-slate-300 text-lg leading-relaxed mb-6">
-                            Profissional especializado em TI, Programação e Desenvolvimento de Software.
-                            Oferecendo soluções completas para empresas e usuários domésticos, desde suporte técnico
-                            até desenvolvimento de sistemas personalizados.
-                        </p>
-                        <div class="flex justify-center md:justify-start space-x-4">
-                            <a href="https://www.instagram.com/pablo_tasuyuki/" target="_blank"
-                               class="w-12 h-12 bg-gradient-to-br from-pink-600 to-purple-600 rounded-lg flex items-center justify-center hover:scale-110 transition-transform duration-300 shadow-lg hover:shadow-pink-500/50">
-                                <i class="fab fa-instagram text-white text-xl"></i>
-                            </a>
-                            <a href="https://www.linkedin.com/in/tasuyuki-pablo-a1360b3a0/" target="_blank"
-                               class="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-lg flex items-center justify-center hover:scale-110 transition-transform duration-300 shadow-lg hover:shadow-blue-500/50">
-                                <i class="fab fa-linkedin text-white text-xl"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="servicos-externos" class="py-20 px-4">
-        <div class="container mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold font-['Poppins'] mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                    Serviços Externos
-                </h2>
-                <p class="text-slate-300 text-lg max-w-2xl mx-auto">
-                    Atendimento remoto e presencial para suas necessidades de TI
-                </p>
-                <div class="w-24 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 mx-auto rounded-full mt-4"></div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-desktop text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-cyan-500/20 text-cyan-400 px-3 py-1 rounded-full text-sm font-semibold">1h</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Acesso Remoto</h3>
-                    <p class="text-slate-400 text-sm mb-4">1h de atendimento remoto</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-cyan-400">R$ 60,00</span>
-                        </div>
-                        <p class="text-slate-400 text-sm">Adicional: R$ 40,00/h</p>
-                    </div>
-                    <button data-service="Acesso Remoto (1h)"
-                            class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-cyan-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-tools text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm font-semibold">1h</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Atendimento Técnico Externo</h3>
-                    <p class="text-slate-400 text-sm mb-4">1h de atendimento presencial</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-blue-400">R$ 100,00</span>
-                        </div>
-                        <p class="text-slate-400 text-sm">Adicional: R$ 60,00/h</p>
-                    </div>
-                    <button data-service="Atendimento Técnico Externo (1h)"
-                            class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 hover:border-purple-500/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-server text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full text-sm font-semibold">1h</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Acesso Remoto para Servidor</h3>
-                    <p class="text-slate-400 text-sm mb-4">1h de atendimento em servidor</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-purple-400">R$ 120,00</span>
-                        </div>
-                        <p class="text-slate-400 text-sm">Adicional: R$ 80,00/h</p>
-                    </div>
-                    <button data-service="Acesso Remoto para Servidor (1h)"
-                            class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg hover:shadow-cyan-500/20">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-teal-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-lightbulb text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-sm font-semibold">Custom</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Solicitação Específica</h3>
-                    <p class="text-slate-400 text-sm mb-4">Serviço personalizado para sua necessidade</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
-                        </div>
-                    </div>
-                    <button data-service="Solicitação Específica"
-                            class="w-full bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-500 hover:to-teal-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Orçamento
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-shipping-fast text-white text-2xl"></i>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Busca/Entrega</h3>
-                    <p class="text-slate-400 text-sm mb-4">Serviço de busca e entrega de equipamentos</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-green-400">R$ 30,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Busca/Entrega"
-                            class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-truck-loading text-white text-2xl"></i>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Busca/Entrega/Instalação Física</h3>
-                    <p class="text-slate-400 text-sm mb-4">Busca, entrega e instalação de computadores</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-emerald-400">R$ 80,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Busca/Entrega/Instalação Física Computadores"
-                            class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-gamepad text-white text-2xl"></i>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Instalação de Apps/Jogos</h3>
-                    <p class="text-slate-400 text-sm mb-4">Instalação de aplicativos e jogos</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-indigo-400">R$ 80,00</span>
-                        </div>
-                        <p class="text-slate-400 text-sm">Adicional: R$ 30,00</p>
-                    </div>
-                    <button data-service="Instalação de Apps/Jogos (Externo)"
-                            class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-sky-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-cloud-upload-alt text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-sm font-semibold">Custom</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Backup em Nuvem</h3>
-                    <p class="text-slate-400 text-sm mb-4">Backup seguro de dados na nuvem</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
-                        </div>
-                    </div>
-                    <button data-service="Backup em Nuvem"
-                            class="w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Orçamento
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-network-wired text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-sm font-semibold">Custom</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Serviços de Rede</h3>
-                    <p class="text-slate-400 text-sm mb-4">Reestruturação e cabeamento de rede</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
-                        </div>
-                    </div>
-                    <button data-service="Serviços de Rede, Reestruturação e Cabeamento"
-                            class="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Orçamento
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-layer-group text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-sm font-semibold">Custom</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Pacotes Conjuntos</h3>
-                    <p class="text-slate-400 text-sm mb-4">Pacotes personalizados de serviços</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
-                        </div>
-                    </div>
-                    <button data-service="Pacotes Conjuntos (Externo)"
-                            class="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Orçamento
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-file-word text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm font-semibold">Permanente</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Ativação Office 365</h3>
-                    <p class="text-slate-400 text-sm mb-4">Ativação permanente do Pacote Office</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-blue-400">R$ 90,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Ativação Office 365 Permanente (Externo)"
-                            class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-sky-600 to-blue-700 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fab fa-windows text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-sky-500/20 text-sky-400 px-3 py-1 rounded-full text-sm font-semibold">Permanente</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Ativação Windows</h3>
-                    <p class="text-slate-400 text-sm mb-4">Ativação permanente do Windows</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-sky-400">R$ 70,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Ativação Windows Permanente (Externo)"
-                            class="w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-shield-virus text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-sm font-semibold">Custom</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Antivírus Endpoint</h3>
-                    <p class="text-slate-400 text-sm mb-4">Proteção avançada para empresas</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
-                        </div>
-                    </div>
-                    <button data-service="Antivírus Endpoint"
-                            class="w-full bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Orçamento
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="servicos-internos" class="py-20 px-4 bg-slate-800/50">
-        <div class="container mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl md:text-5xl font-bold font-['Poppins'] mb-4 bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
-                    Serviços Internos
-                </h2>
-                <p class="text-slate-300 text-lg max-w-2xl mx-auto">
-                    Manutenção, formatação, recuperação de dados e muito mais
-                </p>
-                <div class="w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-600 mx-auto rounded-full mt-4"></div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-hdd text-white text-2xl"></i>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Backup de Dados</h3>
-                    <p class="text-slate-400 text-sm mb-4">Backup completo dos seus dados</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-cyan-400">R$ 70,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Backup de Dados"
-                            class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-sync-alt text-white text-2xl"></i>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Formatação</h3>
-                    <p class="text-slate-400 text-sm mb-4">Formatação completa do sistema</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-blue-400">R$ 100,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Formatação"
-                            class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-save text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-purple-500/20 text-purple-400 px-3 py-1 rounded-full text-sm font-semibold">Popular</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Formatação com Backup</h3>
-                    <p class="text-slate-400 text-sm mb-4">Formatação + backup dos dados</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-purple-400">R$ 150,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Formatação com Backup"
-                            class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-pink-500 to-rose-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-database text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-pink-500/20 text-pink-400 px-3 py-1 rounded-full text-sm font-semibold">&gt;300GB</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Formatação + Backup &gt;300GB</h3>
-                    <p class="text-slate-400 text-sm mb-4">Para grandes volumes de dados</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-pink-400">R$ 200,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Formatação com Backup acima de 300GB"
-                            class="w-full bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-slate-500 to-slate-700 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fab fa-apple text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-slate-500/20 text-slate-300 px-3 py-1 rounded-full text-sm font-semibold">MacBook</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Formatação em MacBook</h3>
-                    <p class="text-slate-400 text-sm mb-4">Formatação com backup para MacBook</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-slate-300">R$ 250,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Formatação em Macbook com Backup"
-                            class="w-full bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-500 hover:to-slate-600 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-emerald-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-th text-white text-2xl"></i>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Instalação de Aplicativos Básicos</h3>
-                    <p class="text-slate-400 text-sm mb-4">Instalação de apps essenciais</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-green-400">R$ 500,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Serviço de Instalação de Aplicativos Básicos"
-                            class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-microchip text-white text-2xl"></i>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Instalação de Componentes</h3>
-                    <p class="text-slate-400 text-sm mb-4">Instalação de hardware e drivers</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-emerald-400">R$ 80,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Serviço de Instalação de Componentes"
-                            class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-wrench text-white text-2xl"></i>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Manutenção Preventiva Desktop</h3>
-                    <p class="text-slate-400 text-sm mb-4">Limpeza e otimização de desktop</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-indigo-400">R$ 120,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Manutenção Preventiva em Desktop"
-                            class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-laptop text-white text-2xl"></i>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Manutenção Preventiva Notebook</h3>
-                    <p class="text-slate-400 text-sm mb-4">Limpeza e otimização de notebooks</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-violet-400">R$ 160,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Manutenção Preventiva em Notebook/Netbook/Ultrabook"
-                            class="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-life-ring text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full text-sm font-semibold">120-320GB</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Recuperação de Dados</h3>
-                    <p class="text-slate-400 text-sm mb-4">HD de 120GB até 320GB</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-orange-400">R$ 250,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Recuperação de Dados em HD de 120GB até 320GB"
-                            class="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-rose-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-life-ring text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-sm font-semibold">500GB</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Recuperação de Dados 500GB</h3>
-                    <p class="text-slate-400 text-sm mb-4">HD de 500GB</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-red-400">R$ 350,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Recuperação de Dados em HD de 500GB"
-                            class="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-rose-500 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-life-ring text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-rose-500/20 text-rose-400 px-3 py-1 rounded-full text-sm font-semibold">1TB</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Recuperação de Dados 1TB</h3>
-                    <p class="text-slate-400 text-sm mb-4">HD de 1TB</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-rose-400">R$ 450,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Recuperação de Dados em HD de 1TB"
-                            class="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-sky-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-gamepad text-white text-2xl"></i>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Instalação de Apps/Jogos</h3>
-                    <p class="text-slate-400 text-sm mb-4">Instalação interna de aplicativos e jogos</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-sky-400">R$ 70,00</span>
-                        </div>
-                        <p class="text-slate-400 text-sm">Adicional: R$ 35,00</p>
-                    </div>
-                    <button data-service="Instalação de Apps/Jogos (Interno)"
-                            class="w-full bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fab fa-windows text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm font-semibold">Permanente</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Ativação Windows</h3>
-                    <p class="text-slate-400 text-sm mb-4">Ativação permanente do Windows</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-blue-400">R$ 70,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Ativação Windows Permanente (Interno)"
-                            class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-file-word text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-indigo-500/20 text-indigo-400 px-3 py-1 rounded-full text-sm font-semibold">Permanente</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Ativação Office 365</h3>
-                    <p class="text-slate-400 text-sm mb-4">Ativação permanente do Pacote Office</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-indigo-400">R$ 90,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Ativação Office 365 Permanente (Interno)"
-                            class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-fuchsia-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-layer-group text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-sm font-semibold">Custom</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Pacotes Conjuntos</h3>
-                    <p class="text-slate-400 text-sm mb-4">Pacotes personalizados de serviços</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
-                        </div>
-                    </div>
-                    <button data-service="Pacotes Conjuntos (Interno)"
-                            class="w-full bg-gradient-to-r from-purple-600 to-fuchsia-600 hover:from-purple-500 hover:to-fuchsia-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Orçamento
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-clone text-white text-2xl"></i>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Clonagem de Sistema</h3>
-                    <p class="text-slate-400 text-sm mb-4">Clonagem completa do sistema</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-teal-400">R$ 150,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Serviço de Clonagem de Sistema"
-                            class="w-full bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-500 hover:to-cyan-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-search text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-sm font-semibold">Custom</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Diagnóstico</h3>
-                    <p class="text-slate-400 text-sm mb-4">Diagnóstico completo do equipamento</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
-                        </div>
-                    </div>
-                    <button data-service="Serviço de Diagnóstico"
-                            class="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Orçamento
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-stethoscope text-white text-2xl"></i>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Diagnóstico em HD</h3>
-                    <p class="text-slate-400 text-sm mb-4">Diagnóstico especializado em HD</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-orange-400">R$ 100,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Serviço de Diagnóstico em HD"
-                            class="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-trophy text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-sm font-semibold">Gamer</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Montagem Desktop Gamer</h3>
-                    <p class="text-slate-400 text-sm mb-4">Montagem de PC Gamer personalizado</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
-                        </div>
-                    </div>
-                    <button data-service="Serviço de Montagem de Desktop Gamer"
-                            class="w-full bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-500 hover:to-pink-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Orçamento
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-key text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-sm font-semibold">7/10/11</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Quebra de Senha Windows</h3>
-                    <p class="text-slate-400 text-sm mb-4">Windows 7, 10 e 11</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-yellow-400">R$ 120,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Serviço de Quebra de Senha Windows (7, 10, 11)"
-                            class="w-full bg-gradient-to-r from-yellow-600 to-amber-600 hover:from-yellow-500 hover:to-amber-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-unlock-alt text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-sm font-semibold">Server</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Quebra Senha Windows Server</h3>
-                    <p class="text-slate-400 text-sm mb-4">Para Windows Server</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
-                        </div>
-                    </div>
-                    <button data-service="Serviço de Quebra de Senha Windows Server"
-                            class="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Orçamento
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-lime-500 to-green-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-battery-half text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-lime-500/20 text-lime-400 px-3 py-1 rounded-full text-sm font-semibold">+Peça</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Troca Bateria BIOS</h3>
-                    <p class="text-slate-400 text-sm mb-4">Serviço + peça para notebook</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-lime-400">R$ 120,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Troca da Bateria da BIOS de Notebook (Serviço + Peça)"
-                            class="w-full bg-gradient-to-r from-lime-600 to-green-600 hover:from-lime-500 hover:to-green-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-video text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm font-semibold">+Peça</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Troca Microfone/Webcam</h3>
-                    <p class="text-slate-400 text-sm mb-4">Serviço + peça para notebook/PC</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-green-400">R$ 150,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Serviço de Troca de Microfone/Webcam/Auto-falante em Desktop/PC (Serviço + Peça)"
-                            class="w-full bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-500 hover:to-teal-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-shield-alt text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-cyan-500/20 text-cyan-400 px-3 py-1 rounded-full text-sm font-semibold">10 Users</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">VPN até 10 Usuários</h3>
-                    <p class="text-slate-400 text-sm mb-4">Configuração de VPN empresarial</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-cyan-400">R$ 350,00</span>
-                        </div>
-                    </div>
-                    <button data-service="VPN até 10 Usuários"
-                            class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-red-500 to-orange-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-shield-virus text-white text-2xl"></i>
-                        </div>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Kaspersky Antivírus</h3>
-                    <p class="text-slate-400 text-sm mb-4">Para usuário doméstico</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-red-400">R$ 69,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Kaspersky (Antivírus para Usuário Doméstico)"
-                            class="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-server text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm font-semibold">Server</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Instalação Windows Server</h3>
-                    <p class="text-slate-400 text-sm mb-4">Instalação e configuração de servidor</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-3xl font-bold text-blue-400">R$ 350,00</span>
-                        </div>
-                    </div>
-                    <button data-service="Instalação de Windows Server"
-                            class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Serviço
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-code text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-sm font-semibold">Custom</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Desenvolvimento de Sistema</h3>
-                    <p class="text-slate-400 text-sm mb-4">Sistema personalizado para sua empresa</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
-                        </div>
-                    </div>
-                    <button data-service="Desenvolvimento de Sistema"
-                            class="w-full bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Orçamento
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-mobile-alt text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-sm font-semibold">Custom</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Desenvolvimento de App</h3>
-                    <p class="text-slate-400 text-sm mb-4">Aplicativo mobile personalizado</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
-                        </div>
-                    </div>
-                    <button data-service="Desenvolvimento de App"
-                            class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Orçamento
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-pink-500 to-red-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-gamepad text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-sm font-semibold">Custom</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Desenvolvimento de Game</h3>
-                    <p class="text-slate-400 text-sm mb-4">Desenvolvimento de jogos personalizados</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
-                        </div>
-                    </div>
-                    <button data-service="Desenvolvimento de Game"
-                            class="w-full bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-500 hover:to-red-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Orçamento
-                    </button>
-                </div>
-
-                <div class="service-card bg-slate-900/50 backdrop-blur-sm rounded-xl p-6 border border-slate-700/50 transition-all duration-300 shadow-lg">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center shadow-lg">
-                            <i class="fas fa-globe text-white text-2xl"></i>
-                        </div>
-                        <span class="bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-sm font-semibold">Custom</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Criação de Site</h3>
-                    <p class="text-slate-400 text-sm mb-4">Website profissional personalizado</p>
-                    <div class="mb-4">
-                        <div class="flex items-baseline gap-2 mb-1">
-                            <span class="text-xl font-bold text-yellow-400">Mediante Avaliação</span>
-                        </div>
-                    </div>
-                    <button data-service="Criação de Site"
-                            class="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white py-3 rounded-lg font-semibold shadow-lg flex items-center justify-center gap-2">
-                        <i class="fab fa-whatsapp"></i>
-                        Solicitar Orçamento
-                    </button>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <section id="mini-jogos-destaque" class="py-20 bg-gradient-to-br from-purple-900 to-pink-900">
-        <div class="container mx-auto px-4 text-center">
-            <h2 class="text-4xl font-bold mb-6 text-white">
-                🎮 Relaxe com Nossos Mini-Jogos!
-            </h2>
-            <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-                Curta uma pausa com jogos clássicos! Tetris, Space Shooter, Snake e muito mais. 
-                Faça login e compete no ranking global!
-            </p>
-            
-            <div class="grid md:grid-cols-3 gap-6 mb-8 max-w-4xl mx-auto">
-                <div class="bg-white/10 backdrop-blur-md rounded-xl p-6">
-                    <div class="text-5xl mb-4">🧱</div>
-                    <h3 class="text-xl font-bold mb-2 text-purple-200">Tetris</h3>
-                    <p class="text-gray-300">Clássico jogo de blocos</p>
-                </div>
-                <div class="bg-white/10 backdrop-blur-md rounded-xl p-6">
-                    <div class="text-5xl mb-4">🚀</div>
-                    <h3 class="text-xl font-bold mb-2 text-purple-200">Space Shooter</h3>
-                    <p class="text-gray-300">Destrua asteroides!</p>
-                </div>
-                <div class="bg-white/10 backdrop-blur-md rounded-xl p-6">
-                    <div class="text-5xl mb-4">🐍</div>
-                    <h3 class="text-xl font-bold mb-2 text-purple-200">Snake Game</h3>
-                    <p class="text-gray-300">Coma frutas e cresça</p>
-                </div>
-            </div>
-            
-            <a href="games.html" class="inline-block bg-gradient-to-r from-purple-600 to-pink-600 px-12 py-4 rounded-full text-xl font-bold text-white hover:shadow-2xl hover:shadow-purple-500/50 transition-all">
-                <i class="fas fa-play mr-2"></i>Jogar Agora!
-            </a>
-        </div>
-    </section>
-
-    <section id="contato" class="py-20 px-4">
-        <div class="container mx-auto max-w-4xl">
-            <div class="text-center mb-12">
-                <h2 class="text-4xl md:text-5xl font-bold font-['Poppins'] mb-4 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
-                    Entre em Contato
-                </h2>
-                <p class="text-slate-300 text-lg">
-                    Escolha a melhor forma de entrar em contato
-                </p>
-                <div class="w-24 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 mx-auto rounded-full mt-4"></div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <a id="whatsapp-card" href="https://api.whatsapp.com/send?phone=5551997395967&text=Olá!%20Tenho%20interesse%20nos%20seus%20serviços%20de%20TI." 
-                   class="bg-slate-900/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50 hover:border-green-500/50 transition-all duration-300 shadow-lg hover:shadow-green-500/20 text-center group">
-                    <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <i class="fab fa-whatsapp text-white text-3xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">WhatsApp</h3>
-                    <p class="text-slate-400 text-sm mb-3">Fale diretamente comigo</p>
-                    <p class="text-green-400 font-semibold">51 9 9739-5967</p>
-                </a>
-
-                <a href="https://www.instagram.com/pablo_tasuyuki/" target="_blank"
-                   class="bg-slate-900/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50 hover:border-pink-500/50 transition-all duration-300 shadow-lg hover:shadow-pink-500/20 text-center group">
-                    <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <i class="fab fa-instagram text-white text-3xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">Instagram</h3>
-                    <p class="text-slate-400 text-sm mb-3">Siga no Instagram</p>
-                    <p class="text-pink-400 font-semibold">@pablo_tasuyuki</p>
-                </a>
-
-                <a href="https://www.linkedin.com/in/tasuyuki-pablo-a1360b3a0/" target="_blank"
-                   class="bg-slate-900/50 backdrop-blur-sm rounded-xl p-8 border border-slate-700/50 hover:border-blue-500/50 transition-all duration-300 shadow-lg hover:shadow-blue-500/20 text-center group">
-                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
-                        <i class="fab fa-linkedin text-white text-3xl"></i>
-                    </div>
-                    <h3 class="text-xl font-bold mb-2 text-white">LinkedIn</h3>
-                    <p class="text-slate-400 text-sm mb-3">Conecte no LinkedIn</p>
-                    <p class="text-blue-400 font-semibold">Tasuyuki Pablo</p>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <section id="avaliacoes" class="py-20 px-4 bg-slate-800/40">
-        <div class="container mx-auto max-w-4xl">
-            <div class="text-center mb-8">
-                <h2 class="text-4xl font-bold font-['Poppins'] mb-2 bg-gradient-to-r from-yellow-400 to-amber-500 bg-clip-text text-transparent">
-                    Avaliações dos Clientes
-                </h2>
-                <p class="text-slate-300">Avalie de 0 a 10 estrelas e deixe seu comentário. As avaliações são públicas — só é possível comentar após login com Google.</p>
-            </div>
-
-            <div class="bg-slate-900/50 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-slate-700/50 mb-6">
-                <div id="review-form-area" class="space-y-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <div class="text-slate-300">Avaliação média:</div>
-                            <div id="average-rating" class="text-3xl font-bold text-yellow-400">--</div>
-                        </div>
-                        <div id="user-info" class="text-right text-slate-400">
-                            <div id="user-name">Você não está conectado</div>
-                            <div id="user-actions" class="mt-2">
-                                <button id="login-action-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1 rounded-lg">Entrar com Google</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="pt-4 border-t border-slate-700/40">
-                        <div class="mb-3">
-                            <label class="text-slate-300 mb-1 block">Sua nota (0-10):</label>
-                            <div id="rating-stars" class="flex gap-1"></div>
-                        </div>
-                        <div>
-                            <label class="text-slate-300 mb-1 block">Comentário:</label>
-                            <textarea id="review-text" rows="3" class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-400" placeholder="Conte sua experiência..."></textarea>
-                        </div>
-                        <div class="flex justify-end mt-4">
-                            <button id="submit-review" class="bg-yellow-500 hover:bg-yellow-400 text-slate-900 px-5 py-3 rounded-lg font-semibold">Enviar Avaliação</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="reviews-list" class="space-y-4">
-                <div class="text-slate-400">Carregando avaliações...</div>
-            </div>
-        </div>
-    </section>
-
-    <footer class="bg-slate-900/80 backdrop-blur-sm border-t border-slate-700/50 py-12 px-4">
-        <div class="container mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-                <div>
-                    <h3 class="text-xl font-bold mb-4 text-cyan-400">Pablo Tasuyuki</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed">
-                        Profissional de TI oferecendo serviços completos de suporte técnico,
-                        desenvolvimento de software e soluções tecnológicas personalizadas.
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero" id="home">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        <span class="gradient-text">Central de IAs</span>
+                        <br>Múltiplas Inteligências, Uma Interface
+                    </h1>
+                    <p class="hero-subtitle">
+                        Acesse as principais inteligências artificiais do mundo em um só lugar.
+                        Escolha, converse e explore o futuro da tecnologia.
                     </p>
                 </div>
+            </section>
 
-                <div>
-                    <h3 class="text-xl font-bold mb-4 text-cyan-400">Links Rápidos</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#sobre" class="text-slate-400 hover:text-cyan-400 transition-colors duration-300">Sobre</a></li>
-                        <li><a href="#servicos-externos" class="text-slate-400 hover:text-cyan-400 transition-colors duration-300">Serviços Externos</a></li>
-                        <li><a href="#servicos-internos" class="text-slate-400 hover:text-cyan-400 transition-colors duration-300">Serviços Internos</a></li>
-                        <li><a href="games.html" class="text-slate-400 hover:text-pink-400 transition-colors duration-300">Mini-Jogos 🎮</a></li>
-                        <li><a href="#contato" class="text-slate-400 hover:text-cyan-400 transition-colors duration-300">Contato</a></li>
-                        <li><a href="#avaliacoes" class="text-slate-400 hover:text-cyan-400 transition-colors duration-300">Avaliações</a></li>
-                    </ul>
-                </div>
+            <!-- AI Selection Grid -->
+            <section class="ai-grid">
+                <h2 class="section-title">
+                    <i class="fas fa-robot"></i> Selecione sua IA
+                </h2>
+                
+                <div class="ai-cards">
+                    <!-- ChatGPT -->
+                    <div class="ai-card" data-ai="chatgpt">
+                        <div class="ai-card-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3 class="ai-card-title">ChatGPT</h3>
+                        <p class="ai-card-description">
+                            OpenAI's conversational AI. Ideal para conversas naturais, criação de conteúdo e programação.
+                        </p>
+                        <div class="ai-card-stats">
+                            <span class="stat-badge">
+                                <i class="fas fa-fire"></i> Popular
+                            </span>
+                            <span class="stat-badge">
+                                <i class="fas fa-code"></i> Programação
+                            </span>
+                        </div>
+                        <button class="ai-card-button" onclick="selectAI('chatgpt')">
+                            <i class="fas fa-rocket"></i> Acessar
+                        </button>
+                    </div>
 
-                <div>
-                    <h3 class="text-xl font-bold mb-4 text-cyan-400">Contato</h3>
-                    <div class="space-y-3">
-                        <a href="https://api.whatsapp.com/send?phone=5551997395967"
-                           class="flex items-center space-x-2 text-slate-400 hover:text-green-400 transition-colors duration-300">
-                            <i class="fab fa-whatsapp"></i>
-                            <span>51 9 9739-5967</span>
-                        </a>
-                        <a href="https://www.instagram.com/pablo_tasuyuki/" target="_blank"
-                           class="flex items-center space-x-2 text-slate-400 hover:text-pink-400 transition-colors duration-300">
-                            <i class="fab fa-instagram"></i>
-                            <span>@pablo_tasuyuki</span>
-                        </a>
-                        <a href="https://www.linkedin.com/in/tasuyuki-pablo-a1360b3a0/" target="_blank"
-                           class="flex items-center space-x-2 text-slate-400 hover:text-blue-400 transition-colors duration-300">
-                            <i class="fab fa-linkedin"></i>
-                            <span>Tasuyuki Pablo</span>
-                        </a>
+                    <!-- Gemini -->
+                    <div class="ai-card" data-ai="gemini">
+                        <div class="ai-card-icon gemini">
+                            <i class="fas fa-gem"></i>
+                        </div>
+                        <h3 class="ai-card-title">Gemini</h3>
+                        <p class="ai-card-description">
+                            Google's multimodal AI. Excelente para análise de dados, pesquisa e raciocínio complexo.
+                        </p>
+                        <div class="ai-card-stats">
+                            <span class="stat-badge">
+                                <i class="fas fa-chart-line"></i> Análise
+                            </span>
+                            <span class="stat-badge">
+                                <i class="fas fa-search"></i> Pesquisa
+                            </span>
+                        </div>
+                        <button class="ai-card-button" onclick="selectAI('gemini')">
+                            <i class="fas fa-rocket"></i> Acessar
+                        </button>
+                    </div>
+
+                    <!-- Genspark -->
+                    <div class="ai-card" data-ai="genspark">
+                        <div class="ai-card-icon genspark">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <h3 class="ai-card-title">Genspark</h3>
+                        <p class="ai-card-description">
+                            AI especializada em criatividade. Perfeita para brainstorming e ideação inovadora.
+                        </p>
+                        <div class="ai-card-stats">
+                            <span class="stat-badge">
+                                <i class="fas fa-palette"></i> Criativo
+                            </span>
+                            <span class="stat-badge">
+                                <i class="fas fa-brain"></i> Ideias
+                            </span>
+                        </div>
+                        <button class="ai-card-button" onclick="selectAI('genspark')">
+                            <i class="fas fa-rocket"></i> Acessar
+                        </button>
+                    </div>
+
+                    <!-- Manus -->
+                    <div class="ai-card" data-ai="manus">
+                        <div class="ai-card-icon manus">
+                            <i class="fas fa-hand-sparkles"></i>
+                        </div>
+                        <h3 class="ai-card-title">Manus</h3>
+                        <p class="ai-card-description">
+                            Assistente AI versátil. Ótimo para automação de tarefas e produtividade.
+                        </p>
+                        <div class="ai-card-stats">
+                            <span class="stat-badge">
+                                <i class="fas fa-tasks"></i> Produtivo
+                            </span>
+                            <span class="stat-badge">
+                                <i class="fas fa-cog"></i> Automação
+                            </span>
+                        </div>
+                        <button class="ai-card-button" onclick="selectAI('manus')">
+                            <i class="fas fa-rocket"></i> Acessar
+                        </button>
+                    </div>
+
+                    <!-- Claude -->
+                    <div class="ai-card" data-ai="claude">
+                        <div class="ai-card-icon claude">
+                            <i class="fas fa-user-astronaut"></i>
+                        </div>
+                        <h3 class="ai-card-title">Claude</h3>
+                        <p class="ai-card-description">
+                            Anthropic's AI. Especializado em análise detalhada, escrita técnica e conversas longas.
+                        </p>
+                        <div class="ai-card-stats">
+                            <span class="stat-badge">
+                                <i class="fas fa-file-alt"></i> Escrita
+                            </span>
+                            <span class="stat-badge">
+                                <i class="fas fa-microscope"></i> Análise
+                            </span>
+                        </div>
+                        <button class="ai-card-button" onclick="selectAI('claude')">
+                            <i class="fas fa-rocket"></i> Acessar
+                        </button>
+                    </div>
+
+                    <!-- Copilot -->
+                    <div class="ai-card" data-ai="copilot">
+                        <div class="ai-card-icon copilot">
+                            <i class="fas fa-plane"></i>
+                        </div>
+                        <h3 class="ai-card-title">Copilot</h3>
+                        <p class="ai-card-description">
+                            Microsoft's AI assistant. Integrado com Office e ferramentas Microsoft.
+                        </p>
+                        <div class="ai-card-stats">
+                            <span class="stat-badge">
+                                <i class="fas fa-windows"></i> Microsoft
+                            </span>
+                            <span class="stat-badge">
+                                <i class="fas fa-briefcase"></i> Office
+                            </span>
+                        </div>
+                        <button class="ai-card-button" onclick="selectAI('copilot')">
+                            <i class="fas fa-rocket"></i> Acessar
+                        </button>
+                    </div>
+
+                    <!-- Perplexity -->
+                    <div class="ai-card" data-ai="perplexity">
+                        <div class="ai-card-icon perplexity">
+                            <i class="fas fa-compass"></i>
+                        </div>
+                        <h3 class="ai-card-title">Perplexity</h3>
+                        <p class="ai-card-description">
+                            AI de busca e pesquisa. Encontra informações atualizadas com fontes confiáveis.
+                        </p>
+                        <div class="ai-card-stats">
+                            <span class="stat-badge">
+                                <i class="fas fa-book"></i> Pesquisa
+                            </span>
+                            <span class="stat-badge">
+                                <i class="fas fa-link"></i> Fontes
+                            </span>
+                        </div>
+                        <button class="ai-card-button" onclick="selectAI('perplexity')">
+                            <i class="fas fa-rocket"></i> Acessar
+                        </button>
+                    </div>
+
+                    <!-- DeepSeek -->
+                    <div class="ai-card" data-ai="deepseek">
+                        <div class="ai-card-icon deepseek">
+                            <i class="fas fa-atom"></i>
+                        </div>
+                        <h3 class="ai-card-title">DeepSeek</h3>
+                        <p class="ai-card-description">
+                            AI avançada para código e ciência. Especializada em programação e análise técnica.
+                        </p>
+                        <div class="ai-card-stats">
+                            <span class="stat-badge">
+                                <i class="fas fa-laptop-code"></i> Código
+                            </span>
+                            <span class="stat-badge">
+                                <i class="fas fa-flask"></i> Ciência
+                            </span>
+                        </div>
+                        <button class="ai-card-button" onclick="selectAI('deepseek')">
+                            <i class="fas fa-rocket"></i> Acessar
+                        </button>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="border-t border-slate-700/50 pt-8 text-center">
-                <p class="text-slate-400 text-sm">
-                    &copy; 2024 Pablo Tasuyuki - Serviços de TI. Todos os direitos reservados.
-                </p>
+            <!-- Chat Interface -->
+            <section class="chat-section" id="chat-interface">
+                <div class="chat-header">
+                    <div class="chat-ai-info">
+                        <div class="chat-ai-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="chat-ai-details">
+                            <h3 class="chat-ai-name" id="current-ai-name">Selecione uma IA</h3>
+                            <p class="chat-ai-status" id="current-ai-status">Escolha uma IA acima para começar</p>
+                        </div>
+                    </div>
+                    <button class="close-chat" onclick="closeChat()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="chat-messages" id="chat-messages">
+                    <div class="welcome-message">
+                        <i class="fas fa-robot"></i>
+                        <h3>Bem-vindo ao AI Hub!</h3>
+                        <p>Selecione uma IA acima para começar a conversar.</p>
+                    </div>
+                </div>
+
+                <div class="chat-input-wrapper">
+                    <div class="chat-input-container">
+                        <textarea 
+                            class="chat-input" 
+                            id="chat-input" 
+                            placeholder="Digite sua mensagem aqui..."
+                            rows="1"
+                            disabled
+                        ></textarea>
+                        <button class="send-button" id="send-button" onclick="sendMessage()" disabled>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <div class="input-actions">
+                        <button class="action-button" onclick="clearChat()" title="Limpar conversa">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="action-button" onclick="exportChat()" title="Exportar conversa">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="features-section" id="features">
+                <h2 class="section-title">
+                    <i class="fas fa-star"></i> Recursos Avançados
+                </h2>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <h3>Troca Rápida</h3>
+                        <p>Alterne entre diferentes IAs instantaneamente sem perder o contexto.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-save"></i>
+                        </div>
+                        <h3>Histórico</h3>
+                        <p>Todas as conversas são salvas localmente para consulta futura.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Privacidade</h3>
+                        <p>Seus dados permanecem no seu navegador. Nenhuma informação é enviada para nossos servidores.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3>Responsivo</h3>
+                        <p>Interface otimizada para desktop, tablet e smartphone.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- About Section -->
+            <section class="about-section" id="about">
+                <h2 class="section-title">
+                    <i class="fas fa-info-circle"></i> Sobre o AI Hub
+                </h2>
+                
+                <div class="about-content">
+                    <p class="about-text">
+                        O <strong>AI Hub</strong> é uma plataforma centralizada que conecta você às principais 
+                        inteligências artificiais do mercado. Nossa missão é simplificar o acesso à tecnologia 
+                        de IA, permitindo que você escolha a ferramenta certa para cada tarefa.
+                    </p>
+                    <p class="about-text">
+                        Cada IA possui características únicas: algumas são melhores para programação, outras 
+                        para escrita criativa, pesquisa ou análise de dados. Com o AI Hub, você tem todas 
+                        essas opções em um único lugar.
+                    </p>
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="stat-number">8+</div>
+                            <div class="stat-label">IAs Disponíveis</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Gratuito</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">∞</div>
+                            <div class="stat-label">Possibilidades</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 AI Hub. Conectando você ao futuro da inteligência artificial.</p>
+            <div class="footer-links">
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-discord"></i></a>
             </div>
         </div>
     </footer>
 
-    <a id="floating-whatsapp" href="https://api.whatsapp.com/send?phone=5551997395967&text=Olá!%20Tenho%20interesse%20nos%20seus%20serviços%20de%20TI."
-       class="fixed bottom-6 right-6 w-16 h-16 bg-green-600 hover:bg-green-500 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-all duration-300 z-50 animate-bounce-slow">
-        <i class="fab fa-whatsapp text-white text-3xl"></i>
-    </a>
-
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
-    <script src="script.js"></script>
-
+    <script src="js/main.js"></script>
 </body>
 </html>
