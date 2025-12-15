@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Hub - Central de Inteligências Artificiais</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="bg-effects">
+        <div class="grid-overlay"></div>
+        <div class="glow-orb glow-orb-1"></div>
+        <div class="glow-orb glow-orb-2"></div>
+        <div class="glow-orb glow-orb-3"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <span>AI HUB</span>
+            </div>
+            <nav class="nav">
+                <a href="#home" class="nav-link active">
+                    <i class="fas fa-home"></i> Início
+                </a>
+                <a href="#features" class="nav-link">
+                    <i class="fas fa-star"></i> Recursos
+                </a>
+                <a href="#about" class="nav-link">
+                    <i class="fas fa-info-circle"></i> Sobre
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Hero Section -->
+            <section class="hero" id="home">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        <span class="gradient-text">Central de IAs</span>
+                        <br>Múltiplas Inteligências, Uma Interface
+                    </h1>
+                    <p class="hero-subtitle">
+                        Acesse as principais inteligências artificiais do mundo em um só lugar.
+                        Escolha, converse e explore o futuro da tecnologia.
+                    </p>
+                </div>
+            </section>
+
+            <!-- AI Selection Grid -->
+            <section class="ai-grid">
+                <h2 class="section-title">
+                    <i class="fas fa-robot"></i> Selecione sua IA
+                </h2>
+                
+                <div class="ai-cards">
+                    <!-- ChatGPT -->
+                    <div class="ai-card" data-ai="chatgpt">
+                        <div class="ai-card-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3 class="ai-card-title">ChatGPT</h3>
+                        <p class="ai-card-description">
+                            OpenAI's conversational AI. Ideal para conversas naturais, criação de conteúdo e programação.
+                        </p>
+                        <div class="ai-card-stats">
+                            <span class="stat-badge">
+                                <i class="fas fa-fire"></i> Popular
+                            </span>
+                            <span class="stat-badge">
+                                <i class="fas fa-code"></i> Programação
+                            </span>
+                        </div>
+                        <button class="ai-card-button" onclick="selectAI('chatgpt')">
+                            <i class="fas fa-rocket"></i> Acessar
+                        </button>
+                    </div>
+
+                    <!-- Gemini -->
+                    <div class="ai-card" data-ai="gemini">
+                        <div class="ai-card-icon gemini">
+                            <i class="fas fa-gem"></i>
+                        </div>
+                        <h3 class="ai-card-title">Gemini</h3>
+                        <p class="ai-card-description">
+                            Google's multimodal AI. Excelente para análise de dados, pesquisa e raciocínio complexo.
+                        </p>
+                        <div class="ai-card-stats">
+                            <span class="stat-badge">
+                                <i class="fas fa-chart-line"></i> Análise
+                            </span>
+                            <span class="stat-badge">
+                                <i class="fas fa-search"></i> Pesquisa
+                            </span>
+                        </div>
+                        <button class="ai-card-button" onclick="selectAI('gemini')">
+                            <i class="fas fa-rocket"></i> Acessar
+                        </button>
+                    </div>
+
+                    <!-- Genspark -->
+                    <div class="ai-card" data-ai="genspark">
+                        <div class="ai-card-icon genspark">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <h3 class="ai-card-title">Genspark</h3>
+                        <p class="ai-card-description">
+                            AI especializada em criatividade. Perfeita para brainstorming e ideação inovadora.
+                        </p>
+                        <div class="ai-card-stats">
+                            <span class="stat-badge">
+                                <i class="fas fa-palette"></i> Criativo
+                            </span>
+                            <span class="stat-badge">
+                                <i class="fas fa-brain"></i> Ideias
+                            </span>
+                        </div>
+                        <button class="ai-card-button" onclick="selectAI('genspark')">
+                            <i class="fas fa-rocket"></i> Acessar
+                        </button>
+                    </div>
+
+                    <!-- Manus -->
+                    <div class="ai-card" data-ai="manus">
+                        <div class="ai-card-icon manus">
+                            <i class="fas fa-hand-sparkles"></i>
+                        </div>
+                        <h3 class="ai-card-title">Manus</h3>
+                        <p class="ai-card-description">
+                            Assistente AI versátil. Ótimo para automação de tarefas e produtividade.
+                        </p>
+                        <div class="ai-card-stats">
+                            <span class="stat-badge">
+                                <i class="fas fa-tasks"></i> Produtivo
+                            </span>
+                            <span class="stat-badge">
+                                <i class="fas fa-cog"></i> Automação
+                            </span>
+                        </div>
+                        <button class="ai-card-button" onclick="selectAI('manus')">
+                            <i class="fas fa-rocket"></i> Acessar
+                        </button>
+                    </div>
+
+                    <!-- Claude -->
+                    <div class="ai-card" data-ai="claude">
+                        <div class="ai-card-icon claude">
+                            <i class="fas fa-user-astronaut"></i>
+                        </div>
+                        <h3 class="ai-card-title">Claude</h3>
+                        <p class="ai-card-description">
+                            Anthropic's AI. Especializado em análise detalhada, escrita técnica e conversas longas.
+                        </p>
+                        <div class="ai-card-stats">
+                            <span class="stat-badge">
+                                <i class="fas fa-file-alt"></i> Escrita
+                            </span>
+                            <span class="stat-badge">
+                                <i class="fas fa-microscope"></i> Análise
+                            </span>
+                        </div>
+                        <button class="ai-card-button" onclick="selectAI('claude')">
+                            <i class="fas fa-rocket"></i> Acessar
+                        </button>
+                    </div>
+
+                    <!-- Copilot -->
+                    <div class="ai-card" data-ai="copilot">
+                        <div class="ai-card-icon copilot">
+                            <i class="fas fa-plane"></i>
+                        </div>
+                        <h3 class="ai-card-title">Copilot</h3>
+                        <p class="ai-card-description">
+                            Microsoft's AI assistant. Integrado com Office e ferramentas Microsoft.
+                        </p>
+                        <div class="ai-card-stats">
+                            <span class="stat-badge">
+                                <i class="fas fa-windows"></i> Microsoft
+                            </span>
+                            <span class="stat-badge">
+                                <i class="fas fa-briefcase"></i> Office
+                            </span>
+                        </div>
+                        <button class="ai-card-button" onclick="selectAI('copilot')">
+                            <i class="fas fa-rocket"></i> Acessar
+                        </button>
+                    </div>
+
+                    <!-- Perplexity -->
+                    <div class="ai-card" data-ai="perplexity">
+                        <div class="ai-card-icon perplexity">
+                            <i class="fas fa-compass"></i>
+                        </div>
+                        <h3 class="ai-card-title">Perplexity</h3>
+                        <p class="ai-card-description">
+                            AI de busca e pesquisa. Encontra informações atualizadas com fontes confiáveis.
+                        </p>
+                        <div class="ai-card-stats">
+                            <span class="stat-badge">
+                                <i class="fas fa-book"></i> Pesquisa
+                            </span>
+                            <span class="stat-badge">
+                                <i class="fas fa-link"></i> Fontes
+                            </span>
+                        </div>
+                        <button class="ai-card-button" onclick="selectAI('perplexity')">
+                            <i class="fas fa-rocket"></i> Acessar
+                        </button>
+                    </div>
+
+                    <!-- DeepSeek -->
+                    <div class="ai-card" data-ai="deepseek">
+                        <div class="ai-card-icon deepseek">
+                            <i class="fas fa-atom"></i>
+                        </div>
+                        <h3 class="ai-card-title">DeepSeek</h3>
+                        <p class="ai-card-description">
+                            AI avançada para código e ciência. Especializada em programação e análise técnica.
+                        </p>
+                        <div class="ai-card-stats">
+                            <span class="stat-badge">
+                                <i class="fas fa-laptop-code"></i> Código
+                            </span>
+                            <span class="stat-badge">
+                                <i class="fas fa-flask"></i> Ciência
+                            </span>
+                        </div>
+                        <button class="ai-card-button" onclick="selectAI('deepseek')">
+                            <i class="fas fa-rocket"></i> Acessar
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Chat Interface -->
+            <section class="chat-section" id="chat-interface">
+                <div class="chat-header">
+                    <div class="chat-ai-info">
+                        <div class="chat-ai-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="chat-ai-details">
+                            <h3 class="chat-ai-name" id="current-ai-name">Selecione uma IA</h3>
+                            <p class="chat-ai-status" id="current-ai-status">Escolha uma IA acima para começar</p>
+                        </div>
+                    </div>
+                    <button class="close-chat" onclick="closeChat()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="chat-messages" id="chat-messages">
+                    <div class="welcome-message">
+                        <i class="fas fa-robot"></i>
+                        <h3>Bem-vindo ao AI Hub!</h3>
+                        <p>Selecione uma IA acima para começar a conversar.</p>
+                    </div>
+                </div>
+
+                <div class="chat-input-wrapper">
+                    <div class="chat-input-container">
+                        <textarea 
+                            class="chat-input" 
+                            id="chat-input" 
+                            placeholder="Digite sua mensagem aqui..."
+                            rows="1"
+                            disabled
+                        ></textarea>
+                        <button class="send-button" id="send-button" onclick="sendMessage()" disabled>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <div class="input-actions">
+                        <button class="action-button" onclick="clearChat()" title="Limpar conversa">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button class="action-button" onclick="exportChat()" title="Exportar conversa">
+                            <i class="fas fa-download"></i>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="features-section" id="features">
+                <h2 class="section-title">
+                    <i class="fas fa-star"></i> Recursos Avançados
+                </h2>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <h3>Troca Rápida</h3>
+                        <p>Alterne entre diferentes IAs instantaneamente sem perder o contexto.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-save"></i>
+                        </div>
+                        <h3>Histórico</h3>
+                        <p>Todas as conversas são salvas localmente para consulta futura.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Privacidade</h3>
+                        <p>Seus dados permanecem no seu navegador. Nenhuma informação é enviada para nossos servidores.</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3>Responsivo</h3>
+                        <p>Interface otimizada para desktop, tablet e smartphone.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- About Section -->
+            <section class="about-section" id="about">
+                <h2 class="section-title">
+                    <i class="fas fa-info-circle"></i> Sobre o AI Hub
+                </h2>
+                
+                <div class="about-content">
+                    <p class="about-text">
+                        O <strong>AI Hub</strong> é uma plataforma centralizada que conecta você às principais 
+                        inteligências artificiais do mercado. Nossa missão é simplificar o acesso à tecnologia 
+                        de IA, permitindo que você escolha a ferramenta certa para cada tarefa.
+                    </p>
+                    <p class="about-text">
+                        Cada IA possui características únicas: algumas são melhores para programação, outras 
+                        para escrita criativa, pesquisa ou análise de dados. Com o AI Hub, você tem todas 
+                        essas opções em um único lugar.
+                    </p>
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="stat-number">8+</div>
+                            <div class="stat-label">IAs Disponíveis</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">100%</div>
+                            <div class="stat-label">Gratuito</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">∞</div>
+                            <div class="stat-label">Possibilidades</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 AI Hub. Conectando você ao futuro da inteligência artificial.</p>
+            <div class="footer-links">
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-discord"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
